@@ -1,12 +1,12 @@
 import React from 'react'
-import "./Request.css"
 import { Paper } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Spacer from '../Common/Spacer';
 import TextField from '@material-ui/core/TextField';
-import "./AddWork.css"
 
+import "./AddWork.css"
+import "./Request.css"
 const AddWork = () => {
     return (
         <Paper elevation={2} className="requestBox">

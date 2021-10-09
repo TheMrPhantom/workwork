@@ -1,7 +1,8 @@
 import React from 'react'
-import "./Request.css"
 import { Paper, Typography } from '@material-ui/core'
 import { Button } from '@material-ui/core'
+
+import "./Request.css"
 
 const Request = ({ name, work }) => {
     return (

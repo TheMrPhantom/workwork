@@ -1,11 +1,12 @@
 import React from 'react'
-import "./Request.css"
 import { Paper, Typography } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Spacer from '../Common/Spacer';
+
 import "./Member.css";
+import "./Request.css"
 
 const Member = ({ name, currentWork, maxWork }) => {
 

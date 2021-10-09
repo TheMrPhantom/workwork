@@ -1,8 +1,9 @@
 import React from 'react'
-import "./OverviewBox.css"
 import { Paper } from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import WarningIcon from '@material-ui/icons/Warning';
+
+import "./OverviewBox.css"
 
 const OverviewBox = ({ currentHours, maxHours }) => {
 

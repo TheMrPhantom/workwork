@@ -1,9 +1,10 @@
-import './index.css';
-import ClippedDrawer from "./Drawer.js"
-import "./Components/Theme.css"
-
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
 import { BrowserRouter as Router } from 'react-router-dom';
+import ClippedDrawer from "./Drawer.js"
+
+import './index.css';
+import "./Components/Theme.css"
+
 function App() {
 
   const theme = createTheme({

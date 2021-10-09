@@ -7,8 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import RequestEntry from './RequestEntry';
-import "./Request.css";
 import { Typography } from '@material-ui/core';
+
+import "./Request.css";
 
 const Request = ({headline}) => {
     return (
