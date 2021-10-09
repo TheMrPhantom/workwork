@@ -18,11 +18,16 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 import Overview from './Components/Overview/Overview';
+import Sports from './Components/Sports/Sports';
+
 import { Route } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const drawerWidth = 200;
 
 export default function ClippedDrawer() {
+
+    const history = useHistory();
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -46,7 +51,7 @@ export default function ClippedDrawer() {
                 <Toolbar style={{ width: drawerWidth }} />
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/overview")}>
                             <ListItemIcon>
                                 <PersonIcon />
                             </ListItemIcon>
@@ -55,19 +60,19 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/sport/agility")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Agility" />
                         </ListItem>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/sport/rescuedogs")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Rettungshunde" />
                         </ListItem>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/sport/obedience")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
@@ -76,16 +81,22 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/members")}>
                             <ListItemIcon>
                                 <PlaylistAddCheckIcon />
                             </ListItemIcon>
                             <ListItemText primary="Mitglieder" />
                         </ListItem>
+                        <ListItem button key="1" onClick={()=>history.push("/sport/admin")}>
+                            <ListItemIcon>
+                                <PetsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Sportarten" />
+                        </ListItem>
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0">
+                        <ListItem button key="0" onClick={()=>history.push("/settings")}>
                             <ListItemIcon>
                                 <SettingsIcon />
                             </ListItemIcon>
@@ -97,6 +108,7 @@ export default function ClippedDrawer() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 <Route path="/overview" component={Overview} />
+                <Route path="/sport/:name" component={Sports} />
             </Box>
         </Box>
     );

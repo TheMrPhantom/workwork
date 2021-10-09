@@ -1,0 +1,31 @@
+.requestBox {
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 10px;
+    background-color: var(--secondaryColor) !important;
+}
+
+.outterFlex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.innerFlex {
+    display: flex;
+    align-items: center;
+}
+
+.border {
+    margin-right: 10px !important;
+}
+
+.accept {
+    background-color: var(--successColor) !important;
+    color: white !important;
+}
+
+.deny {
+    background-color: var(--errorColor) !important;
+    color: white !important;
+}
