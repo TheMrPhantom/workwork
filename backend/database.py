@@ -47,7 +47,7 @@ class SQLiteWrapper:
                 '''CREATE TABLE standardworktime
                 (time INTEGER)'''
             )
-            con.com+mit()
+            con.commit()
 
             con.close()
         except sqlite3.OperationalError as e:
@@ -131,6 +131,15 @@ class SQLiteWrapper:
 
         con.close()
         return isTrainer
+    
+    def isTrainer(self, memberID: int):
+        con = sqlite3.connect(self.db_name)
+        isTrainer = False
+        for link in con.cursor().execute(''' SELECT isTrainer FROM sportMember WHERE memberID=? ''', (memberID,)):
+            isTrainer |= link[0] == 1
+
+        con.close()
+        return isTrainer
 
     def acceptWorkRequest(self, requestID: int):
         con = sqlite3.connect(self.db_name)
@@ -159,10 +168,10 @@ class SQLiteWrapper:
         con.close()
         return
 
-    def updateMemberInfo(self, memberID:int, firstname: str, lastname: str, email: str):
+    def updateMemberInfo(self, memberID: int, firstname: str, lastname: str, email: str):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE member  SET firstname=?, lastname=?, email=? WHERE memberID=?''',
-                             (firstname, lastname, email,memberID,))
+                             (firstname, lastname, email, memberID,))
         con.commit()
         con.close()
         return
@@ -177,24 +186,72 @@ class SQLiteWrapper:
 
     def createSport(self, name: str):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO sport values (?, 0);",(name,))
+        con.cursor().execute("INSERT INTO sport values (?, 0);", (name,))
         con.commit()
         con.close()
         return
 
-    def changeExtraHours(self, sportID:int,amount: int):
+    def changeExtraHours(self, sportID: int, amount: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE sport SET extraHours=? WHERE ROWID=?;",(amount,sportID,))
+        con.cursor().execute("UPDATE sport SET extraHours=? WHERE ROWID=?;", (amount, sportID,))
         con.commit()
         con.close()
         return
 
     def deleteSport(self, sportID: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("DELETE FROM sport WHERE ROWID=?",(sportID,))
+        con.cursor().execute("DELETE FROM sport WHERE ROWID=?", (sportID,))
         con.commit()
         con.close()
         return
+
+    def getSports(self):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute("SELECT ROWID, name FROM sport "):
+            output.append({"id": link[0], "name": link[1]})
+        con.close()
+
+        return output
+
+    def getMembers(self):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute("SELECT ROWID, * FROM member "):
+            output.append(link)
+        con.close()
+
+        return output
+
+    def getPendingWorkRequestsBySport(self, sportID):
+        con = sqlite3.connect(self.db_name)
+        requests = []
+        for link in con.cursor().execute('''
+            SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes
+            FROM sport, worktime, member
+            WHERE sport.ROWID=worktime.sportID
+            AND member.ROWID=worktime.memberID
+            AND sport.ROWID=?
+            AND worktime.pending=1
+        ''', (sportID,)):
+            requests.append(link)
+        con.close()
+        return requests
+
+    def getMembersOfSport(self, sportID):
+        con = sqlite3.connect(self.db_name)
+        requests = []
+        for link in con.cursor().execute('''
+            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer 
+            FROM sportMember, member
+            WHERE sportMember.ROWID=?
+            AND sportMember.memberID=member.ROWID
+        ''', (sportID,)):
+            requests.append(link)
+        con.close()
+        return requests
+    
+
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
@@ -214,9 +271,9 @@ class SQLiteWrapper:
         con.cursor().execute("INSERT INTO member values ('eve', 'evil', 'eve@evil.de', 'uu', 1);")
         con.cursor().execute(
             "INSERT INTO member values ('charly', 'schokolade', 'charly@schokolade.de', 'ii', 0);")
-        con.cursor().execute("INSERT INTO sport values ('agility', 2);")
+        con.cursor().execute("INSERT INTO sport values ('agility', 120);")
         con.cursor().execute("INSERT INTO sport values ('rettungshunde', 0);")
-        con.cursor().execute("INSERT INTO sport values ('Turnierhunde', 1);")
+        con.cursor().execute("INSERT INTO sport values ('Turnierhunde', 60);")
 
         con.cursor().execute("INSERT INTO sportMember values (1, 1, 1);")
         con.cursor().execute("INSERT INTO sportMember values (1, 2, 0);")
@@ -225,7 +282,7 @@ class SQLiteWrapper:
         con.cursor().execute("INSERT INTO sportMember values (3, 3, 0);")
         con.cursor().execute("INSERT INTO sportMember values (4, 3, 0);")
 
-        con.cursor().execute("INSERT INTO standardworktime values (12);")
+        con.cursor().execute("INSERT INTO standardworktime values (720);")
 
         con.commit()
         con.close()
