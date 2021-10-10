@@ -16,13 +16,13 @@ const Sports = (props) => {
     }, [props.match.params.id])
     return (
         <div>
-            <Typography variant="h5">Anfragen</Typography>
-            <Spacer vertical={10} />
+            {requests.length>0?<Typography variant="h5">Anfragen</Typography>:""}
+            {requests.length>0?<Spacer vertical={10} />:""}
             {requests.map((value) => {
                 return <div><Request name={value.firstname + " " + value.lastname} work={value.description} amount={value.duration} />
                 </div>
             })}
-            <Spacer vertical={20} />
+            {requests.length>0?<Spacer vertical={20} />:""}
 
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />

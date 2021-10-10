@@ -131,7 +131,15 @@ class SQLiteWrapper:
 
         con.close()
         return isTrainer
-    
+
+    def isMemberof(self, memberID: int, sportID: int):
+        con = sqlite3.connect(self.db_name)
+        isMember = False
+        for link in con.cursor().execute(''' SELECT isTrainer FROM sportMember WHERE memberID=? AND sportID=?''', (memberID, sportID,)):
+            isMember = True
+        con.close()
+        return isMember
+
     def isTrainer(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         isTrainer = False
@@ -208,8 +216,9 @@ class SQLiteWrapper:
     def getSports(self):
         con = sqlite3.connect(self.db_name)
         output = []
-        for link in con.cursor().execute("SELECT ROWID, name FROM sport "):
-            output.append({"id": link[0], "name": link[1]})
+        for link in con.cursor().execute("SELECT ROWID, name, extraHours FROM sport "):
+            output.append(
+                {"id": link[0], "name": link[1], "extraHours": link[2]})
         con.close()
 
         return output
@@ -250,8 +259,30 @@ class SQLiteWrapper:
             requests.append(link)
         con.close()
         return requests
-    
 
+    def getMemberInfo(self, memberID):
+        con = sqlite3.connect(self.db_name)
+        output = None
+        for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? ''', (memberID,)):
+            output = {"firstname": link[0],
+                      "lastname": link[1], "mail": link[2]}
+
+        con.close()
+        return output
+
+    def participantIn(self, memberID):
+        sports = self.getSports()
+        for s in sports:
+            s["isParticipant"] = self.isMemberof(memberID, s["id"])
+
+        return sports
+
+    def trainerIn(self,memberID):
+        sports = self.getSports()
+        for s in sports:
+            s["isTrainer"] = self.isTrainerof(memberID, s["id"])
+
+        return sports
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)

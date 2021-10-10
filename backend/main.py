@@ -12,6 +12,11 @@ token_manager = authenticator.TokenManager()
 db = database.SQLiteWrapper()
 
 
+@app.route('/api/user/<int:userID>', methods=["GET"])
+def memberInfo(userID):
+    return util.build_response(db.getMemberInfo(userID))
+
+
 @app.route('/api/user/<int:userID>/currentHours', methods=["GET"])
 def currentHours(userID):
     return util.build_response(db.getCurrentWorkMinutes(userID)/60)
@@ -30,6 +35,15 @@ def getAcceptedWork(userID):
         output.append(
             {"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
+
+
+@app.route('/api/user/<int:userID>/participantIn', methods=["GET"])
+def participantIn(userID):
+    return util.build_response(db.participantIn(userID))
+
+@app.route('/api/user/<int:userID>/trainerIn', methods=["GET"])
+def trainerIn(userID):
+    return util.build_response(db.trainerIn(userID))
 
 
 @app.route('/api/user/<int:userID>/requests/pending', methods=["GET"])
@@ -54,8 +68,9 @@ def members():
     for m in members:
         currentWork = db.getCurrentWorkMinutes(m[0])/60
         maxWork = db.getNeededWorkMinutes(m[0])/60
+        isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
-                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork})
+                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer})
     return util.build_response(output)
 
 

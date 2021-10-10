@@ -12,7 +12,7 @@ const SportEntry = ({name,extraHours}) => {
             <div className="innerBoxSport">
                 <Typography>{name}</Typography>
                 <Spacer horizontal={30}></Spacer>
-                <TextField label="Extra Arbeitsstunden" type="number" defaultValue={extraHours} />
+                <TextField label="Extra Arbeitszeit" type="number" defaultValue={extraHours} />
             </div>
             <div>
                 <Button >
