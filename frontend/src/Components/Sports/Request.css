@@ -6,8 +6,8 @@
 }
 .selectBox{
     width: 20%;
-    min-width: 100px;
-    max-width: 200px;
+    min-width: 100px !important;
+    max-width: 200px !important;
 }
 
 .outterFlex {
@@ -34,4 +34,10 @@
 .deny {
     background-color: var(--errorColor) !important;
     color: white !important;
+}
+
+.reasonRequestText{
+    width: 20%;
+    min-width: 100px !important;
+    max-width: 200px !important;
 }
