@@ -15,7 +15,8 @@ const MemberEdit = () => {
             <Typography variant="h5">Informationen</Typography>
             <Spacer vertical={20} />
             <Card />
-            <ActivateSports />
+            <ActivateSports firstColumn="Teilnehmer"/>
+            <ActivateSports firstColumn="Trainer"/>
             <Spacer vertical={50} />
             <Typography variant="h5">Arbeitsstunden</Typography>
             <MemberHistory />

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styled, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -27,33 +28,76 @@ import Members from './Components/Members/Members';
 import SportManagement from './Components/SportManagement/SportManagement';
 import Settings from './Components/Settings/Settings';
 import MemberEdit from './Components/Members/MemberEdit';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { Button } from '@material-ui/core';
+import Spacer from './Components/Common/Spacer';
 
 const drawerWidth = 200;
 
 export default function ClippedDrawer() {
 
     const history = useHistory();
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(window.innerHeight > 800);
+
+    const DrawerHeader = styled('div')(({ theme }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end',
+    }));
+
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
 
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" style={{ zIndex: 2 }}>
                 <Toolbar>
+                    <Button
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        sx={{ mr: 2, ...(open && { display: 'none' }) }}
+                        style={{ width: "20px" }}
+                    >
+                        <MenuIcon />
+                    </Button>
+                    {open ? <Spacer horizontal={drawerWidth - 60} /> : ""}
                     <Typography variant="h6" noWrap component="div">
                         {Config.ORGA_NAME} - WorkWork
                     </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
-                variant="permanent"
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                    },
                 }}
-                style={{ zIndex: 1, width: drawerWidth }}
+                variant="persistent"
+                anchor="left"
+                open={open}
             >
-                <Toolbar style={{ width: drawerWidth }} />
+                <DrawerHeader style={{ backgroundColor: "var(--primaryColor)", boxShadow: "2px 2px 9px grey"}}>
+                    <Button onClick={handleDrawerClose}>
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    </Button>
+                </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
                         <ListItem button key="0" onClick={() => history.push("/overview")}>
@@ -116,6 +160,8 @@ export default function ClippedDrawer() {
                     </List>
                 </Box>
             </Drawer>
+            {open ? <Spacer horizontal={drawerWidth} /> : ""}
+
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
                 <Route path="/overview" component={Overview} />
