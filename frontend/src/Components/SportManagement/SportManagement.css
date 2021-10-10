@@ -6,6 +6,13 @@
     background-color: var(--secondaryColor) !important;
 }
 
+.outterAddBoxSport{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
 .innerBoxSport{
     display: flex;
     flex-wrap: wrap;
@@ -15,6 +22,10 @@
 
 .denyBackground{
     color: var(--errorColor);
+}
+
+.successBackground{
+    color: var(--successColor);
 }
 
 .fixedButton {
