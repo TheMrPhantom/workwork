@@ -33,6 +33,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Button } from '@material-ui/core';
 import Spacer from './Components/Common/Spacer';
+import { getAndStore } from './Components/Common/StaticFunctions';
+import { useEffect, useState } from 'react'
 
 const drawerWidth = 200;
 
@@ -41,6 +43,11 @@ export default function ClippedDrawer() {
     const history = useHistory();
     const theme = useTheme();
     const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
+
+    const [sports, setsports] = useState([])
+    useEffect(() => {
+        getAndStore("sports/names", setsports)
+    }, [])
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -122,24 +129,16 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0" onClick={() => redirect("/sport/agility")}>
-                            <ListItemIcon>
-                                <PetsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Agility" />
-                        </ListItem>
-                        <ListItem button key="0" onClick={() => redirect("/sport/rescuedogs")}>
-                            <ListItemIcon>
-                                <PetsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Rettungshunde" />
-                        </ListItem>
-                        <ListItem button key="0" onClick={() => redirect("/sport/obedience")}>
-                            <ListItemIcon>
-                                <PetsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Obedience" />
-                        </ListItem>
+                        {sports.map((value) => {
+                            return <div>
+                                <ListItem button key={value.id} onClick={() => redirect("/sport/"+value.id)}>
+                                    <ListItemIcon>
+                                        <PetsIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={value.name} />
+                                </ListItem>
+                            </div>
+                        })}
                     </List>
                     <Divider />
                     <List>
@@ -175,7 +174,7 @@ export default function ClippedDrawer() {
                 <Route path="/request" component={Request} />
                 <Switch>
                     <Route path="/sport/admin" component={SportManagement} />
-                    <Route path="/sport/:name" component={Sports} />
+                    <Route path="/sport/:id" component={Sports} />
                 </Switch>
                 <Switch>
                     <Route exact path="/members" component={Members} />

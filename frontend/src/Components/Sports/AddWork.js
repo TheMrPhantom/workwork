@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormControl, InputLabel, MenuItem, Paper, Select } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Spacer from '../Common/Spacer';
 import TextField from '@material-ui/core/TextField';
+import { getAndStore } from '../Common/StaticFunctions';
 
 import "./AddWork.css"
 import "./Request.css"
 const AddWork = () => {
+    const [sportNames, setsportNames] = useState([])
+    useEffect(() => {
+        getAndStore("sports/names", setsportNames)
+    }, [])
     return (
         <Paper elevation={2} className="requestBox">
             <div className="outterFlex">
@@ -20,9 +25,8 @@ const AddWork = () => {
                             value={10}
                             label="sport"
                         >
-                            <MenuItem value={10}>Agility</MenuItem>
-                            <MenuItem value={20}>Rettungshunde</MenuItem>
-                            <MenuItem value={30}>Obedience</MenuItem>
+                            {sportNames.map((value) => { return <MenuItem value={value.id}>{value.name}</MenuItem> })}
+
                         </Select>
                     </FormControl>
                     <Spacer horizontal={10} />

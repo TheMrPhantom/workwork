@@ -1,21 +1,25 @@
 import { TextField, Typography } from '@material-ui/core'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import MemberEntry from './MemberEntry'
+import { getAndStore } from '../Common/StaticFunctions'
 
 const Members = () => {
+    const [members, setmembers] = useState([])
+
+    useEffect(() => {
+        getAndStore("members",setmembers)
+    }, [])
+
     return (
         <div>
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />
             <TextField className="reasonBox" label="Suche" type="input" />
             <Spacer vertical={20} />
-            <MemberEntry name="Alice" currentWork={10} maxWork={12}/>
-            <Spacer vertical={2}/>
-            <MemberEntry name="Bob" currentWork={10} maxWork={12}/>
-            <Spacer vertical={2}/>
-            <MemberEntry name="Eve" currentWork={10} maxWork={12}/>
-            
+            {members.map((value)=>{
+                return <div><MemberEntry name={value.firstname+" "+value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} /> <Spacer vertical={2} /></div>
+            })}
         </div>
     )
 }

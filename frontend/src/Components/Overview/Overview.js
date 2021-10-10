@@ -6,8 +6,8 @@ const Overview = () => {
     return (
         <div>
             <OverviewBox />
-            <Request headline="Ausstehende Anfragen" />
-            <Request headline="Genehmigte Anfragen" />
+            <Request headline="Ausstehende Anfragen" requestName="requests/pending"/>
+            <Request headline="Genehmigte Anfragen" requestName="requests/accepted" />
         </div>
     )
 }

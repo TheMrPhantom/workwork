@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
@@ -8,10 +8,16 @@ import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import RequestEntry from './RequestEntry';
 import { Typography } from '@material-ui/core';
+import { getAndStore } from '../Common/StaticFunctions';
 
 import "./Request.css";
 
-const Request = ({headline}) => {
+const Request = ({headline,requestName}) => {
+    const [request, setrequest] = useState([])
+
+    useEffect(() => {
+        getAndStore("user/3/"+requestName,setrequest)
+    },[requestName]);
     return (
         <div className="request">
             <Typography variant="h6">{headline}</Typography>
@@ -25,8 +31,7 @@ const Request = ({headline}) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <RequestEntry sport="Agility" activity="Rasen mähen" duration="2h"/>
-                        <RequestEntry sport="Rettungshunde" activity="Leitern streichen" duration="1h 30m"/>
+                        {request.map(value=><RequestEntry sport={value.sport} activity={value.activity} duration={value.duration+"h"}/>)}
                     </TableBody>
                 </Table>
             </TableContainer>
