@@ -1,0 +1,12 @@
+#settingsBox{
+    padding: 10px;
+    background-color: var(--secondaryColor);
+}
+
+.cardFloat{
+    display: flex;
+}
+
+.checkboxColor{
+    color: var(--primaryColor) !important;
+}

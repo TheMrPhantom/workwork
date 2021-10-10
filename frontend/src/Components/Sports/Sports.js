@@ -1,7 +1,6 @@
 import React from 'react'
 import Request from './Request'
 import Member from './Member'
-import AddWork from './AddWork'
 import { Typography } from '@material-ui/core'
 import Spacer from '../Common/Spacer'
 
@@ -22,12 +21,7 @@ const Sports = (props) => {
             <Member name="Alice" currentWork="10" maxWork="14"/>
             <Member name="Bob" currentWork="8" maxWork="14"/>
             <Member name="Eve" currentWork="3" maxWork="14"/>
-            <Member name="Charly" currentWork="9" maxWork="14"/>
-
-            <Spacer vertical={20}/>
-            <Typography variant="h5">Anfrage Stellen</Typography>
-            <Spacer vertical={10}/>
-            <AddWork />            
+            <Member name="Charly" currentWork="9" maxWork="14"/>            
         </div>
     )
 }

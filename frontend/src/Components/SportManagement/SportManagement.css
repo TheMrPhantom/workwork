@@ -1,0 +1,23 @@
+.outterBoxSport{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: var(--secondaryColor) !important;
+}
+
+.innerBoxSport{
+    display: flex;
+    align-items: center;
+    width: 80%;
+}
+
+.denyBackground{
+    color: var(--errorColor);
+}
+
+.fixedButton {
+    position: fixed !important;
+    bottom: 50px;
+    right: 50px; 
+}

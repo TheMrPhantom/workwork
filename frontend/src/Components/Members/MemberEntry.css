@@ -1,0 +1,14 @@
+.outterBoxMember {
+    width: 100%;
+    background-color: var(--secondaryColor) !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.innerFlexMember {
+    display: flex;
+    align-items: center;
+    width: 80%;
+}

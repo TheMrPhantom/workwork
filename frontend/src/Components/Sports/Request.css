@@ -4,6 +4,11 @@
     padding: 10px;
     background-color: var(--secondaryColor) !important;
 }
+.selectBox{
+    width: 20%;
+    min-width: 100px;
+    max-width: 200px;
+}
 
 .outterFlex {
     display: flex;
