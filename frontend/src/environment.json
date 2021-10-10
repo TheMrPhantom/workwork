@@ -1,3 +1,4 @@
 {
-    "ORGA_NAME":"HSF"
+    "ORGA_NAME": "HSF",
+    "COMPACT_SIZE_THRESHOLD": 900
 }

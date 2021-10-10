@@ -40,7 +40,7 @@ export default function ClippedDrawer() {
 
     const history = useHistory();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(window.innerHeight > 800);
+    const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -58,6 +58,13 @@ export default function ClippedDrawer() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const redirect = (url) => {
+        history.push(url);
+        if (window.innerHeight < Config.COMPACT_SIZE_THRESHOLD) {
+            setOpen(false);
+        }
+    }
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -93,20 +100,20 @@ export default function ClippedDrawer() {
                 anchor="left"
                 open={open}
             >
-                <DrawerHeader style={{ backgroundColor: "var(--primaryColor)", boxShadow: "2px 2px 9px grey"}}>
+                <DrawerHeader style={{ backgroundColor: "var(--primaryColor)", boxShadow: "2px 2px 9px grey" }}>
                     <Button onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </Button>
                 </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
-                        <ListItem button key="0" onClick={() => history.push("/overview")}>
+                        <ListItem button key="0" onClick={() => redirect("/overview")}>
                             <ListItemIcon>
                                 <PersonIcon />
                             </ListItemIcon>
                             <ListItemText primary="Übersicht" />
                         </ListItem>
-                        <ListItem button key="0" onClick={() => history.push("/request")}>
+                        <ListItem button key="0" onClick={() => redirect("/request")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
@@ -115,19 +122,19 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0" onClick={() => history.push("/sport/agility")}>
+                        <ListItem button key="0" onClick={() => redirect("/sport/agility")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Agility" />
                         </ListItem>
-                        <ListItem button key="0" onClick={() => history.push("/sport/rescuedogs")}>
+                        <ListItem button key="0" onClick={() => redirect("/sport/rescuedogs")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
                             <ListItemText primary="Rettungshunde" />
                         </ListItem>
-                        <ListItem button key="0" onClick={() => history.push("/sport/obedience")}>
+                        <ListItem button key="0" onClick={() => redirect("/sport/obedience")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
@@ -136,13 +143,13 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0" onClick={() => history.push("/members")}>
+                        <ListItem button key="0" onClick={() => redirect("/members")}>
                             <ListItemIcon>
                                 <PlaylistAddCheckIcon />
                             </ListItemIcon>
                             <ListItemText primary="Mitglieder" />
                         </ListItem>
-                        <ListItem button key="1" onClick={() => history.push("/sport/admin")}>
+                        <ListItem button key="1" onClick={() => redirect("/sport/admin")}>
                             <ListItemIcon>
                                 <PetsIcon />
                             </ListItemIcon>
@@ -151,7 +158,7 @@ export default function ClippedDrawer() {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem button key="0" onClick={() => history.push("/settings")}>
+                        <ListItem button key="0" onClick={() => redirect("/settings")}>
                             <ListItemIcon>
                                 <SettingsIcon />
                             </ListItemIcon>
