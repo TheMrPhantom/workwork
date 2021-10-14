@@ -35,6 +35,7 @@ import { Button } from '@material-ui/core';
 import Spacer from './Components/Common/Spacer';
 import { getAndStore } from './Components/Common/StaticFunctions';
 import { useEffect, useState } from 'react'
+import Login from './Components/Login/Login';
 
 const drawerWidth = 200;
 
@@ -131,7 +132,7 @@ export default function ClippedDrawer() {
                     <List>
                         {sports.map((value) => {
                             return <div>
-                                <ListItem button key={value.id} onClick={() => redirect("/sport/"+value.id)}>
+                                <ListItem button key={value.id} onClick={() => redirect("/sport/" + value.id)}>
                                     <ListItemIcon>
                                         <PetsIcon />
                                     </ListItemIcon>
@@ -170,6 +171,7 @@ export default function ClippedDrawer() {
 
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
+                <Route path="/login" component={Login} />
                 <Route path="/overview" component={Overview} />
                 <Route path="/request" component={Request} />
                 <Switch>

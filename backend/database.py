@@ -277,12 +277,21 @@ class SQLiteWrapper:
 
         return sports
 
-    def trainerIn(self,memberID):
+    def trainerIn(self, memberID):
         sports = self.getSports()
         for s in sports:
             s["isTrainer"] = self.isTrainerof(memberID, s["id"])
 
         return sports
+
+    def checkPin(self, username, password):
+        con = sqlite3.connect(self.db_name)
+        output = None
+        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? ''', (username, password,)):
+            output = {"memberID": link[0], "rights": link[1], }
+
+        con.close()
+        return output
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)

@@ -8,11 +8,15 @@ password = os.environ.get("webpage_password")
 class TokenManager:
     def __init__(self):
         self.token_storage = dict()
-        self.cookie_expires=int(os.environ.get("cookie_expire_time"))
+        self.cookie_expires = int(os.environ.get("cookie_expire_time"))
 
-    def check_token(self, token):
+    def check_token(self, memberID, token):
         if token in self.token_storage:
             stored_token = self.token_storage[token]
+            storedMemberID = int(stored_token['memberID'])
+            sendedMemberID=int(memberID)
+            if storedMemberID != sendedMemberID:
+                return False
             if stored_token['time']+datetime.timedelta(hours=self.cookie_expires) > datetime.datetime.utcnow():
                 return True
             else:
@@ -20,9 +24,10 @@ class TokenManager:
 
         return False
 
-    def create_token(self):
+    def create_token(self, memberID):
         token = secrets.token_urlsafe(64)
-        self.token_storage[token] = {'time': datetime.datetime.utcnow()}
+        self.token_storage[token] = {
+            'memberID': memberID, 'time': datetime.datetime.utcnow()}
         return token
 
     def delete_token(self, token):

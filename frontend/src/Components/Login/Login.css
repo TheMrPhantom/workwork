@@ -1,0 +1,25 @@
+.loginBox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mail-login {
+    width: 70% !important;
+    min-width: 325px !important;
+}
+
+.pin-login {
+    width: 30% !important;
+    min-width: 50px !important;
+}
+
+.loginButton{
+    background-color: var(--primaryColor) !important;
+    color: white !important;
+}
+
+.padding{
+    padding: 20px;
+}
