@@ -27,4 +27,4 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build Image
-        run: docker build /home/runner/work/workwork/workwork/frontend/Dockerfile
+        run: docker build -f /home/runner/work/workwork/workwork/frontend/Dockerfile .
