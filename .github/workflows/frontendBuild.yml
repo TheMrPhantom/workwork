@@ -25,10 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Go to frontend
-        run: cd frontend
-
       # Runs a set of commands using the runners shell
       - name: Build Image
-        run: docker build .
+        run: docker build /home/runner/work/workwork/workwork/frontend/Dockerfile
