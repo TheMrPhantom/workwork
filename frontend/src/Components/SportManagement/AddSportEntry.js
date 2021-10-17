@@ -6,8 +6,8 @@ import { doPostRequest } from '../Common/StaticFunctions';
 
 const AddSportEntry = ({ refresh }) => {
 
-    const [name, setname] = useState(null)
-    const [extraHours, setextraHours] = useState(null)
+    const [name, setname] = useState("")
+    const [extraHours, setextraHours] = useState(0)
 
     const addSport = () => {
         if (name === "") {
@@ -29,7 +29,7 @@ const AddSportEntry = ({ refresh }) => {
             <div className="innerBoxSport">
                 <TextField label="Name" type="input" value={name} onChange={(value) => setname(value.target.value)} />
                 <Spacer horizontal={30}></Spacer>
-                <TextField label="Extra Arbeitsstunden" type="number" value={extraHours} onChange={(value) => setextraHours(value.target.value)} />
+                <TextField label="Extra Arbeitsminuten" type="number" value={extraHours} onChange={(value) => setextraHours(value.target.value)} />
             </div>
             <div>
                 <Button onClick={() => addSport()}>

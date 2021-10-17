@@ -29,7 +29,7 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
             <div className="innerBoxSport">
                 <Typography>{name}</Typography>
                 <Spacer horizontal={30}></Spacer>
-                <TextField label="Extra Arbeitszeit" type="number" defaultValue={extraHours} onChange={(value) => changedTextValue(value.target.value)} />
+                <TextField label="Extra Arbeitsminuten" type="number" defaultValue={extraHours} onChange={(value) => changedTextValue(value.target.value)} />
             </div>
             <div>
                 <Button onClick={() => clickRemove()}>

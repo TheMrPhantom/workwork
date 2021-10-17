@@ -33,7 +33,7 @@ const MemberHistory = ({memberID}) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {workHours.map((value)=><MemberHistoryEntry id={value.id} sport={value.sport} activity={value.activity} duration={value.duration + "h"} refresh={doRefresh}/>)}
+                {workHours.map((value)=><MemberHistoryEntry key={value.id} id={value.id} sport={value.sport} activity={value.activity} duration={value.duration + "h"} refresh={doRefresh}/>)}
             </TableBody>
         </Table>
     </TableContainer>

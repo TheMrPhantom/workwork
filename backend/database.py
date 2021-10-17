@@ -95,7 +95,7 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sport.name, worktime.description, worktime.minutes
+            SELECT sport.name, worktime.description, worktime.minutes,worktime.ROWID
             FROM sport, worktime
             WHERE sport.ROWID=worktime.sportID
             AND worktime.memberID=?
@@ -267,7 +267,7 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer 
+            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID
             FROM sportMember, member
             WHERE sportMember.sportid=?
             AND sportMember.memberID=member.ROWID

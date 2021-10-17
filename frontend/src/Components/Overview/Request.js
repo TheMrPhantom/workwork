@@ -35,7 +35,7 @@ const Request = ({ headline, requestName }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {request.map(value => <RequestEntry sport={value.sport} activity={value.activity} duration={value.duration + "h"} />)}
+                            {request.map(value => <RequestEntry key={value.id} sport={value.sport} activity={value.activity} duration={value.duration + "h"} />)}
                         </TableBody>
                     </Table>
                 </TableContainer>

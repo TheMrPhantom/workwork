@@ -71,7 +71,7 @@ def getPendingWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id":resp[3],"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
 
 
@@ -117,7 +117,7 @@ def getSportsMembers(sportID):
         isTrainer = db.isTrainer(r[0])
         isExecutive=db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
-                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":isExecutive})
+                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":isExecutive,"id":r[4]})
     return util.build_response(output)
 
 

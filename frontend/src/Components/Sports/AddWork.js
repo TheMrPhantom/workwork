@@ -25,7 +25,7 @@ const AddWork = () => {
                             value={10}
                             label="sport"
                         >
-                            {sportNames.map((value) => { return <MenuItem value={value.id}>{value.name}</MenuItem> })}
+                            {sportNames.map((value) => { return <MenuItem key={value.id} value={value.id}>{value.name}</MenuItem> })}
 
                         </Select>
                     </FormControl>

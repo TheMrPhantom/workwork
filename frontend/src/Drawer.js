@@ -86,7 +86,7 @@ export default function ClippedDrawer() {
             return (<div>
                 <List>
                     {sports.map((value) => {
-                        return <div>
+                        return <div key={value.id}>
                             <ListItem button key={value.id} onClick={() => redirect("/sport/" + value.id)}>
                                 <ListItemIcon>
                                     <PetsIcon />
