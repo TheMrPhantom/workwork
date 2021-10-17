@@ -111,7 +111,7 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sport.name, worktime.description, worktime.minutes
+            SELECT sport.name, worktime.description, worktime.minutes, worktime.ROWID
             FROM sport, worktime
             WHERE sport.ROWID=worktime.sportID
             AND worktime.memberID=?
@@ -269,7 +269,7 @@ class SQLiteWrapper:
         for link in con.cursor().execute('''
             SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer 
             FROM sportMember, member
-            WHERE sportMember.ROWID=?
+            WHERE sportMember.sportid=?
             AND sportMember.memberID=member.ROWID
             AND member.deleted=0
         ''', (sportID,)):
@@ -363,6 +363,24 @@ class SQLiteWrapper:
                 con.cursor().execute(
                     "UPDATE sportMember SET isTrainer=1 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
 
+        con.commit()
+        con.close()
+
+    def changeFirstname(self, memberID, name):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET firstname=? WHERE ROWID=?;", (name, memberID,))
+        con.commit()
+        con.close()
+
+    def changeLastname(self, memberID, name):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET lastname=? WHERE ROWID=?;", (name, memberID,))
+        con.commit()
+        con.close()
+
+    def changeMail(self, memberID, email):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET mail=? WHERE ROWID=?;", (email, memberID,))
         con.commit()
         con.close()
 

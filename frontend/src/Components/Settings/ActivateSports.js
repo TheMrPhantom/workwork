@@ -4,13 +4,11 @@ import { doPostRequest } from '../Common/StaticFunctions'
 import ActivateSportsEntry from './ActivateSportsEntry'
 
 const ActivateSports = ( { memberID,firstColumn, sportList, refresh}) => {
-    console.log(sportList)
     const changeTrainerOrParticipation = async (id, checked) => {
         var output = null
         if (sportList===null){
             return
         }
-        console.log(sportList)
         if (firstColumn === "Teilnehmer") {
             output = sportList.map((value) => {
                 if (value.id === id) {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
@@ -7,8 +7,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import { Paper } from '@material-ui/core';
 import MemberHistoryEntry from './MemberHistoryEntry';
+import { getAndStore } from '../Common/StaticFunctions';
 
-const MemberHistory = () => {
+const MemberHistory = ({memberID}) => {
+    const [workHours, setworkHours] = useState([])
+    const [refresh, setrefresh] = useState(false)
+    
+    useEffect(() => {
+        getAndStore("user/"+memberID+"/requests/accepted",setworkHours)
+    }, [memberID,refresh])
+
+    const doRefresh=()=>{
+        setrefresh(!refresh)
+    }
+
     return (
         <TableContainer className="tableContainer" component={Paper}>
         <Table aria-label="simple table">
@@ -21,7 +33,7 @@ const MemberHistory = () => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                <MemberHistoryEntry sport="Agility" activity="Rasen mähen" duration="12.5h"/>
+                {workHours.map((value)=><MemberHistoryEntry id={value.id} sport={value.sport} activity={value.activity} duration={value.duration + "h"} refresh={doRefresh}/>)}
             </TableBody>
         </Table>
     </TableContainer>

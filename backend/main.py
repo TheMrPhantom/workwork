@@ -48,7 +48,7 @@ def getAcceptedWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id":resp[3],"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
 
 
@@ -115,8 +115,9 @@ def getSportsMembers(sportID):
         currentWork = db.getCurrentWorkMinutes(r[0])/60
         maxWork = db.getNeededWorkMinutes(r[0])/60
         isTrainer = db.isTrainer(r[0])
+        isExecutive=db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
-                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer})
+                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":isExecutive})
     return util.build_response(output)
 
 
@@ -185,6 +186,7 @@ def changeParticipation(memberID):
             memberID, membership["id"], membership["isParticipant"])
     return util.build_response("OK")
 
+
 @app.route('/api/user/<int:memberID>/changeTrainer', methods=["POST"])
 @authenticated
 def changeTrainer(memberID):
@@ -192,6 +194,27 @@ def changeTrainer(memberID):
     for membership in input:
         db.changeTrainer(
             memberID, membership["id"], membership["isTrainer"])
+    return util.build_response("OK")
+
+
+@app.route('/api/member/<int:memberID>/change/firstname', methods=["POST"])
+@authenticated
+def changeFirstname(memberID):
+    db.changeFirstname(memberID, request.json)
+    return util.build_response("OK")
+
+
+@app.route('/api/member/<int:memberID>/change/lastname', methods=["POST"])
+@authenticated
+def changeLastname(memberID):
+    db.changeLastname(memberID, request.json)
+    return util.build_response("OK")
+
+
+@app.route('/api/member/<int:memberID>/change/email', methods=["POST"])
+@authenticated
+def changeEmail(memberID):
+    db.changeMail(memberID, request.json)
     return util.build_response("OK")
 
 

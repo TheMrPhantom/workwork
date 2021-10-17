@@ -1,14 +1,14 @@
 import datetime
 import secrets
 import os
-
+import util
 password = os.environ.get("webpage_password")
 
 
 class TokenManager:
     def __init__(self):
         self.token_storage = dict()
-        self.cookie_expires = int(os.environ.get("cookie_expire_time"))
+        self.cookie_expires = util.cookie_expire
 
     def check_token(self, memberID, token):
         if token in self.token_storage:

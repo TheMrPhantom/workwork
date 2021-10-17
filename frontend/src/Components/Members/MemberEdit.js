@@ -37,7 +37,7 @@ const MemberEdit = (props) => {
             <ActivateSports memberID={props.match.params.id} sportList={trainer} firstColumn="Trainer" setsports={settrainer} refresh={toggleReload} />
             <Spacer vertical={50} />
             <Typography variant="h5">Arbeitsstunden</Typography>
-            <MemberHistory />
+            <MemberHistory memberID={props.match.params.id}/>
             <Spacer vertical={50} />
             <Fab size="medium" variant="extended" className="fixedButton accept">
                 <SaveIcon sx={{ mr: 1 }} />

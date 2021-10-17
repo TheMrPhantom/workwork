@@ -29,7 +29,7 @@ const Sports = (props) => {
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />
             {members.map((value) => {
-                return <Member name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer} refresh={setrefresh}/>
+                return <Member name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer||value.isExecutive} refresh={setrefresh}/>
             })}
         </div>
     )
