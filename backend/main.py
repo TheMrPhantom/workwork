@@ -91,7 +91,7 @@ def members():
         maxWork = db.getNeededWorkMinutes(m[0])/60
         isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
-                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":int(m[5])==1})
+                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
     return util.build_response(output)
 
 
@@ -102,7 +102,7 @@ def getRequestsFromSport(sportID):
     output = []
     for r in req:
         output.append({"firstname": r[0], "lastname": r[1],
-                       "sportname": r[2], "description": r[3], "duration": r[4],"id":r[5]})
+                       "sportname": r[2], "description": r[3], "duration": r[4], "id": r[5]})
     return util.build_response(output)
 
 
@@ -161,17 +161,39 @@ def addSport():
 
     return util.build_response("OK")
 
+
 @app.route('/api/request/<int:requestID>/accept', methods=["POST"])
 @authenticated
 def acceptWorkRequest(requestID):
     db.acceptWorkRequest(requestID)
     return util.build_response("OK")
 
+
 @app.route('/api/request/<int:requestID>/deny', methods=["POST"])
 @authenticated
 def denyWorkRequest(requestID):
     db.denyWorkRequest(requestID)
     return util.build_response("OK")
+
+
+@app.route('/api/user/<int:memberID>/changeParticipation', methods=["POST"])
+@authenticated
+def changeParticipation(memberID):
+    input = request.json
+    for membership in input:
+        db.changeParticipation(
+            memberID, membership["id"], membership["isParticipant"])
+    return util.build_response("OK")
+
+@app.route('/api/user/<int:memberID>/changeTrainer', methods=["POST"])
+@authenticated
+def changeTrainer(memberID):
+    input = request.json
+    for membership in input:
+        db.changeTrainer(
+            memberID, membership["id"], membership["isTrainer"])
+    return util.build_response("OK")
+
 
 @app.route('/api/login', methods=["POST"])
 def login():

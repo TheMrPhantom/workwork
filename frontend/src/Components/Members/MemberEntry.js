@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from "react-router-dom";
 import "./MemberEntry.css"
 
-const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours }) => {
+const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours ,id}) => {
     
     const history=useHistory();
     
@@ -22,7 +22,7 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours }) => {
                 {hasWorkHours?<Typography>{currentWork}/{maxWork}</Typography>:""}
             </div>
             <div>
-                <Button onClick={()=>history.push('/members/edit/5')}>
+                <Button onClick={()=>history.push('/members/edit/'+id)}>
                     <EditIcon />
                 </Button>
             </div>

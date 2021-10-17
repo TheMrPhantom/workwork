@@ -37,7 +37,7 @@ const Members = () => {
             <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
             <Spacer vertical={20} />
             {displayedMembers.map((value) => {
-                return <div key={value.id}><MemberEntry name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} hasWorkHours={!(value.isTrainer||value.isExecutive)} /> <Spacer vertical={2} /></div>
+                return <div key={value.id}><MemberEntry name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} hasWorkHours={!(value.isTrainer||value.isExecutive)} id={value.id}/> <Spacer vertical={2} /></div>
             })}
         </div>
     )

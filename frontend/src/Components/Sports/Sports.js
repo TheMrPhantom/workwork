@@ -5,7 +5,6 @@ import { Typography } from '@material-ui/core'
 import Spacer from '../Common/Spacer'
 import { getAndStore } from '../Common/StaticFunctions'
 const Sports = (props) => {
-    //console.log(props)
     //props.match.params.id -> To get the sports id
     const [requests, setrequests] = useState([])
     const [members, setmembers] = useState([])

@@ -67,7 +67,7 @@ class SQLiteWrapper:
         sportIDs = []
         extraHours = []
         standardTime = 0
-        if self.isExecutive(memberID)==1:
+        if self.isExecutive(memberID) == 1:
             return 0
 
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
@@ -318,6 +318,53 @@ class SQLiteWrapper:
 
         con.close()
         return int(output)
+
+    def changeParticipation(self, memberID, sportID, isParticipating):
+        isAlreadyParticipant = self.isMemberof(memberID, sportID)
+        if isAlreadyParticipant == isParticipating:
+            return
+        con = sqlite3.connect(self.db_name)
+
+        if isParticipating:
+            con.cursor().execute("INSERT INTO sportMember values (?, ?, 0);", (memberID, sportID,))
+        else:
+            con.cursor().execute(
+                "DELETE FROM sportMember WHERE memberID=? AND sportID=?;", (memberID, sportID))
+
+        con.commit()
+        con.close()
+
+    def changeTrainer(self, memberID, sportID, isTrainer):
+        isAlreadyTrainer = self.isTrainerof(memberID, sportID)
+        isMember = self.isMemberof(memberID, sportID)
+
+        if isAlreadyTrainer == isTrainer:
+            return
+
+        # Make not member not trainer -> trainer has to be member -> start state not possible
+        assert not (not isTrainer and not isMember)
+
+        con = sqlite3.connect(self.db_name)
+
+        if isMember:
+            if isTrainer:
+                # Make Trainer
+                con.cursor().execute(
+                    "UPDATE sportMember SET isTrainer=1 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
+            else:
+                # Remove Trainer
+                con.cursor().execute(
+                    "UPDATE sportMember SET isTrainer=0 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
+        else:
+            if isTrainer:
+                # Make Trainer
+                # Make Member
+                self.makeSportParticipant(memberID, sportID)
+                con.cursor().execute(
+                    "UPDATE sportMember SET isTrainer=1 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
+
+        con.commit()
+        con.close()
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)

@@ -8,15 +8,23 @@ import SaveIcon from '@material-ui/icons/Save';
 import MemberHistory from './MemberHistory'
 import { getAndStore } from '../Common/StaticFunctions'
 
-const MemberEdit = () => {
+const MemberEdit = (props) => {
     const [participant, setparticipant] = useState([])
     const [trainer, settrainer] = useState([])
     const [member, setmember] = useState(null)
+    const [refresh, setrefresh] = useState(false)
+
     useEffect(() => {
-        getAndStore("user/3/participantIn",setparticipant)
-        getAndStore("user/3/trainerIn",settrainer)
-        getAndStore("user/3",setmember)       
-    }, [])
+        getAndStore("user/" + props.match.params.id + "/participantIn", setparticipant)
+        getAndStore("user/" + props.match.params.id + "/trainerIn", settrainer)
+        getAndStore("user/" + props.match.params.id, setmember)
+        
+    }, [props.match.params.id,refresh])
+
+    const toggleReload = async () => {
+        setrefresh(!refresh)
+    }
+
 
     return (
         <div>
@@ -24,9 +32,9 @@ const MemberEdit = () => {
             <Spacer vertical={50} />
             <Typography variant="h5">Informationen</Typography>
             <Spacer vertical={20} />
-            {member?<Card firstname={member.firstname} lastname={member.lastname} mail={member.mail}/>:""}
-            <ActivateSports sportList={participant} firstColumn="Teilnehmer"/>
-            <ActivateSports sportList={trainer} firstColumn="Trainer"/>
+            {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} /> : ""}
+            <ActivateSports memberID={props.match.params.id} sportList={participant} firstColumn="Teilnehmer" setsports={setparticipant} refresh={toggleReload} />
+            <ActivateSports memberID={props.match.params.id} sportList={trainer} firstColumn="Trainer" setsports={settrainer} refresh={toggleReload} />
             <Spacer vertical={50} />
             <Typography variant="h5">Arbeitsstunden</Typography>
             <MemberHistory />
@@ -35,7 +43,7 @@ const MemberEdit = () => {
                 <SaveIcon sx={{ mr: 1 }} />
                 Speichern
             </Fab>
-            
+
         </div>
     )
 }
