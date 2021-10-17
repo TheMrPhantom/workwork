@@ -21,13 +21,13 @@ class SQLiteWrapper:
             con = sqlite3.connect(self.db_name)
             con.cursor().execute(
                 '''CREATE TABLE member
-                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT)'''
+                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER)'''
             )
             con.commit()
 
             con.cursor().execute(
                 '''CREATE TABLE worktime
-                (memberID INTEGER, sportID INTEGER, description TEXT, minutes INTEGER, pending INTEGER)'''
+                (memberID INTEGER, sportID INTEGER, description TEXT, minutes INTEGER, pending INTEGER, deleted INTEGER)'''
             )
             con.commit()
 
@@ -39,7 +39,7 @@ class SQLiteWrapper:
 
             con.cursor().execute(
                 '''CREATE TABLE sport
-                (name TEXT, extraHours INTEGER)'''
+                (name TEXT, extraHours INTEGER, deleted INTEGER)'''
             )
             con.commit()
 
@@ -56,7 +56,7 @@ class SQLiteWrapper:
     def getCurrentWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         minutes = 0
-        for link in con.cursor().execute('''SELECT minutes FROM worktime WHERE memberID=? AND pending=0''', (memberID,)):
+        for link in con.cursor().execute('''SELECT minutes FROM worktime WHERE memberID=? AND pending=0 AND deleted=0''', (memberID,)):
             minutes += link[0]
         con.close()
 
@@ -67,6 +67,9 @@ class SQLiteWrapper:
         sportIDs = []
         extraHours = []
         standardTime = 0
+        if self.isExecutive(memberID)==1:
+            return 0
+
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
             standardTime = link[0]
 
@@ -77,7 +80,7 @@ class SQLiteWrapper:
             sportIDs.append(link[0])
 
         for sID in sportIDs:
-            for link in con.cursor().execute('''SELECT extraHours FROM sport WHERE ROWID=?''', (sID,)):
+            for link in con.cursor().execute('''SELECT extraHours FROM sport WHERE ROWID=? AND deleted=0''', (sID,)):
                 extraHours.append(link[0])
 
         con.close()
@@ -97,6 +100,8 @@ class SQLiteWrapper:
             WHERE sport.ROWID=worktime.sportID
             AND worktime.memberID=?
             AND worktime.pending=1
+            AND sport.deleted=0
+            AND worktime.deleted=0
         ''', (memberID,)):
             requests.append(link)
         con.close()
@@ -111,6 +116,8 @@ class SQLiteWrapper:
             WHERE sport.ROWID=worktime.sportID
             AND worktime.memberID=?
             AND worktime.pending=0
+            AND worktime.deleted=0
+            AND sport.deleted=0
         ''', (memberID,)):
             requests.append(link)
         con.close()
@@ -118,8 +125,8 @@ class SQLiteWrapper:
 
     def createWorkRequest(self, memberID: int, sportID: int, reason: str, time: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''INSERT INTO worktime values (?, ?, ?, ?, ?)''',
-                             (memberID, sportID, reason, time, 1, ))
+        con.cursor().execute('''INSERT INTO worktime values (?, ?, ?, ?, ?, ?)''',
+                             (memberID, sportID, reason, time, 1, 0,))
         con.commit()
         con.close()
 
@@ -151,7 +158,7 @@ class SQLiteWrapper:
 
     def acceptWorkRequest(self, requestID: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE  worktime SET pending=0 WHERE ROWID=?''',
+        con.cursor().execute('''UPDATE worktime SET pending=0 WHERE ROWID=? AND deleted=0''',
                              (requestID, ))
         con.commit()
         con.close()
@@ -178,7 +185,7 @@ class SQLiteWrapper:
 
     def updateMemberInfo(self, memberID: int, firstname: str, lastname: str, email: str):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE member  SET firstname=?, lastname=?, email=? WHERE memberID=?''',
+        con.cursor().execute('''UPDATE member SET firstname=?, lastname=?, email=? WHERE memberID=? AND deleted=0''',
                              (firstname, lastname, email, memberID,))
         con.commit()
         con.close()
@@ -186,7 +193,7 @@ class SQLiteWrapper:
 
     def removeWorkHours(self, requestID: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''DELETE FROM worktime WHERE ROWID=?''',
+        con.cursor().execute('''UPDATE worktime SET deleted=1 WHERE ROWID=?''',
                              (requestID, ))
         con.commit()
         con.close()
@@ -194,21 +201,15 @@ class SQLiteWrapper:
 
     def createSport(self, name: str):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO sport values (?, 0);", (name,))
+        con.cursor().execute("INSERT INTO sport values (?, 0, 0);", (name,))
         con.commit()
         con.close()
         return
 
     def changeExtraHours(self, sportID: int, amount: int):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE sport SET extraHours=? WHERE ROWID=?;", (amount, sportID,))
-        con.commit()
-        con.close()
-        return
-
-    def deleteSport(self, sportID: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("DELETE FROM sport WHERE ROWID=?", (sportID,))
+        con.cursor().execute(
+            "UPDATE sport SET extraHours=? WHERE ROWID=? AND deleted=0;", (amount, sportID,))
         con.commit()
         con.close()
         return
@@ -216,17 +217,29 @@ class SQLiteWrapper:
     def getSports(self):
         con = sqlite3.connect(self.db_name)
         output = []
-        for link in con.cursor().execute("SELECT ROWID, name, extraHours FROM sport "):
+        for link in con.cursor().execute("SELECT ROWID, name, extraHours FROM sport WHERE deleted=0"):
             output.append(
                 {"id": link[0], "name": link[1], "extraHours": link[2]})
         con.close()
 
         return output
 
+    def removeSport(self, sportID):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE sport SET deleted=1 WHERE ROWID=?;", (sportID,))
+        con.commit()
+        con.close()
+
+    def addSport(self, name, extraHours):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("INSERT INTO sport values (?, ?, 0);", (name, extraHours))
+        con.commit()
+        con.close()
+
     def getMembers(self):
         con = sqlite3.connect(self.db_name)
         output = []
-        for link in con.cursor().execute("SELECT ROWID, * FROM member "):
+        for link in con.cursor().execute("SELECT ROWID, * FROM member WHERE deleted=0"):
             output.append(link)
         con.close()
 
@@ -236,12 +249,15 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes
+            SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes, worktime.ROWID
             FROM sport, worktime, member
             WHERE sport.ROWID=worktime.sportID
             AND member.ROWID=worktime.memberID
             AND sport.ROWID=?
             AND worktime.pending=1
+            AND sport.deleted=0
+            AND worktime.deleted=0
+            AND member.deleted=0
         ''', (sportID,)):
             requests.append(link)
         con.close()
@@ -255,6 +271,7 @@ class SQLiteWrapper:
             FROM sportMember, member
             WHERE sportMember.ROWID=?
             AND sportMember.memberID=member.ROWID
+            AND member.deleted=0
         ''', (sportID,)):
             requests.append(link)
         con.close()
@@ -263,7 +280,7 @@ class SQLiteWrapper:
     def getMemberInfo(self, memberID):
         con = sqlite3.connect(self.db_name)
         output = None
-        for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? ''', (memberID,)):
+        for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):
             output = {"firstname": link[0],
                       "lastname": link[1], "mail": link[2]}
 
@@ -287,33 +304,43 @@ class SQLiteWrapper:
     def checkPin(self, username, password):
         con = sqlite3.connect(self.db_name)
         output = None
-        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? ''', (username, password,)):
+        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, password,)):
             output = {"memberID": link[0], "rights": link[1], }
 
         con.close()
         return output
 
+    def isExecutive(self, memberID):
+        con = sqlite3.connect(self.db_name)
+        output = 0
+        for link in con.cursor().execute(''' SELECT rolle FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):
+            output = link[0]
+
+        con.close()
+        return int(output)
+
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0);")
-        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Blumen gießen', 30, 1);")
-        con.cursor().execute("INSERT INTO worktime values (1, 2, 'Leiter streichen', 60, 0);")
-        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Putzen', 120, 1);")
-        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Kochen', 15, 0);")
-        con.cursor().execute("INSERT INTO worktime values (2, 3, 'Ausschank', 15, 0);")
-        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Zeitstopper', 30, 1);")
-        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Hundesitter', 45, 0);")
+        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")
+        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Blumen gießen', 30, 1, 0);")
+        con.cursor().execute("INSERT INTO worktime values (1, 2, 'Leiter streichen', 60, 0, 0);")
+        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Putzen', 120, 1, 0);")
+        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Kochen', 15, 0, 0);")
+        con.cursor().execute("INSERT INTO worktime values (2, 3, 'Ausschank', 15, 0, 0);")
+        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Zeitstopper', 30, 1, 0);")
+        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Hundesitter', 45, 0, 0);")
 
         con.cursor().execute(
-            "INSERT INTO member values ('Bob', 'Baumeister', 'bob@baumeister.de', 'lala', 0);")
+            "INSERT INTO member values ('Bob', 'Baumeister', 'bob@baumeister.de', 'lala', 0, 0);")
         con.cursor().execute(
-            "INSERT INTO member values ('alice', 'wunderland', 'alice@wunderland.de', 'lulu', 0);")
-        con.cursor().execute("INSERT INTO member values ('eve', 'evil', 'eve@evil.de', 'uu', 1);")
+            "INSERT INTO member values ('alice', 'wunderland', 'alice@wunderland.de', 'lulu', 0, 0);")
         con.cursor().execute(
-            "INSERT INTO member values ('charly', 'schokolade', 'charly@schokolade.de', 'ii', 0);")
-        con.cursor().execute("INSERT INTO sport values ('agility', 120);")
-        con.cursor().execute("INSERT INTO sport values ('rettungshunde', 0);")
-        con.cursor().execute("INSERT INTO sport values ('Turnierhunde', 60);")
+            "INSERT INTO member values ('eve', 'evil', 'eve@evil.de', 'uu', 1, 0);")
+        con.cursor().execute(
+            "INSERT INTO member values ('charly', 'schokolade', 'charly@schokolade.de', 'ii', 0, 0);")
+        con.cursor().execute("INSERT INTO sport values ('agility', 120, 0);")
+        con.cursor().execute("INSERT INTO sport values ('rettungshunde', 0, 0);")
+        con.cursor().execute("INSERT INTO sport values ('Turnierhunde', 60, 0);")
 
         con.cursor().execute("INSERT INTO sportMember values (1, 1, 1);")
         con.cursor().execute("INSERT INTO sportMember values (1, 2, 0);")

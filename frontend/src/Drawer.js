@@ -44,8 +44,9 @@ export default function ClippedDrawer() {
     const history = useHistory();
     const theme = useTheme();
     const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
-
+    const [memberState, setmemberState] = useState(0) // -1=>Logged Out; 0=>Normal Member; 1=>Executive Member
     const [sports, setsports] = useState([])
+
     useEffect(() => {
         getAndStore("sports/names", setsports)
     }, [])
@@ -72,6 +73,107 @@ export default function ClippedDrawer() {
         if (window.innerHeight < Config.COMPACT_SIZE_THRESHOLD) {
             setOpen(false);
         }
+    }
+
+    const loginLoad = () => {
+        getAndStore("sports/names", setsports)
+        getAndStore("memberstate", setmemberState)
+        redirect("/overview")
+    }
+
+    const buildSportsList = () => {
+        if (sports.length > 0) {
+            return (<div>
+                <List>
+                    {sports.map((value) => {
+                        return <div>
+                            <ListItem button key={value.id} onClick={() => redirect("/sport/" + value.id)}>
+                                <ListItemIcon>
+                                    <PetsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={value.name} />
+                            </ListItem>
+                        </div>
+                    })}
+                </List>
+                <Divider />
+            </div>)
+        }
+    }
+
+    const buildNormalUserView = () => {
+        if (memberState === 0) {
+            return
+        }
+        const overview = <ListItem button key="0" onClick={() => redirect("/overview")}>
+            <ListItemIcon>
+                <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary="Übersicht" />
+        </ListItem>
+
+        const addWork = <ListItem button key="0" onClick={() => redirect("/request")}>
+            <ListItemIcon>
+                <PetsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Arbeit Eintragen" />
+        </ListItem>
+        const output = <div><List>{overview}{memberState === 1 ? addWork : ""}</List><Divider /></div>
+        return output
+    }
+
+    const buildExecutiveList = () => {
+        if (memberState > 3) {
+            return (<div>
+                <List>
+                    <ListItem button key="0" onClick={() => redirect("/members")}>
+                        <ListItemIcon>
+                            <PlaylistAddCheckIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Mitglieder" />
+                    </ListItem>
+                    <ListItem button key="1" onClick={() => redirect("/sport/admin")}>
+                        <ListItemIcon>
+                            <PetsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Sportarten" />
+                    </ListItem>
+                </List>
+                <Divider />
+            </div>)
+        }
+    }
+
+    const buildSettings = () => {
+        if (memberState === 0) {
+            return
+        }
+        return (
+            <List>
+                <ListItem button key="0" onClick={() => redirect("/settings")}>
+                    <ListItemIcon>
+                        <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Einstellungen" />
+                </ListItem>
+            </List>
+        )
+    }
+
+    const buildLogin = () => {
+        if (memberState !== 0) {
+            return
+        }
+        return (
+            <List>
+                <ListItem button key="0" onClick={() => redirect("/login")}>
+                    <ListItemIcon>
+                        <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Login" />
+                </ListItem>
+            </List>
+        )
     }
 
     return (
@@ -114,64 +216,18 @@ export default function ClippedDrawer() {
                     </Button>
                 </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
-                    <List>
-                        <ListItem button key="0" onClick={() => redirect("/overview")}>
-                            <ListItemIcon>
-                                <PersonIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Übersicht" />
-                        </ListItem>
-                        <ListItem button key="0" onClick={() => redirect("/request")}>
-                            <ListItemIcon>
-                                <PetsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Arbeit Eintragen" />
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        {sports.map((value) => {
-                            return <div>
-                                <ListItem button key={value.id} onClick={() => redirect("/sport/" + value.id)}>
-                                    <ListItemIcon>
-                                        <PetsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary={value.name} />
-                                </ListItem>
-                            </div>
-                        })}
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem button key="0" onClick={() => redirect("/members")}>
-                            <ListItemIcon>
-                                <PlaylistAddCheckIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Mitglieder" />
-                        </ListItem>
-                        <ListItem button key="1" onClick={() => redirect("/sport/admin")}>
-                            <ListItemIcon>
-                                <PetsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Sportarten" />
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem button key="0" onClick={() => redirect("/settings")}>
-                            <ListItemIcon>
-                                <SettingsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Einstellungen" />
-                        </ListItem>
-                    </List>
+                    {buildNormalUserView()}
+                    {buildSportsList()}
+                    {buildExecutiveList()}
+                    {buildSettings()}
+                    {buildLogin()}
                 </Box>
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <Toolbar />
-                <Route path="/login" component={Login} />
+                <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
                 <Route path="/request" component={Request} />
                 <Switch>

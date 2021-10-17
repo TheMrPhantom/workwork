@@ -1,36 +1,34 @@
-import { Fab, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import SportEntry from './SportEntry'
-import SaveIcon from '@material-ui/icons/Save';
 import AddSportEntry from './AddSportEntry';
 import { getAndStore } from '../Common/StaticFunctions';
 
 const SportManagement = () => {
     const [sports, setsports] = useState([])
+    const [refresh, setrefresh] = useState(false)
     useEffect(() => {
         getAndStore("sports/names", setsports)
-    }, [])
+        setrefresh(false)
+    }, [refresh])
+
     return (
         <div>
             <Typography variant="h5">Sportarten</Typography>
             <Spacer vertical={20} />
             {sports.map((value) => {
-                return <div>
+                return <div key={value.id}>
                     <Spacer vertical={5} />
-                    <SportEntry name={value.name} extraHours={value.extraHours} />
+                    <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={setrefresh} />
                 </div>
             })}
             <Spacer vertical={50} />
 
             <Typography variant="h5">Sportart Hinzufügen</Typography>
             <Spacer vertical={5} />
-            <AddSportEntry />
+            <AddSportEntry refresh={setrefresh} />
 
-            <Fab size="medium" variant="extended" className="fixedButton accept">
-                <SaveIcon sx={{ mr: 1 }} />
-                Speichern
-            </Fab>
         </div>
     )
 }

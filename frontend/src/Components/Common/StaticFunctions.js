@@ -52,6 +52,7 @@ export const getAndStore = (path, stateFunction) => {
 
         if (req.code === 200) {
             stateFunction(req.content)
+            return req.content
         }
     }
     getInfos()

@@ -5,7 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from "react-router-dom";
 import "./MemberEntry.css"
 
-const MemberEntry = ({ name, currentWork, maxWork, isTrainer }) => {
+const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours }) => {
     
     const history=useHistory();
     
@@ -16,10 +16,10 @@ const MemberEntry = ({ name, currentWork, maxWork, isTrainer }) => {
         <Paper elevation={2} className="outterBoxMember">
             <div className="innerFlexMember">
                 <Typography>{name}</Typography>
-                {!isTrainer?<Spacer horizontal={20} />:""}
-                {!isTrainer?<LinearProgress variant="determinate" value={calcProgress()} style={{ width: "50%" }} />:""}
-                {!isTrainer?<Spacer horizontal={20} />:""}
-                {!isTrainer?<Typography>{currentWork}/{maxWork}</Typography>:""}
+                {hasWorkHours?<Spacer horizontal={20} />:""}
+                {hasWorkHours?<LinearProgress variant="determinate" value={calcProgress()} style={{ width: "50%" }} />:""}
+                {hasWorkHours?<Spacer horizontal={20} />:""}
+                {hasWorkHours?<Typography>{currentWork}/{maxWork}</Typography>:""}
             </div>
             <div>
                 <Button onClick={()=>history.push('/members/edit/5')}>

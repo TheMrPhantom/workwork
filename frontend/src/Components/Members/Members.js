@@ -6,19 +6,38 @@ import { getAndStore } from '../Common/StaticFunctions'
 
 const Members = () => {
     const [members, setmembers] = useState([])
+    const [displayedMembers, setdisplayedMembers] = useState([])
 
     useEffect(() => {
-        getAndStore("members",setmembers)
+        getAndStore("members", setmembers)
+        getAndStore("members", setdisplayedMembers)
+
     }, [])
+
+    const filterMembers = (text) => {
+        const newList = members.filter((item) => {
+            var firstname = item.firstname
+            var lastname = item.lastname
+            var email = item.email
+            var searchText = text
+            firstname = firstname.toLowerCase()
+            lastname = lastname.toLowerCase()
+            email = email.toLowerCase()
+            searchText = searchText.toLowerCase()
+
+            return firstname.includes(searchText) || lastname.includes(searchText) || email.includes(searchText)
+        })
+        setdisplayedMembers(newList)
+    };
 
     return (
         <div>
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />
-            <TextField className="reasonBox" label="Suche" type="input" />
+            <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
             <Spacer vertical={20} />
-            {members.map((value)=>{
-                return <div><MemberEntry name={value.firstname+" "+value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer}/> <Spacer vertical={2} /></div>
+            {displayedMembers.map((value) => {
+                return <div key={value.id}><MemberEntry name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} hasWorkHours={!(value.isTrainer||value.isExecutive)} /> <Spacer vertical={2} /></div>
             })}
         </div>
     )

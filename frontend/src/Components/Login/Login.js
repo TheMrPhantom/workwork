@@ -5,7 +5,7 @@ import { doPostRequest } from '../Common/StaticFunctions'
 
 import "./Login.css"
 
-const Login = () => {
+const Login = ({redirect}) => {
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
 
@@ -16,6 +16,9 @@ const Login = () => {
                 alert("Email oder Benutzername falsch")
                 return
             }
+            redirect()
+        }else{
+            alert("Email oder Benutzername falsch")
         }
     }
 
@@ -25,7 +28,8 @@ const Login = () => {
             <Spacer vertical={10} />
             <TextField className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
             <form className="loginBox" action="" noValidate autoComplete="off" onSubmit={(event) => { event.preventDefault(); login() }}>
-                <TextField className="reasonBox pin-login" label="Pin" type="password" onChange={(value) => { setpassword(value.target.value) }} />
+                <Spacer vertical={20} />
+                <TextField className="reasonBox pw-login" label="Passwort" type="password" onChange={(value) => { setpassword(value.target.value) }} />
             </form>
             <Spacer vertical={20} />
             <Button className="loginButton" onClick={() => login()}>Login</Button>

@@ -11,32 +11,39 @@ import { Typography } from '@material-ui/core';
 import { getAndStore } from '../Common/StaticFunctions';
 
 import "./Request.css";
+import Cookies from 'js-cookie';
 
-const Request = ({headline,requestName}) => {
+const Request = ({ headline, requestName }) => {
     const [request, setrequest] = useState([])
 
     useEffect(() => {
-        getAndStore("user/3/"+requestName,setrequest)
-    },[requestName]);
-    return (
-        <div className="request">
-            <Typography variant="h6">{headline}</Typography>
-            <TableContainer className="tableContainer" component={Paper}>
-                <Table aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Sparte</TableCell>
-                            <TableCell>Was wurde getan?</TableCell>
-                            <TableCell >Aufwand</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {request.map(value=><RequestEntry sport={value.sport} activity={value.activity} duration={value.duration+"h"}/>)}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
-    )
+        const memberID = Cookies.get("memberID")
+        getAndStore("user/" + memberID + "/" + requestName, setrequest)
+    }, [requestName]);
+
+    if (request.length > 0) {
+        return (
+            <div className="request">
+                <Typography variant="h6">{headline}</Typography>
+                <TableContainer className="tableContainer" component={Paper}>
+                    <Table aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Sparte</TableCell>
+                                <TableCell>Was wurde getan?</TableCell>
+                                <TableCell >Aufwand</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {request.map(value => <RequestEntry sport={value.sport} activity={value.activity} duration={value.duration + "h"} />)}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+        )
+    }else{
+        return ""
+    }
 }
 
 export default Request

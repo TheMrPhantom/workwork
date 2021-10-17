@@ -6,13 +6,13 @@
 }
 
 .mail-login {
-    width: 70% !important;
-    min-width: 325px !important;
+    width: 40% !important;
+    min-width: 300px !important;
 }
 
-.pin-login {
-    width: 30% !important;
-    min-width: 50px !important;
+.pw-login {
+    width: 40% !important;
+    min-width: 300px !important;
 }
 
 .loginButton{

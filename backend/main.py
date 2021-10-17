@@ -12,10 +12,11 @@ CORS(app, supports_credentials=True)
 token_manager = authenticator.TokenManager()
 db = database.SQLiteWrapper()
 
+
 def authenticated(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not token_manager.check_token(request.cookies.get('memberID'),request.cookies.get('token')):
+        if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
             return util.build_response("Unauthorized", 403)
         return fn(*args, **kwargs)
     wrapper.__name__ = fn.__name__
@@ -90,7 +91,7 @@ def members():
         maxWork = db.getNeededWorkMinutes(m[0])/60
         isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
-                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer})
+                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":int(m[5])==1})
     return util.build_response(output)
 
 
@@ -101,7 +102,7 @@ def getRequestsFromSport(sportID):
     output = []
     for r in req:
         output.append({"firstname": r[0], "lastname": r[1],
-                       "sportname": r[2], "description": r[3], "duration": r[4]})
+                       "sportname": r[2], "description": r[3], "duration": r[4],"id":r[5]})
     return util.build_response(output)
 
 
@@ -118,6 +119,59 @@ def getSportsMembers(sportID):
                        "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer})
     return util.build_response(output)
 
+
+@app.route('/api/memberstate', methods=["GET"])
+@authenticated
+def getMemberState():
+    memberID = request.cookies.get('memberID')
+    output = 1
+    isTrainer = db.isTrainer(memberID)
+    isExecutive = db.isExecutive(memberID)
+    if isTrainer:
+        output += 2**1
+    if isExecutive:
+        output += 2**2
+    return util.build_response(output)
+
+
+@app.route('/api/sports/<int:sportID>/delete', methods=["POST"])
+@authenticated
+def deleteSport(sportID):
+
+    db.removeSport(sportID)
+
+    return util.build_response("OK")
+
+
+@app.route('/api/sports/<int:sportID>/workhours', methods=["POST"])
+@authenticated
+def changeExtraHours(sportID):
+    minutes = request.json["minutes"]
+    db.changeExtraHours(sportID, minutes)
+
+    return util.build_response("OK")
+
+
+@app.route('/api/sports/add', methods=["POST"])
+@authenticated
+def addSport():
+    name = request.json["name"]
+    extraHours = request.json["extraHours"]
+    db.addSport(name, extraHours)
+
+    return util.build_response("OK")
+
+@app.route('/api/request/<int:requestID>/accept', methods=["POST"])
+@authenticated
+def acceptWorkRequest(requestID):
+    db.acceptWorkRequest(requestID)
+    return util.build_response("OK")
+
+@app.route('/api/request/<int:requestID>/deny', methods=["POST"])
+@authenticated
+def denyWorkRequest(requestID):
+    db.denyWorkRequest(requestID)
+    return util.build_response("OK")
 
 @app.route('/api/login', methods=["POST"])
 def login():

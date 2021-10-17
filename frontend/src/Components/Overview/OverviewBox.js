@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { Paper } from '@material-ui/core'
 import { Typography } from '@material-ui/core'
 import WarningIcon from '@material-ui/icons/Warning';
-import "./OverviewBox.css"
+import Cookies from 'js-cookie';
 import { getAndStore } from "../Common/StaticFunctions"
+
+import "./OverviewBox.css"
 
 const OverviewBox = () => {
     const [currentHours, setcurrentHours] = useState(0)
     const [maxHours, setmaxHours] = useState(0)
 
     useEffect(() => {
-        getAndStore("user/3/currentHours",setcurrentHours)
-        getAndStore("user/3/neededHours",setmaxHours)
+        const memberID=Cookies.get("memberID")
+
+        getAndStore("user/"+memberID+"/currentHours",setcurrentHours)
+        getAndStore("user/"+memberID+"/neededHours",setmaxHours)
     },[]);
 
     const checkColorAndIcon = (currentHours, maxHours) => {
@@ -22,7 +26,7 @@ const OverviewBox = () => {
             </div>
         } else {
             return <div className="flexHorizontalSpaced successColor">
-                <Typography variant="h5">{currentHours}/{currentHours}</Typography>
+                <Typography variant="h5">{currentHours}/{maxHours}</Typography>
             </div>
         }
     };
