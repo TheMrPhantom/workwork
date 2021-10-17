@@ -384,6 +384,13 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    def addWorkRequest(self, memberID, sportID, description, minutes):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("INSERT INTO worktime values (?, ?, ?, ?, 1, 0);",
+                             (memberID, sportID, description, minutes,))
+        con.commit()
+        con.close()
+
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")

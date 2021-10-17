@@ -80,6 +80,32 @@ def getPendingWork(userID):
 def listSports():
     return util.build_response(db.getSports())
 
+@app.route('/api/sports/names/trainerof', methods=["GET"])
+@authenticated
+def listSportsOfTrainer():
+    sports=db.getSports()
+    if not db.isExecutive(request.cookies.get('memberID')):
+        output=[]
+        for s in sports:
+            if db.isTrainerof(request.cookies.get('memberID'),s["id"]):
+                output.append(s)
+    else:
+        output=sports
+    return util.build_response(output)
+
+@app.route('/api/sports/names/membership/<int:userID>', methods=["GET"])
+@authenticated
+def listSportsOfMember(userID):
+    sports=db.getSports()
+    memberID=userID
+    if not db.isExecutive(memberID):
+        output=[]
+        for s in sports:
+            if db.isMemberof(memberID,s["id"]):
+                output.append(s)
+    else:
+        output=sports
+    return util.build_response(output)
 
 @app.route('/api/members', methods=["GET"])
 @authenticated
@@ -159,6 +185,19 @@ def addSport():
     name = request.json["name"]
     extraHours = request.json["extraHours"]
     db.addSport(name, extraHours)
+
+    return util.build_response("OK")
+
+
+@app.route('/api/request/create', methods=["POST"])
+@authenticated
+def addRequest():
+    memberID = request.json["memberID"]
+    sportID = request.json["sportID"]
+    description = request.json["description"]
+    minutes = request.json["minutes"]
+
+    db.addWorkRequest(memberID, sportID, description, minutes)
 
     return util.build_response("OK")
 

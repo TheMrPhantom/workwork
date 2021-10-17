@@ -28,7 +28,7 @@ const MemberEdit = (props) => {
 
     return (
         <div>
-            <Request />
+            <Request memberID={props.match.params.id}/>
             <Spacer vertical={50} />
             <Typography variant="h5">Informationen</Typography>
             <Spacer vertical={20} />

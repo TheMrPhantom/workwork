@@ -36,6 +36,11 @@
     color: white !important;
 }
 
+.close{
+    background-color: lightgray !important;
+    color: black !important;
+}
+
 .reasonRequestText{
     width: 20%;
     min-width: 100px !important;

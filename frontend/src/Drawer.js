@@ -58,7 +58,7 @@ export default function ClippedDrawer() {
     }, [history])
 
     const loginLoad = useCallback(() => {
-        getAndStore("sports/names", setsports)
+        getAndStore("sports/names/trainerof", setsports)
         getAndStore("memberstate", setmemberState)
         redirect("/overview")
 
@@ -74,7 +74,7 @@ export default function ClippedDrawer() {
             }
         }
         checkLogin()
-        getAndStore("sports/names", setsports)
+        getAndStore("sports/names/trainerof", setsports)
     }, [loginLoad])
 
     const DrawerHeader = styled('div')(({ theme }) => ({
