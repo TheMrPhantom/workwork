@@ -94,6 +94,12 @@ export default function ClippedDrawer() {
         setOpen(false);
     };
 
+    const logout=()=>{
+        setsports([])
+        setmemberState(0)
+        redirect("/login")
+    }
+
     const buildSportsList = () => {
         if (sports.length > 0) {
             return (<div>
@@ -205,7 +211,7 @@ export default function ClippedDrawer() {
                         <MenuIcon />
                     </Button>
                     {open ? <Spacer horizontal={drawerWidth - 60} /> : ""}
-                    <Header />
+                    <Header logoutRoutine={logout} />
 
                 </Toolbar>
             </AppBar>

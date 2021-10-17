@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import ActivateSports from './ActivateSports'
 import Card from './Card'
-import SaveIcon from '@material-ui/icons/Save';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions'
 import Cookies from 'js-cookie'
 
