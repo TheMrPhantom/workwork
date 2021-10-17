@@ -5,10 +5,11 @@ import "./Header.css"
 import LogoutIcon from '@mui/icons-material/Logout';
 import Spacer from '../Common/Spacer';
 import { doPostRequest } from '../Common/StaticFunctions';
+import { Route, Switch } from 'react-router-dom';
 
-const Header = ({logoutRoutine}) => {
+const Header = ({ logoutRoutine }) => {
 
-    const logout = async()=>{
+    const logout = async () => {
         await doPostRequest("logout")
         logoutRoutine()
     }
@@ -17,9 +18,14 @@ const Header = ({logoutRoutine}) => {
             <Typography variant="h6" noWrap component="div">
                 {Config.ORGA_NAME} - WorkWork
             </Typography>
-            <Button onClick={()=>logout()}>
-                <LogoutIcon /> <Spacer horizontal={10}/> <Typography> Logout</Typography>
-            </Button>
+            <Switch>
+                <Route exact path="/login"></Route>
+                <Route path="/">
+                    <Button onClick={() => logout()}>
+                        <LogoutIcon /> <Spacer horizontal={10} /> <Typography> Logout</Typography>
+                    </Button>
+                </Route>
+            </Switch>
         </div>
     )
 }
