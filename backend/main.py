@@ -48,7 +48,7 @@ def getAcceptedWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id":resp[3],"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
 
 
@@ -71,7 +71,7 @@ def getPendingWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id":resp[3],"sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
 
 
@@ -115,9 +115,9 @@ def getSportsMembers(sportID):
         currentWork = db.getCurrentWorkMinutes(r[0])/60
         maxWork = db.getNeededWorkMinutes(r[0])/60
         isTrainer = db.isTrainer(r[0])
-        isExecutive=db.isExecutive(r[0])
+        isExecutive = db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
-                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive":isExecutive,"id":r[4]})
+                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": isExecutive, "id": r[4]})
     return util.build_response(output)
 
 
@@ -227,6 +227,19 @@ def login():
         token = token_manager.create_token(rights["memberID"])
         return util.build_response("OK", cookieToken=token, cookieMemberID=rights["memberID"])
     return util.build_response("Unauthorized", code=403)
+
+
+@app.route('/api/login/check', methods=["GET"])
+@authenticated
+def loginCheck():
+    return util.build_response("OK")
+
+
+@app.route('/api/logout', methods=["POST"])
+@authenticated
+def logout():
+    token_manager.delete_token(request.cookies.get('token'))
+    return util.build_response("OK")
 
 
 app.run("0.0.0.0", threaded=True)

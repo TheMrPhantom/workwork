@@ -3,10 +3,10 @@ import React from 'react'
 import { doPostRequest } from '../Common/StaticFunctions'
 import ActivateSportsEntry from './ActivateSportsEntry'
 
-const ActivateSports = ( { memberID,firstColumn, sportList, refresh}) => {
+const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
     const changeTrainerOrParticipation = async (id, checked) => {
         var output = null
-        if (sportList===null){
+        if (sportList === null) {
             return
         }
         if (firstColumn === "Teilnehmer") {
@@ -17,7 +17,7 @@ const ActivateSports = ( { memberID,firstColumn, sportList, refresh}) => {
                 return value
             })
             await doPostRequest("user/" + memberID + "/changeParticipation", output)
-            
+
         } else {
             output = sportList.map((value) => {
                 if (value.id === id) {
@@ -27,8 +27,8 @@ const ActivateSports = ( { memberID,firstColumn, sportList, refresh}) => {
             })
             await doPostRequest("user/" + memberID + "/changeTrainer", output)
         }
-        
-        if (refresh!==null){
+
+        if (refresh !== null) {
             refresh(true)
         }
     }

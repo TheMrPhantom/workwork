@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useCallback } from 'react'
 import { styled, useTheme } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Drawer from '@material-ui/core/Drawer';
@@ -6,7 +7,6 @@ import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -23,6 +23,7 @@ import Sports from './Components/Sports/Sports';
 
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import { Redirect } from 'react-router-dom';
 import Request from './Components/Request/Request';
 import Members from './Components/Members/Members';
 import SportManagement from './Components/SportManagement/SportManagement';
@@ -33,9 +34,10 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Button } from '@material-ui/core';
 import Spacer from './Components/Common/Spacer';
-import { getAndStore } from './Components/Common/StaticFunctions';
+import { doGetRequest, getAndStore } from './Components/Common/StaticFunctions';
 import { useEffect, useState } from 'react'
 import Login from './Components/Login/Login';
+import Header from './Components/Header/Header';
 
 const drawerWidth = 200;
 
@@ -44,12 +46,36 @@ export default function ClippedDrawer() {
     const history = useHistory();
     const theme = useTheme();
     const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
-    const [memberState, setmemberState] = useState(0) // -1=>Logged Out; 0=>Normal Member; 1=>Executive Member
+    const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
+    const [loggedIn, setloggedIn] = useState(true)
+
+    const redirect = useCallback((url) => {
+        history.push(url);
+        if (window.innerHeight < Config.COMPACT_SIZE_THRESHOLD) {
+            setOpen(false);
+        }
+    }, [history])
+
+    const loginLoad = useCallback(() => {
+        getAndStore("sports/names", setsports)
+        getAndStore("memberstate", setmemberState)
+        redirect("/overview")
+
+    }, [redirect])
 
     useEffect(() => {
+        const checkLogin = async () => {
+            const resp = await doGetRequest("login/check")
+            if (resp.code === 200) {
+                loginLoad()
+            } else if (resp.code === 403) {
+                setloggedIn(false)
+            }
+        }
+        checkLogin()
         getAndStore("sports/names", setsports)
-    }, [])
+    }, [loginLoad])
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -67,19 +93,6 @@ export default function ClippedDrawer() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
-
-    const redirect = (url) => {
-        history.push(url);
-        if (window.innerHeight < Config.COMPACT_SIZE_THRESHOLD) {
-            setOpen(false);
-        }
-    }
-
-    const loginLoad = () => {
-        getAndStore("sports/names", setsports)
-        getAndStore("memberstate", setmemberState)
-        redirect("/overview")
-    }
 
     const buildSportsList = () => {
         if (sports.length > 0) {
@@ -192,11 +205,13 @@ export default function ClippedDrawer() {
                         <MenuIcon />
                     </Button>
                     {open ? <Spacer horizontal={drawerWidth - 60} /> : ""}
-                    <Typography variant="h6" noWrap component="div">
-                        {Config.ORGA_NAME} - WorkWork
-                    </Typography>
+                    <Header />
+
                 </Toolbar>
             </AppBar>
+
+            {!loggedIn ? <Redirect to="/login" /> : ""}
+
             <Drawer
                 sx={{
                     width: drawerWidth,

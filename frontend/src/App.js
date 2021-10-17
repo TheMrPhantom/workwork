@@ -1,5 +1,5 @@
 import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ClippedDrawer from "./Drawer.js"
 import { createContext } from 'react';
 
@@ -27,7 +27,6 @@ function App() {
     <div className="App">
       <globalStateContext.Provider value={globalState}>
         <Router>
-          <Redirect to="/login" />
           <MuiThemeProvider theme={theme}>
             <ClippedDrawer />
           </MuiThemeProvider>

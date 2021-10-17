@@ -10,6 +10,7 @@ import Cookies from 'js-cookie'
 const Settings = () => {
     const [member, setmember] = useState(null)
     const [sports, setsports] = useState([])
+    const [refresh, setrefresh] = useState(false)
 
     useEffect(() => {
         const memberID = Cookies.get("memberID")
@@ -22,6 +23,10 @@ const Settings = () => {
         doPostRequest("user/"+memberID+"/changeParticipation",sports)
     }, [sports])
 
+    const toggleRefresh=(value)=>{
+        setrefresh(!refresh)
+    }
+
     return (
         <div>
             <Typography variant="h5">Visitenkarte</Typography>
@@ -29,12 +34,7 @@ const Settings = () => {
             {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} /> : ""}
             <Spacer vertical={20} />
             <Typography variant="h5">Sparten</Typography>
-            <ActivateSports firstColumn="Teilnehmer" sportList={sports} setsports={setsports}/>
-            <Fab size="medium" variant="extended" className="fixedButton accept">
-                <SaveIcon sx={{ mr: 1 }} />
-                Speichern
-            </Fab>
-
+            <ActivateSports memberID={Cookies.get("memberID")} firstColumn="Teilnehmer" sportList={sports} setsports={setsports} refresh={toggleRefresh}/>
         </div>
     )
 }
