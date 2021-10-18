@@ -256,6 +256,8 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         output = []
         for link in con.cursor().execute("SELECT ROWID, * FROM member WHERE deleted=0"):
+            if link[0]==1: # skip admin user
+                continue
             output.append(link)
         con.close()
 
@@ -289,6 +291,8 @@ class SQLiteWrapper:
             AND sportMember.memberID=member.ROWID
             AND member.deleted=0
         ''', (sportID,)):
+            if link[4]==1: # skip admin user
+                continue
             requests.append(link)
         con.close()
         return requests
@@ -414,6 +418,8 @@ class SQLiteWrapper:
         con.close()
 
     def addMember(self, firstName, lastname, email, password):
+        if firstName=="admin": # cant spawn admin user
+            return
         con = sqlite3.connect(self.db_name)
         usedPW = password
         if not password:
@@ -426,6 +432,8 @@ class SQLiteWrapper:
             return usedPW
 
     def deleteMember(self, memberID):
+        if memberID==1: # make admin undeletable
+            return
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET deleted=1 WHERE ROWID=?;", (memberID,))
         con.commit()
