@@ -44,3 +44,8 @@
     align-items: center;
     flex-wrap: wrap;
 }
+
+.deleteMemberButton{
+    background-color: var(--errorColor) !important;
+    color: white !important;
+}

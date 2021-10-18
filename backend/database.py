@@ -411,6 +411,12 @@ class SQLiteWrapper:
         if not password:
             return usedPW
 
+    def deleteMember(self, memberID):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET deleted=1 WHERE ROWID=?;", (memberID,))
+        con.commit()
+        con.close()
+
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")

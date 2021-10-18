@@ -289,6 +289,15 @@ def addMember():
         return util.build_response("OK")
 
 
+@app.route('/api/member/delete/<int:memberID>', methods=["POST"])
+def deleteMember(memberID):
+    if not db.isExecutive(request.cookies.get("memberID")):
+        return util.build_response("OK", code=401)
+    db.deleteMember(memberID)
+
+    return util.build_response("OK")
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json
