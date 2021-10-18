@@ -2,7 +2,7 @@ services:
   frontend:
     image: workwork-frontend
     ports:
-      - 3000:3000
+      - 3000:80
     user: root
     restart: always
     build:
