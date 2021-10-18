@@ -14,12 +14,12 @@ class SQLiteWrapper:
             self.db_name = "database.db"
 
         self.__create_tables()
-        self.__create_admin()
+        self.__initialize_database()
 
         if fillTestData:
             self.__fillTestData()
 
-    def __create_admin(self):
+    def __initialize_database(self):
         con = sqlite3.connect(self.db_name)
         isinitialized = False
 
@@ -29,6 +29,7 @@ class SQLiteWrapper:
         if not isinitialized:
             con.cursor().execute(
                 "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0);", (util.admin_pw,))
+            con.cursor().execute("INSERT INTO standardworktime values (720);")
             con.commit()
         con.close()
 
