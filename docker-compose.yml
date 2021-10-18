@@ -16,9 +16,11 @@ services:
     build:
       context: backend/
     environment:
-      - cookie_expire=grafana.barnowl.de:443
-      - domain=http://193.196.38.197:3000/
+      - cookie_expire=<time>
+      - domain=<domain>
+      - adminpw=<pw>
+      - db_name=database/data.db
     volumes:
-      - ./docker-volume:/usr/src/app
+      - ./docker-volume:/usr/src/app/database
 
     
