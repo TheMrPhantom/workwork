@@ -1,10 +1,9 @@
-import { Fab, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import Request from '../Request/Request'
 import ActivateSports from '../Settings/ActivateSports'
 import Card from '../Settings/Card'
-import SaveIcon from '@material-ui/icons/Save';
 import MemberHistory from './MemberHistory'
 import { getAndStore } from '../Common/StaticFunctions'
 
