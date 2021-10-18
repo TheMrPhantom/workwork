@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nginx:
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
+    environment:
+      - CERTBOT_EMAIL=<Insert Email>
+      - STAGING=0
+      - DHPARAM_SIZE=2048
+      - RSA_KEY_SIZE=2048
+      - RENEWAL_INTERVAL=8d
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - /home/<insert path>:/etc/nginx/user_conf.d
+volumes:
+  nginx_secrets:
