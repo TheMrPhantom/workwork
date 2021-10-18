@@ -10,3 +10,20 @@
 .checkboxColor{
     color: var(--primaryColor) !important;
 }
+
+.horizontalFloat{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.verticalFloat{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.setPasswordButton{
+    background-color: rgb(137 137 137 / 21%) !important;
+}

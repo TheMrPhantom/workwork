@@ -80,32 +80,35 @@ def getPendingWork(userID):
 def listSports():
     return util.build_response(db.getSports())
 
+
 @app.route('/api/sports/names/trainerof', methods=["GET"])
 @authenticated
 def listSportsOfTrainer():
-    sports=db.getSports()
+    sports = db.getSports()
     if not db.isExecutive(request.cookies.get('memberID')):
-        output=[]
+        output = []
         for s in sports:
-            if db.isTrainerof(request.cookies.get('memberID'),s["id"]):
+            if db.isTrainerof(request.cookies.get('memberID'), s["id"]):
                 output.append(s)
     else:
-        output=sports
+        output = sports
     return util.build_response(output)
+
 
 @app.route('/api/sports/names/membership/<int:userID>', methods=["GET"])
 @authenticated
 def listSportsOfMember(userID):
-    sports=db.getSports()
-    memberID=userID
+    sports = db.getSports()
+    memberID = userID
     if not db.isExecutive(memberID):
-        output=[]
+        output = []
         for s in sports:
-            if db.isMemberof(memberID,s["id"]):
+            if db.isMemberof(memberID, s["id"]):
                 output.append(s)
     else:
-        output=sports
+        output = sports
     return util.build_response(output)
+
 
 @app.route('/api/members', methods=["GET"])
 @authenticated
@@ -254,6 +257,20 @@ def changeLastname(memberID):
 @authenticated
 def changeEmail(memberID):
     db.changeMail(memberID, request.json)
+    return util.build_response("OK")
+
+
+@app.route('/api/member/<int:memberID>/change/password', methods=["POST"])
+@authenticated
+def changePassword(memberID):
+    isTrueMember = token_manager.check_token(
+        memberID, request.cookies.get("token"))
+
+    if not isTrueMember and not db.isExecutive(request.cookies.get("memberID")):
+        return util.build_response("Not authorized", code=403)
+
+    newPassword = request.json["newPassword"]
+    db.changePassword(memberID, newPassword)
     return util.build_response("OK")
 
 

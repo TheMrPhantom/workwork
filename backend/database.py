@@ -366,6 +366,12 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    def changePassword(self, memberID, password):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET password=? WHERE ROWID=?;", (password,memberID,))
+        con.commit()
+        con.close()
+
     def changeFirstname(self, memberID, name):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET firstname=? WHERE ROWID=?;", (name, memberID,))
