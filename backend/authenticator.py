@@ -3,6 +3,9 @@ import secrets
 import os
 import util
 password = os.environ.get("webpage_password")
+passwordList = []
+with open('words.txt') as reader:
+    passwordList = reader.readlines()
 
 
 class TokenManager:
@@ -14,7 +17,7 @@ class TokenManager:
         if token in self.token_storage:
             stored_token = self.token_storage[token]
             storedMemberID = int(stored_token['memberID'])
-            sendedMemberID=int(memberID)
+            sendedMemberID = int(memberID)
             if storedMemberID != sendedMemberID:
                 return False
             if stored_token['time']+datetime.timedelta(hours=self.cookie_expires) > datetime.datetime.utcnow():
@@ -32,3 +35,12 @@ class TokenManager:
 
     def delete_token(self, token):
         del(self.token_storage[token])
+
+
+    def getPassword(passwordLength=3):
+        output = ""
+        for i in range(passwordLength):
+            chosen= secrets.choice(passwordList)
+            output +=chosen.replace("\n","")
+
+        return output

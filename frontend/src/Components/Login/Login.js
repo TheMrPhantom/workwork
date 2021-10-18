@@ -2,11 +2,12 @@ import { Button, Paper, TextField, Typography } from '@material-ui/core'
 import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
+import AddMember from '../Members/AddMember'
 
 
 import "./Login.css"
 
-const Login = ({redirect}) => {
+const Login = ({ redirect }) => {
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
 
@@ -18,7 +19,7 @@ const Login = ({redirect}) => {
                 return
             }
             redirect()
-        }else{
+        } else {
             alert("Email oder Benutzername falsch")
         }
     }
@@ -33,8 +34,11 @@ const Login = ({redirect}) => {
                 <TextField className="reasonBox pw-login" label="Passwort" type="password" onChange={(value) => { setpassword(value.target.value) }} />
             </form>
             <Spacer vertical={20} />
-            <Button className="loginButton" onClick={() => login()}>Login</Button>
-
+            <div className="verticalFloatLogin mail-login">
+            <AddMember buttonText="Registrieren" headlineText="Registrieren" confirmText="Registrieren" />
+                <Button className="loginButton" onClick={() => login()}>Login</Button>
+            </div>
+            
         </Paper>
     )
 }

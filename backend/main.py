@@ -274,6 +274,21 @@ def changePassword(memberID):
     return util.build_response("OK")
 
 
+@app.route('/api/member/add', methods=["POST"])
+def addMember():
+    firstName = request.json["firstname"]
+    lastname = request.json["lastname"]
+    email = request.json["email"]
+    password = request.json["password"] if "password" in request.json else None
+
+    pw = db.addMember(firstName, lastname, email, password)
+
+    if pw:
+        return util.build_response(pw)
+    else:
+        return util.build_response("OK")
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json

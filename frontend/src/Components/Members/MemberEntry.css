@@ -12,3 +12,35 @@
     align-items: center;
     width: 80%;
 }
+
+.leftRightFlex {
+    display: flex;
+}
+
+.outterBoxAddMember {
+    width: 100%;
+    background-color: gray !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.horizontalMemberFloat {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.outlinedAddButton {
+    color: black !important;
+    border: 1px solid grey !important;
+}
+
+.dialogFlex{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+}

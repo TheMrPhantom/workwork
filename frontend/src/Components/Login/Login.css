@@ -23,3 +23,8 @@
 .padding{
     padding: 20px;
 }
+
+.verticalFloatLogin{
+    display: flex;
+    justify-content: space-between;
+}

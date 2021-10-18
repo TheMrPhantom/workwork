@@ -2,6 +2,8 @@ import sqlite3
 import os
 from sqlite3.dbapi2 import Row
 
+from authenticator import TokenManager
+
 
 class SQLiteWrapper:
     def __init__(self, fillTestData=False, dbName=None):
@@ -368,7 +370,7 @@ class SQLiteWrapper:
 
     def changePassword(self, memberID, password):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET password=? WHERE ROWID=?;", (password,memberID,))
+        con.cursor().execute("UPDATE member SET password=? WHERE ROWID=?;", (password, memberID,))
         con.commit()
         con.close()
 
@@ -396,6 +398,18 @@ class SQLiteWrapper:
                              (memberID, sportID, description, minutes,))
         con.commit()
         con.close()
+
+    def addMember(self, firstName, lastname, email, password):
+        con = sqlite3.connect(self.db_name)
+        usedPW = password
+        if not password:
+            usedPW = TokenManager.getPassword()
+        con.cursor().execute(
+            "INSERT INTO member values (?, ?, ?, ?, 0, 0);", (firstName, lastname, email, usedPW,))
+        con.commit()
+        con.close()
+        if not password:
+            return usedPW
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
