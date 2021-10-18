@@ -15,7 +15,7 @@ class SQLiteWrapper:
 
         self.__create_tables()
         self.__create_admin()
-        
+
         if fillTestData:
             self.__fillTestData()
 
@@ -28,7 +28,7 @@ class SQLiteWrapper:
 
         if not isinitialized:
             con.cursor().execute(
-                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 0, 0);", (util.admin_pw,))
+                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0);", (util.admin_pw,))
             con.commit()
         con.close()
 
