@@ -5,7 +5,7 @@ import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import "./Settings.css"
 
-const Card = ({ firstname, lastname, mail }) => {
+const Card = ({ firstname, lastname, mail, memberID }) => {
 
     const [pw, setpw] = useState("")
     const [pwconfirm, setpwconfirm] = useState("")
@@ -32,8 +32,8 @@ const Card = ({ firstname, lastname, mail }) => {
     }, [pw, pwconfirm])
 
     const changeAttribute = (value, attribute) => {
-        const memberID = Cookies.get("memberID")
-        doPostRequest("member/" + memberID + "/change/" + attribute, value)
+        const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
+        doPostRequest("member/" + mID + "/change/" + attribute, value)
     }
 
     const setNewPassword = () => {
@@ -49,7 +49,8 @@ const Card = ({ firstname, lastname, mail }) => {
             alert("Passwörter stimmen nicht überein")
             return
         }
-        doPostRequest("member/" + Cookies.get("memberID") + "/change/password", { "newPassword": pw })
+        const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
+        doPostRequest("member/" + mID + "/change/password", { "newPassword": pw })
         setpw("")
         setpwconfirm("")
     }
