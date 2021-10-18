@@ -1,8 +1,7 @@
 import sqlite3
 import os
-from sqlite3.dbapi2 import Row
-
 from authenticator import TokenManager
+import util
 
 
 class SQLiteWrapper:
@@ -15,8 +14,23 @@ class SQLiteWrapper:
             self.db_name = "database.db"
 
         self.__create_tables()
+        self.__create_admin()
+        
         if fillTestData:
             self.__fillTestData()
+
+    def __create_admin(self):
+        con = sqlite3.connect(self.db_name)
+        isinitialized = False
+
+        for link in con.cursor().execute('''SELECT * FROM member'''):
+            isinitialized = True
+
+        if not isinitialized:
+            con.cursor().execute(
+                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 0, 0);", (util.admin_pw,))
+            con.commit()
+        con.close()
 
     def __create_tables(self):
         try:

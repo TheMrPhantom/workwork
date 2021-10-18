@@ -6,6 +6,8 @@ cookie_expire = int(os.environ.get("cookie_expire_time")) * \
     60*60 if os.environ.get("cookie_expire_time") else 60**3
 domain = os.environ.get("domain") if os.environ.get(
     "domain") else "127.0.0.1:3000"
+admin_pw = os.environ.get("adminpw") if os.environ.get(
+    "adminpw") else "unsafe"
 
 
 def build_response(message: object, code: int = 200, type: str = "application/json", cookieMemberID=None, cookieToken=None):
