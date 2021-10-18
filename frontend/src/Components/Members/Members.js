@@ -8,12 +8,13 @@ import "./MemberEntry.css"
 const Members = () => {
     const [members, setmembers] = useState([])
     const [displayedMembers, setdisplayedMembers] = useState([])
+    const [refresh, setrefresh] = useState(false)
 
     useEffect(() => {
         getAndStore("members", setmembers)
         getAndStore("members", setdisplayedMembers)
 
-    }, [])
+    }, [refresh])
 
     const filterMembers = (text) => {
         const newList = members.filter((item) => {
@@ -31,13 +32,17 @@ const Members = () => {
         setdisplayedMembers(newList)
     };
 
+    const refreshComponent=()=>{
+        setrefresh(!refresh)
+    }
+
     return (
         <div>
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />
             <div className="horizontalMemberFloat">
             <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
-            <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen"/>
+            <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent}/>
             </div>
             <Spacer vertical={20} />
             {displayedMembers.map((value) => {

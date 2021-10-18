@@ -13,7 +13,7 @@ import { TextField } from '@material-ui/core';
 import Spacer from '../Common/Spacer';
 import { doPostRequest } from '../Common/StaticFunctions';
 
-const AddMember = ({ buttonText, headlineText, confirmText }) => {
+const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -72,12 +72,14 @@ const AddMember = ({ buttonText, headlineText, confirmText }) => {
             alert("Bitte alle Felder ausfüllen")
             return
         }
-
         handleClose()
 
         const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: email })
         if (resp.code === 200) {
-            alert(resp.content)
+            if (refresh !== undefined){
+                refresh()
+            }
+            alert("Passwort: "+resp.content)
         }
 
     }
