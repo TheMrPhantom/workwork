@@ -18,5 +18,7 @@ services:
     environment:
       - cookie_expire=grafana.barnowl.de:443
       - domain=http://193.196.38.197:3000/
+    volumes:
+      - ./docker-volume:/usr/src/app
 
     
