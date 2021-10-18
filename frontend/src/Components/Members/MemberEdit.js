@@ -39,10 +39,6 @@ const MemberEdit = (props) => {
             <Typography variant="h5">Arbeitsstunden</Typography>
             <MemberHistory memberID={props.match.params.id}/>
             <Spacer vertical={50} />
-            <Fab size="medium" variant="extended" className="fixedButton accept">
-                <SaveIcon sx={{ mr: 1 }} />
-                Speichern
-            </Fab>
 
         </div>
     )
