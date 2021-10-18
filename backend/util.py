@@ -15,8 +15,6 @@ def build_response(message: object, code: int = 200, type: str = "application/js
     Build a flask response, default is json format
     """
     r = Response(response=json.dumps(message), status=code, mimetype=type)
-    print(domain)
-    print(os.environ.get("domain"))
     if cookieMemberID and cookieToken:
         r.set_cookie("memberID", str(cookieMemberID),
                      domain=domain, max_age=cookie_expire)

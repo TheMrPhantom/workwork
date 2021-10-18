@@ -38,14 +38,21 @@
     border: 1px solid grey !important;
 }
 
-.dialogFlex{
+.dialogFlex {
     display: flex;
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.deleteMemberButton{
+.deleteMemberButton {
     background-color: var(--errorColor) !important;
     color: white !important;
+}
+
+.spacedOutFlexMemberEdit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }

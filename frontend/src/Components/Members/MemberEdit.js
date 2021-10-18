@@ -15,13 +15,14 @@ const MemberEdit = (props) => {
     const [trainer, settrainer] = useState([])
     const [member, setmember] = useState(null)
     const [refresh, setrefresh] = useState(false)
+    const [isExecutive, setisExecutive] = useState(false)
     const history = useHistory();
 
     useEffect(() => {
         getAndStore("user/" + props.match.params.id + "/participantIn", setparticipant)
         getAndStore("user/" + props.match.params.id + "/trainerIn", settrainer)
         getAndStore("user/" + props.match.params.id, setmember)
-
+        getAndStore("user/" + props.match.params.id + "/isExecutive", setisExecutive)
     }, [props.match.params.id, refresh])
 
     const toggleReload = async () => {
@@ -33,6 +34,19 @@ const MemberEdit = (props) => {
         if (resp.code === 200) {
             history.push("/members")
         }
+    }
+
+    const executiveButtonText = () => {
+        if (isExecutive) {
+            return "Vorstandrolle entfernen"
+        } else {
+            return "Zum Vorstand machen"
+        }
+    }
+
+    const makeExecutive = async()=>{
+        await doPostRequest("user/"+props.match.params.id+"/setExecutive",{"isExecutive":!isExecutive})
+        toggleReload()
     }
 
     return (
@@ -48,8 +62,10 @@ const MemberEdit = (props) => {
             <Typography variant="h5">Arbeitsstunden</Typography>
             <MemberHistory memberID={props.match.params.id} />
             <Spacer vertical={20} />
-            <Button className="deleteMemberButton" onClick={() => deleteMember()}>Mitglied Löschen</Button>
-
+            <div className="spacedOutFlexMemberEdit">
+                <Button className="deleteMemberButton" onClick={() => deleteMember()}>Mitglied Löschen</Button>
+                <Button variant="outlined" onClick={() => makeExecutive()}>{executiveButtonText()}</Button>
+            </div>
         </div>
     )
 }
