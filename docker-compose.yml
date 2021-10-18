@@ -1,0 +1,18 @@
+services:
+    frontend:
+      image: workwork-frontend
+      ports:
+        - 3000:3000
+      user: root
+      restart: always
+      build:
+        context: frontend/
+    frontend:
+      image: workwork-backend
+      ports:
+        - 4000:5000
+      user: root
+      restart: always
+      build:
+        context: backend/
+    

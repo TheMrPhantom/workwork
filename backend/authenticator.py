@@ -2,7 +2,7 @@ import datetime
 import secrets
 import os
 import util
-password = os.environ.get("webpage_password")
+
 passwordList = []
 with open('words.txt') as reader:
     passwordList = reader.readlines()
