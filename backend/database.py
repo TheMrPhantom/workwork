@@ -399,7 +399,8 @@ class SQLiteWrapper:
 
     def changePassword(self, memberID, password):
         con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET password=? WHERE ROWID=?;", (password, memberID,))
+        usedPW,usedSalt=TokenManager.hashPassword(password)
+        con.cursor().execute("UPDATE member SET password=?,salt=? WHERE ROWID=?;", (usedPW, usedSalt, memberID,))
         con.commit()
         con.close()
 
