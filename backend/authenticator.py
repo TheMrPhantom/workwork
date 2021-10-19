@@ -45,7 +45,7 @@ class TokenManager:
         return output
 
     def hashPassword(password, salt=None):
-        usedSalt = secrets.token_hex(32) if not salt else salt
+        usedSalt = secrets.token_hex(32) if salt is None else salt
         saltedPassword = password+usedSalt
         hashedPassword = hashlib.sha256(saltedPassword.encode()).hexdigest()
         if salt is None:
