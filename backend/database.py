@@ -331,7 +331,7 @@ class SQLiteWrapper:
             salt = link[0]
 
         hashedPassword = TokenManager.hashPassword(password, salt)
-        print(username,password)
+        print(username,password,hashedPassword)
         for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, hashedPassword,)):
             output = {"memberID": link[0], "rights": link[1], }
 
