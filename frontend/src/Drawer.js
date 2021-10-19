@@ -20,10 +20,9 @@ import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
 
 import Overview from './Components/Overview/Overview';
 import Sports from './Components/Sports/Sports';
-
+import { useLocation } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
-import { Redirect } from 'react-router-dom';
 import Request from './Components/Request/Request';
 import Members from './Components/Members/Members';
 import SportManagement from './Components/SportManagement/SportManagement';
@@ -39,6 +38,8 @@ import { useEffect, useState } from 'react'
 import Login from './Components/Login/Login';
 import Header from './Components/Header/Header';
 
+import "./index.css"
+
 const drawerWidth = 200;
 
 export default function ClippedDrawer() {
@@ -48,7 +49,7 @@ export default function ClippedDrawer() {
     const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
     const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
-    const [loggedIn, setloggedIn] = useState(true)
+    const location = useLocation()
 
     const redirect = useCallback((url) => {
         history.push(url);
@@ -60,9 +61,12 @@ export default function ClippedDrawer() {
     const loginLoad = useCallback(() => {
         getAndStore("sports/names/trainerof", setsports)
         getAndStore("memberstate", setmemberState)
-        redirect("/overview")
 
-    }, [redirect])
+        if (location.pathname === "/login") {
+            redirect("/overview")
+        }
+
+    }, [redirect, location.pathname])
 
     useEffect(() => {
         const checkLogin = async () => {
@@ -70,12 +74,12 @@ export default function ClippedDrawer() {
             if (resp.code === 200) {
                 loginLoad()
             } else if (resp.code === 403) {
-                setloggedIn(false)
+                redirect("/login")
             }
         }
         checkLogin()
         getAndStore("sports/names/trainerof", setsports)
-    }, [loginLoad])
+    }, [loginLoad,redirect])
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -217,8 +221,6 @@ export default function ClippedDrawer() {
                 </Toolbar>
             </AppBar>
 
-            {!loggedIn ? <Redirect to="/login" /> : ""}
-
             <Drawer
                 sx={{
                     width: drawerWidth,
@@ -247,7 +249,7 @@ export default function ClippedDrawer() {
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }} style={{ display: 'flex', }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }} className="mainFlex">
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
