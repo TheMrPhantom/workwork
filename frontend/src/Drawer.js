@@ -84,6 +84,7 @@ export default function ClippedDrawer() {
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
         justifyContent: 'flex-end',
+        width: drawerWidth,
     }));
 
     const handleDrawerOpen = () => {
@@ -94,7 +95,7 @@ export default function ClippedDrawer() {
         setOpen(false);
     };
 
-    const logout=()=>{
+    const logout = () => {
         setsports([])
         setmemberState(0)
         redirect("/login")
@@ -246,7 +247,7 @@ export default function ClippedDrawer() {
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }} style={{ display: 'flex', }}>
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
