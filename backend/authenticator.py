@@ -49,6 +49,8 @@ class TokenManager:
         saltedPassword = password+usedSalt
         hashedPassword = hashlib.sha256(saltedPassword.encode()).hexdigest()
         if salt is None:
+            print(salt,salt is None)
             return (hashedPassword, salt)
         else:
+            print("a")
             return hashedPassword
