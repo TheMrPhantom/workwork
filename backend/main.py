@@ -74,19 +74,22 @@ def getPendingWork(userID):
             {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
     return util.build_response(output)
 
+
 @app.route('/api/user/<int:memberID>/isExecutive', methods=["GET"])
 @authenticated
 def isExecutive(memberID):
     return util.build_response(db.isExecutive(memberID))
 
+
 @app.route('/api/user/<int:memberID>/setExecutive', methods=["POST"])
 @authenticated
 def makeExecutive(memberID):
-    toBeSet=request.json["isExecutive"]
+    toBeSet = request.json["isExecutive"]
     if not db.isExecutive(request.cookies.get("memberID")):
-        return util.build_response("unauthorized",code=401)
-    db.setExecutive(memberID,toBeSet)
+        return util.build_response("unauthorized", code=401)
+    db.setExecutive(memberID, toBeSet)
     return util.build_response(db.isExecutive(memberID))
+
 
 @app.route('/api/sports/names', methods=["GET"])
 @authenticated
@@ -315,7 +318,7 @@ def deleteMember(memberID):
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json
-    rights = db.checkPin(post_data["username"], post_data["password"])
+    rights = db.checkPassword(post_data["username"], post_data["password"])
 
     if rights:
         token = token_manager.create_token(rights["memberID"])

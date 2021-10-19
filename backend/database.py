@@ -27,8 +27,9 @@ class SQLiteWrapper:
             isinitialized = True
 
         if not isinitialized:
+            hashedPassword, salt = TokenManager.hashPassword(util.admin_pw)
             con.cursor().execute(
-                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0);", (util.admin_pw,))
+                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0, ?);", (hashedPassword, salt,))
             con.cursor().execute("INSERT INTO standardworktime values (720);")
             con.commit()
         con.close()
@@ -38,7 +39,7 @@ class SQLiteWrapper:
             con = sqlite3.connect(self.db_name)
             con.cursor().execute(
                 '''CREATE TABLE member
-                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER)'''
+                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER, salt TEXT)'''
             )
             con.commit()
 
@@ -322,10 +323,16 @@ class SQLiteWrapper:
 
         return sports
 
-    def checkPin(self, username, password):
+    def checkPassword(self, username, password):
         con = sqlite3.connect(self.db_name)
         output = None
-        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, password,)):
+        salt = ""
+        for link in con.cursor().execute(''' SELECT salt FROM member WHERE mail=? AND deleted=0''', (username,)):
+            salt = link[0]
+
+        hashedPassword = TokenManager.hashPassword(password, salt)
+        
+        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, hashedPassword,)):
             output = {"memberID": link[0], "rights": link[1], }
 
         con.close()
@@ -425,8 +432,11 @@ class SQLiteWrapper:
         usedPW = password
         if not password:
             usedPW = TokenManager.getPassword()
+
+        hashedPassword, salt = TokenManager.hashPassword(usedPW)
+
         con.cursor().execute(
-            "INSERT INTO member values (?, ?, ?, ?, 0, 0);", (firstName, lastname, email, usedPW,))
+            "INSERT INTO member values (?, ?, ?, ?, 0, 0, ?);", (firstName, lastname, email, hashedPassword, salt))
         con.commit()
         con.close()
         if not password:
@@ -445,7 +455,7 @@ class SQLiteWrapper:
             return
         con = sqlite3.connect(self.db_name)
         toBeSet = 1 if isExecutive else 0
-        con.cursor().execute("UPDATE member SET rolle=? WHERE ROWID=?;", (toBeSet,memberID ,))
+        con.cursor().execute("UPDATE member SET rolle=? WHERE ROWID=?;", (toBeSet, memberID,))
         con.commit()
         con.close()
 
