@@ -327,14 +327,12 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         output = None
         salt = ""
-        for link in con.cursor().execute(''' SELECT * FROM member'''):
-            print(link)
 
         for link in con.cursor().execute(''' SELECT salt FROM member WHERE mail=? AND deleted=0''', (username,)):
             salt = link[0]
 
         hashedPassword = TokenManager.hashPassword(password, salt)
-        print(username,password,hashedPassword,salt)
+
         for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, hashedPassword,)):
             output = {"memberID": link[0], "rights": link[1], }
 
