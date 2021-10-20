@@ -80,10 +80,12 @@ def getPendingWork(userID):
 def isExecutive(memberID):
     return util.build_response(db.isExecutive(memberID))
 
+
 @app.route('/api/user/<int:memberID>/isTrainer', methods=["GET"])
 @authenticated
 def isTrainer(memberID):
     return util.build_response(db.isTrainer(memberID))
+
 
 @app.route('/api/user/<int:memberID>/setExecutive', methods=["POST"])
 @authenticated
@@ -276,6 +278,8 @@ def changeLastname(memberID):
 @app.route('/api/member/<int:memberID>/change/email', methods=["POST"])
 @authenticated
 def changeEmail(memberID):
+    if db.checkMailExists(request.json):
+        return util.build_response("Mail Already Exists", code=409)
     db.changeMail(memberID, request.json)
     return util.build_response("OK")
 
@@ -300,6 +304,9 @@ def addMember():
     lastname = request.json["lastname"]
     email = request.json["email"]
     password = request.json["password"] if "password" in request.json else None
+
+    if db.checkMailExists(email):
+        return util.build_response("Mail Already Exists", code=409)
 
     pw = db.addMember(firstName, lastname, email, password)
 

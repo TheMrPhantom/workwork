@@ -460,6 +460,15 @@ class SQLiteWrapper:
         con.cursor().execute("UPDATE member SET rolle=? WHERE ROWID=?;", (toBeSet, memberID,))
         con.commit()
         con.close()
+    
+    def checkMailExists(self,mail):
+        con = sqlite3.connect(self.db_name)
+        print(mail)
+        mail_exists = False
+        for link in con.cursor().execute(''' SELECT mail FROM member WHERE mail=? AND deleted=0''', (mail,)):
+            mail_exists=True
+        con.close()
+        return mail_exists
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
