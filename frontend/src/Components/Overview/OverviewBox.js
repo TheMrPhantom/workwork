@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { getAndStore } from "../Common/StaticFunctions"
 
 import "./OverviewBox.css"
+import Spacer from '../Common/Spacer';
 
 const OverviewBox = () => {
     const [currentHours, setcurrentHours] = useState(0)
@@ -21,22 +22,35 @@ const OverviewBox = () => {
     const checkColorAndIcon = (currentHours, maxHours) => {
         if (currentHours < maxHours) {
             return <div className="flexHorizontalSpaced warningColor">
-                <Typography variant="h5">{currentHours}/{maxHours}</Typography>
+                <Typography variant="h5">{currentHours}/{maxHours}h</Typography>
                 <WarningIcon></WarningIcon>
             </div>
         } else {
             return <div className="flexHorizontalSpaced successColor">
-                <Typography variant="h5">{currentHours}/{maxHours}</Typography>
+                <Typography variant="h5">{currentHours}/{maxHours}h</Typography>
             </div>
         }
     };
 
+    const imageIfFullScreen=()=>{
+        if (window.innerWidth>650){
+            return "backgroundCardImage"
+        }else{
+            return ""
+        }
+    }
+
     return (
         <div>
-            <Paper className="overviewContainer" elevation={2}>
+            <Paper className={imageIfFullScreen()+" overviewContainer"} elevation={2}>
                 <Typography variant="h6">Arbeitsstunden abgeleistet:</Typography>
-
                 {checkColorAndIcon(currentHours, maxHours)}
+                <Spacer vertical={10} />
+                <Typography variant="h6">Wartet auf Genehmigung</Typography>
+                <Typography variant="h5">3h</Typography>
+                <Spacer vertical={10} />
+                <Typography variant="h6">Nächster Arbeitsdienst</Typography>
+                <Typography variant="h5" className="imageTextWidth">Donnerstag 25.November, um 15 Uhr auf dem Hundeplatz</Typography>
             </Paper>
         </div>
     )

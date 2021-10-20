@@ -15,3 +15,15 @@
 .warningColor{
     color: var(--errorColor);
 }
+
+.backgroundCardImage{
+    background-image: url(../../Images/loginBackground.webp);
+    background-size: cover;
+    width: 40%;
+    min-width: 600px;
+    min-height: 300px;
+}
+
+.imageTextWidth{
+    max-width: 300px;
+}
