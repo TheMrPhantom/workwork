@@ -40,7 +40,7 @@ import Header from './Components/Header/Header';
 
 import "./index.css"
 
-const drawerWidth = 200;
+const drawerWidth = 210;
 
 export default function ClippedDrawer() {
 
