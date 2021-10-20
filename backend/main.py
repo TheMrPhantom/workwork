@@ -50,7 +50,7 @@ def getAcceptedWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60,2)})
     return util.build_response(output)
 
 
@@ -73,7 +73,7 @@ def getPendingWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": resp[2]/60})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60,2)})
     return util.build_response(output)
 
 
