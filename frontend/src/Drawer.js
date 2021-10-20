@@ -79,7 +79,7 @@ export default function ClippedDrawer() {
         }
         checkLogin()
         getAndStore("sports/names/trainerof", setsports)
-    }, [loginLoad,redirect])
+    }, [loginLoad, redirect])
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -200,6 +200,14 @@ export default function ClippedDrawer() {
         )
     }
 
+    const mainCSSClass = () => {
+        if (location.pathname === "/login") {
+            return "mainLoginFlex"
+        } else if (location.pathname === "/login") {
+            return "mainFlex"
+        }
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -249,7 +257,7 @@ export default function ClippedDrawer() {
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }} className="mainFlex">
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }} className={mainCSSClass()}>
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
