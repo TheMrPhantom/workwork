@@ -16,6 +16,7 @@ const MemberEdit = (props) => {
     const [member, setmember] = useState(null)
     const [refresh, setrefresh] = useState(false)
     const [isExecutive, setisExecutive] = useState(false)
+    const [isTrainer, setisTrainer] = useState(false)
     const history = useHistory();
 
     useEffect(() => {
@@ -23,6 +24,7 @@ const MemberEdit = (props) => {
         getAndStore("user/" + props.match.params.id + "/trainerIn", settrainer)
         getAndStore("user/" + props.match.params.id, setmember)
         getAndStore("user/" + props.match.params.id + "/isExecutive", setisExecutive)
+        getAndStore("user/" + props.match.params.id + "/isTrainer", setisTrainer)
     }, [props.match.params.id, refresh])
 
     const toggleReload = async () => {
@@ -44,15 +46,17 @@ const MemberEdit = (props) => {
         }
     }
 
-    const makeExecutive = async()=>{
-        await doPostRequest("user/"+props.match.params.id+"/setExecutive",{"isExecutive":!isExecutive})
+    const makeExecutive = async () => {
+        await doPostRequest("user/" + props.match.params.id + "/setExecutive", { "isExecutive": !isExecutive })
         toggleReload()
     }
 
     return (
         <div>
-            <Request memberID={props.match.params.id} />
-            <Spacer vertical={50} />
+            {!isTrainer && !isExecutive ? <div>
+                <Request memberID={props.match.params.id} />
+                <Spacer vertical={50} />
+            </div> : ""}
             <Typography variant="h5">Informationen</Typography>
             <Spacer vertical={20} />
             {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} memberID={props.match.params.id} /> : ""}

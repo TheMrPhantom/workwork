@@ -80,6 +80,10 @@ def getPendingWork(userID):
 def isExecutive(memberID):
     return util.build_response(db.isExecutive(memberID))
 
+@app.route('/api/user/<int:memberID>/isTrainer', methods=["GET"])
+@authenticated
+def isTrainer(memberID):
+    return util.build_response(db.isTrainer(memberID))
 
 @app.route('/api/user/<int:memberID>/setExecutive', methods=["POST"])
 @authenticated
