@@ -13,11 +13,17 @@ const AddWork = ({ memberID, refresh }) => {
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
-
+    const [canDisplayWarning, setcanDisplayWarning] = useState(false)
     useEffect(() => {
-        getAndStore("sports/names/membership/" + memberID, setsportNames)
-    }, [memberID,refresh])
+        getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
+    }, [memberID, refresh])
 
+
+    const displayWarning = () => {
+        if (sportNames.length === 0 && canDisplayWarning) {
+            return (<div className="sportWarning">Noch keinen Sportarten beigetreten (trage dich in den Einstellungen für Sparten ein)</div>)
+        }
+    }
     const addWork = async () => {
         if (selectorValue === "") {
             alert("Sportart auswählen")
@@ -39,6 +45,7 @@ const AddWork = ({ memberID, refresh }) => {
 
     return (
         <Paper elevation={2} className="requestBox">
+            {displayWarning()}
             <div className="outterFlex">
                 <div className="innerFlex fullWidth">
                     <FormControl className="selectBox">
