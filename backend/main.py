@@ -32,13 +32,15 @@ def memberInfo(userID):
 @app.route('/api/user/<int:userID>/currentHours', methods=["GET"])
 @authenticated
 def currentHours(userID):
-    return util.build_response(db.getCurrentWorkMinutes(userID)/60)
+    time=round(db.getCurrentWorkMinutes(userID)/60,2)
+    return util.build_response(time)
 
 
 @app.route('/api/user/<int:userID>/neededHours', methods=["GET"])
 @authenticated
 def neededHours(userID):
-    return util.build_response(db.getNeededWorkMinutes(userID)/60)
+    time=round(db.getNeededWorkMinutes(userID)/60,2)
+    return util.build_response(time)
 
 
 @app.route('/api/user/<int:userID>/requests/accepted', methods=["GET"])
@@ -138,8 +140,8 @@ def members():
     members = db.getMembers()
     output = []
     for m in members:
-        currentWork = db.getCurrentWorkMinutes(m[0])/60
-        maxWork = db.getNeededWorkMinutes(m[0])/60
+        currentWork =round(db.getCurrentWorkMinutes(m[0])/60,2)
+        maxWork =round(db.getNeededWorkMinutes(m[0])/60,2)
         isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
                        "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
@@ -163,8 +165,8 @@ def getSportsMembers(sportID):
     req = db.getMembersOfSport(sportID)
     output = []
     for r in req:
-        currentWork = db.getCurrentWorkMinutes(r[0])/60
-        maxWork = db.getNeededWorkMinutes(r[0])/60
+        currentWork =round(db.getCurrentWorkMinutes(r[0])/60,2)
+        maxWork =round(db.getNeededWorkMinutes(r[0])/60,2)
         isTrainer = db.isTrainer(r[0])
         isExecutive = db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
