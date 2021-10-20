@@ -28,7 +28,7 @@ const Login = ({ redirect }) => {
         if (window.innerWidth < 600) {
             return "outlined"
         } else {
-            return ""
+            return "contained"
         }
     }
 
