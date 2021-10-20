@@ -54,7 +54,8 @@ const MemberEdit = (props) => {
     return (
         <div>
             {!isTrainer && !isExecutive ? <div>
-                <Request memberID={props.match.params.id} />
+                {console.log("a")}
+                <Request memberID={props.match.params.id} refresh={refresh}/>
                 <Spacer vertical={50} />
             </div> : ""}
             <Typography variant="h5">Informationen</Typography>

@@ -8,26 +8,26 @@ import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 
 import "./AddWork.css"
 import "./Request.css"
-const AddWork = ({ memberID }) => {
+const AddWork = ({ memberID, refresh }) => {
     const [selectorValue, setselectorValue] = useState("")
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
 
     useEffect(() => {
-        getAndStore("sports/names/membership/"+memberID, setsportNames)
-    }, [memberID])
+        getAndStore("sports/names/membership/" + memberID, setsportNames)
+    }, [memberID,refresh])
 
     const addWork = async () => {
-        if (selectorValue===""){
+        if (selectorValue === "") {
             alert("Sportart auswählen")
             return
         }
-        if (reason === ""){
+        if (reason === "") {
             alert("Arbeit eintragen")
             return
         }
-        if (minutes===0){
+        if (minutes === 0) {
             alert("Mehr als 0 Minuten eintragen")
             return
         }
@@ -61,7 +61,7 @@ const AddWork = ({ memberID }) => {
                 </div>
                 <Spacer horizontal={5} />
                 <div>
-                    <Button className="accept" onClick={()=>addWork()}>
+                    <Button className="accept" onClick={() => addWork()}>
                         <AddBoxIcon />
                     </Button>
                 </div>

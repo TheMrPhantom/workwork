@@ -4,12 +4,12 @@ import React from 'react'
 import Spacer from '../Common/Spacer'
 import AddWork from '../Sports/AddWork'
 
-const Request = ({ memberID }) => {
+const Request = ({ memberID ,refresh}) => {
     return (
         <div>
             <Typography variant="h5">Anfrage Stellen</Typography>
             <Spacer vertical={10} />
-            <AddWork memberID={memberID === undefined ? Cookies.get("memberID") : memberID} />
+            <AddWork memberID={memberID === undefined ? Cookies.get("memberID") : memberID} refresh={refresh}/>
         </div>
     )
 }
