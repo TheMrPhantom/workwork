@@ -33,7 +33,11 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
 
     const changeAttribute = (value, attribute) => {
         const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
-        doPostRequest("member/" + mID + "/change/" + attribute, value)
+        var sendvalue = value
+        if (attribute === "email") {
+            sendvalue = value.toLocaleLowerCase()
+        }
+        doPostRequest("member/" + mID + "/change/" + attribute, sendvalue)
     }
 
     const setNewPassword = () => {

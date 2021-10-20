@@ -74,7 +74,9 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
         }
         handleClose()
 
-        const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: email })
+        const lowercaseMail=email.toLocaleLowerCase()
+
+        const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: lowercaseMail })
         if (resp.code === 200) {
             if (refresh !== undefined){
                 refresh()
