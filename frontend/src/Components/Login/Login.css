@@ -1,8 +1,14 @@
 .loginBox {
+    max-width: 724px;
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+}
+
+.loginPic{
+    background-image: url(../../Images/loginBackground.png);
+    background-size: cover;
 }
 
 .mail-login {

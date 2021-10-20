@@ -25,7 +25,8 @@ const Login = ({ redirect }) => {
     }
 
     return (
-        <Paper elevation={2} className="loginBox padding">
+        <Paper elevation={2} className="loginBox padding loginPic">
+            
             <Typography variant="h5">Login</Typography>
             <Spacer vertical={10} />
             <TextField className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
