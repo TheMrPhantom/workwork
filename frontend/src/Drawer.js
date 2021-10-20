@@ -74,6 +74,8 @@ export default function ClippedDrawer() {
                 loginLoad()
             } else if (resp.code === 403) {
                 redirect("/login")
+                setsports([])
+                setmemberState(0)
             }
         }
         checkLogin()
