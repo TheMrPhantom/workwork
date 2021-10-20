@@ -24,9 +24,17 @@ const Login = ({ redirect }) => {
         }
     }
 
+    const boderType = () => {
+        if (window.innerWidth < 600) {
+            return "outlined"
+        } else {
+            return ""
+        }
+    }
+
     return (
         <Paper elevation={2} className="loginBox padding loginPic">
-            
+
             <Typography variant="h5">Login</Typography>
             <Spacer vertical={10} />
             <TextField className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
@@ -36,10 +44,10 @@ const Login = ({ redirect }) => {
             </form>
             <Spacer vertical={20} />
             <div className="verticalFloatLogin mail-login">
-            <AddMember buttonText="Registrieren" headlineText="Registrieren" confirmText="Registrieren" />
-                <Button className="loginButton" onClick={() => login()}>Login</Button>
+                <AddMember buttonText="Registrieren" headlineText="Registrieren" confirmText="Registrieren" />
+                <Button variant={boderType()} className="loginButton" onClick={() => login()}>Login</Button>
             </div>
-            
+
         </Paper>
     )
 }

@@ -46,14 +46,13 @@ export default function ClippedDrawer() {
 
     const history = useHistory();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(window.innerHeight > Config.COMPACT_SIZE_THRESHOLD);
+    const [open, setOpen] = React.useState(window.innerWidth > Config.COMPACT_SIZE_THRESHOLD);
     const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
     const location = useLocation()
-
     const redirect = useCallback((url) => {
         history.push(url);
-        if (window.innerHeight < Config.COMPACT_SIZE_THRESHOLD) {
+        if (window.innerWidth < Config.COMPACT_SIZE_THRESHOLD) {
             setOpen(false);
         }
     }, [history])
