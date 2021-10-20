@@ -15,16 +15,17 @@ const SportManagement = () => {
 
     return (
         <div>
-            <Typography variant="h5">Sportarten</Typography>
-            <Spacer vertical={20} />
-            {sports.map((value) => {
-                return <div key={value.id}>
-                    <Spacer vertical={5} />
-                    <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={setrefresh} />
-                </div>
-            })}
-            <Spacer vertical={50} />
-
+            {sports.length > 0 ? <div>
+                <Typography variant="h5">Sportarten</Typography>
+                <Spacer vertical={20} />
+                {sports.map((value) => {
+                    return <div key={value.id}>
+                        <Spacer vertical={5} />
+                        <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={setrefresh} />
+                    </div>
+                })}
+                <Spacer vertical={50} />
+            </div> : ""}
             <Typography variant="h5">Sportart Hinzufügen</Typography>
             <Spacer vertical={5} />
             <AddSportEntry refresh={setrefresh} />
