@@ -11,7 +11,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import "./MemberEntry.css"
 import { TextField } from '@material-ui/core';
 import Spacer from '../Common/Spacer';
-import { doPostRequest } from '../Common/StaticFunctions';
+import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
+import { Checkbox, Paper, Typography } from '@mui/material';
+import { useState, useEffect } from 'react';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
 
@@ -55,6 +58,8 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
 
 
     const [open, setOpen] = React.useState(false);
+    const [sportnames, setsportnames] = useState([])
+    const memberOfSport = new Set()
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -62,6 +67,11 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
     const handleClose = () => {
         setOpen(false);
     };
+
+
+    useEffect(() => {
+        getAndStore("sports/names", setsportnames)
+    }, [])
 
     var firstname = "";
     var lastname = "";
@@ -74,14 +84,14 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
         }
         handleClose()
 
-        const lowercaseMail=email.toLocaleLowerCase()
+        const lowercaseMail = email.toLocaleLowerCase()
 
-        const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: lowercaseMail })
+        const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: lowercaseMail, membership: [...memberOfSport] })
         if (resp.code === 200) {
-            if (refresh !== undefined){
+            if (refresh !== undefined) {
                 refresh()
             }
-            alert("Passwort: "+resp.content)
+            alert("Passwort: " + resp.content)
         }
 
     }
@@ -100,11 +110,36 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                     {headlineText}
                 </BootstrapDialogTitle>
                 <DialogContent dividers className="dialogFlex">
+                    <Typography variant="subtitle1"><b>Mitgliedsdaten</b></Typography>
+                    <Spacer vertical={10} />
                     <TextField className="reasonBox" label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
-                    <Spacer horizontal={10} />
+                    <Spacer vertical={10} />
                     <TextField className="reasonBox" label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
-                    <Spacer horizontal={10} />
+                    <Spacer vertical={10} />
                     <TextField className="reasonBox" label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
+                    <Spacer vertical={20} />
+                    <Typography variant="subtitle1"><b>Sparten zugehörigkeit</b></Typography>
+                    <Spacer vertical={10} />
+                    <div className="checkboxFlex">
+                        {sportnames.sort((c1, c2) => c1.name.localeCompare(c2.name)).map((value) => {
+                            return (
+                                <Paper key={value.id} className="checkboxPaper">
+                                    <FormControlLabel control={<Checkbox />}
+                                        label={value.name}
+                                        className="checkboxFormControll"
+                                        onChange={(checkvalue) => {
+                                            const ischecked = checkvalue.target.value
+                                            if (ischecked) {
+                                                memberOfSport.add(value.id)
+                                            } else {
+                                                memberOfSport.delete(value.id)
+                                            }
+                                        }} />
+                                </Paper>
+                            )
+                        })}
+                    </div>
+
                 </DialogContent>
                 <DialogActions>
                     <Button className="outlinedAddButton" onClick={() => addMember()}>

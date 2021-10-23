@@ -397,8 +397,9 @@ class SQLiteWrapper:
 
     def changePassword(self, memberID, password):
         con = sqlite3.connect(self.db_name)
-        usedPW,usedSalt=TokenManager.hashPassword(password)
-        con.cursor().execute("UPDATE member SET password=?,salt=? WHERE ROWID=?;", (usedPW, usedSalt, memberID,))
+        usedPW, usedSalt = TokenManager.hashPassword(password)
+        con.cursor().execute("UPDATE member SET password=?,salt=? WHERE ROWID=?;",
+                             (usedPW, usedSalt, memberID,))
         con.commit()
         con.close()
 
@@ -440,9 +441,15 @@ class SQLiteWrapper:
         con.cursor().execute(
             "INSERT INTO member values (?, ?, ?, ?, 0, 0, ?);", (firstName, lastname, email, hashedPassword, salt))
         con.commit()
+
+        memberID = -1
+
+        for link in con.cursor().execute(''' SELECT ROWID FROM member WHERE mail=? AND deleted=0''', (email,)):
+            memberID = link[0]
+
         con.close()
         if not password:
-            return usedPW
+            return memberID,usedPW 
 
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable
@@ -460,13 +467,13 @@ class SQLiteWrapper:
         con.cursor().execute("UPDATE member SET rolle=? WHERE ROWID=?;", (toBeSet, memberID,))
         con.commit()
         con.close()
-    
-    def checkMailExists(self,mail):
+
+    def checkMailExists(self, mail):
         con = sqlite3.connect(self.db_name)
         print(mail)
         mail_exists = False
         for link in con.cursor().execute(''' SELECT mail FROM member WHERE mail=? AND deleted=0''', (mail,)):
-            mail_exists=True
+            mail_exists = True
         con.close()
         return mail_exists
 

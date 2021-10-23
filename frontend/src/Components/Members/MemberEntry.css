@@ -40,9 +40,10 @@
 
 .dialogFlex {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     flex-wrap: wrap;
+    width: 500px;
 }
 
 .deleteMemberButton {
@@ -55,4 +56,21 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+.checkboxFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center
+}
+
+.checkboxPaper {
+    background-color: var(--secondaryColor) !important;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.checkboxFormControll{
+    padding-left: 10px;
 }

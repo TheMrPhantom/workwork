@@ -32,14 +32,14 @@ def memberInfo(userID):
 @app.route('/api/user/<int:userID>/currentHours', methods=["GET"])
 @authenticated
 def currentHours(userID):
-    time=round(db.getCurrentWorkMinutes(userID)/60,2)
+    time = round(db.getCurrentWorkMinutes(userID)/60, 2)
     return util.build_response(time)
 
 
 @app.route('/api/user/<int:userID>/neededHours', methods=["GET"])
 @authenticated
 def neededHours(userID):
-    time=round(db.getNeededWorkMinutes(userID)/60,2)
+    time = round(db.getNeededWorkMinutes(userID)/60, 2)
     return util.build_response(time)
 
 
@@ -50,7 +50,7 @@ def getAcceptedWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60,2)})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60, 2)})
     return util.build_response(output)
 
 
@@ -73,7 +73,7 @@ def getPendingWork(userID):
     output = []
     for resp in dbResponse:
         output.append(
-            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60,2)})
+            {"id": resp[3], "sport": resp[0], "activity": resp[1], "duration": round(resp[2]/60, 2)})
     return util.build_response(output)
 
 
@@ -139,8 +139,8 @@ def members():
     members = db.getMembers()
     output = []
     for m in members:
-        currentWork =round(db.getCurrentWorkMinutes(m[0])/60,2)
-        maxWork =round(db.getNeededWorkMinutes(m[0])/60,2)
+        currentWork = round(db.getCurrentWorkMinutes(m[0])/60, 2)
+        maxWork = round(db.getNeededWorkMinutes(m[0])/60, 2)
         isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
                        "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
@@ -164,8 +164,8 @@ def getSportsMembers(sportID):
     req = db.getMembersOfSport(sportID)
     output = []
     for r in req:
-        currentWork =round(db.getCurrentWorkMinutes(r[0])/60,2)
-        maxWork =round(db.getNeededWorkMinutes(r[0])/60,2)
+        currentWork = round(db.getCurrentWorkMinutes(r[0])/60, 2)
+        maxWork = round(db.getNeededWorkMinutes(r[0])/60, 2)
         isTrainer = db.isTrainer(r[0])
         isExecutive = db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
@@ -305,11 +305,16 @@ def addMember():
     lastname = request.json["lastname"]
     email = request.json["email"]
     password = request.json["password"] if "password" in request.json else None
+    memberships = request.json["membership"] if "membership" in request.json else [
+    ]
 
     if db.checkMailExists(email):
         return util.build_response("Mail Already Exists", code=409)
 
-    pw = db.addMember(firstName, lastname, email, password)
+    memberID, pw = db.addMember(firstName, lastname, email, password)
+
+    for sportMembership in memberships:
+        db.changeParticipation(memberID, sportMembership, True)
 
     if pw:
         return util.build_response(pw)
