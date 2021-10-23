@@ -100,7 +100,6 @@ def makeExecutive(memberID):
 
 
 @app.route('/api/sports/names', methods=["GET"])
-@authenticated
 def listSports():
     return util.build_response(db.getSports())
 
