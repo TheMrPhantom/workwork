@@ -97,17 +97,26 @@ class SQLiteWrapper:
                 return 0
             sportIDs.append(link[0])
 
+        neededWorkIDs = {}
         for sID in sportIDs:
             for link in con.cursor().execute('''SELECT extraHours FROM sport WHERE ROWID=? AND deleted=0''', (sID,)):
-                extraHours.append(link[0])
+                if link[0] > 0:
+                    neededWorkIDs[sID] = link[0]
+        neededWorkNames = []
 
+        neededWorkNames.append(
+            {'name': 'Standard', 'hours': round(standardTime/60, 2)})
+
+        sports = self.getSports()
+        for nwID in neededWorkIDs:
+            id = nwID
+            for s in sports:
+                if s["id"] == id:
+                    neededWorkNames.append(
+                        {'name': s["name"], 'hours': round(neededWorkIDs[nwID]/60, 2)})
         con.close()
 
-        hours = 0
-        for hour in extraHours:
-            hours += hour
-
-        return hours+standardTime
+        return neededWorkNames
 
     def getPendingWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
@@ -449,7 +458,7 @@ class SQLiteWrapper:
 
         con.close()
         if not password:
-            return memberID,usedPW 
+            return memberID, usedPW
 
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable

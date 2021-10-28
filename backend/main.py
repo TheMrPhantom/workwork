@@ -39,8 +39,7 @@ def currentHours(userID):
 @app.route('/api/user/<int:userID>/neededHours', methods=["GET"])
 @authenticated
 def neededHours(userID):
-    time = round(db.getNeededWorkMinutes(userID)/60, 2)
-    return util.build_response(time)
+    return util.build_response(db.getNeededWorkMinutes(userID))
 
 
 @app.route('/api/user/<int:userID>/requests/accepted', methods=["GET"])

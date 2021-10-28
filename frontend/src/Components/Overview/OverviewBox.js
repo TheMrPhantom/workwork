@@ -9,15 +9,15 @@ import "./OverviewBox.css"
 import Spacer from '../Common/Spacer';
 
 const OverviewBox = () => {
-    const [currentHours, setcurrentHours] = useState(0)
-    const [maxHours, setmaxHours] = useState(0)
+    const [currentHours, setcurrentHours] = useState([])
+    const [maxHours, setmaxHours] = useState([])
 
     useEffect(() => {
-        const memberID=Cookies.get("memberID")
+        const memberID = Cookies.get("memberID")
 
-        getAndStore("user/"+memberID+"/currentHours",setcurrentHours)
-        getAndStore("user/"+memberID+"/neededHours",setmaxHours)
-    },[]);
+        getAndStore("user/" + memberID + "/currentHours", setcurrentHours)
+        getAndStore("user/" + memberID + "/neededHours", setmaxHours)
+    }, []);
 
     const checkColorAndIcon = (currentHours, maxHours) => {
         if (currentHours < maxHours) {
@@ -32,20 +32,26 @@ const OverviewBox = () => {
         }
     };
 
-    const imageIfFullScreen=()=>{
-        if (window.innerWidth>650){
+    const imageIfFullScreen = () => {
+        if (window.innerWidth > 650) {
             return "backgroundCardImage"
-        }else{
+        } else {
             return ""
         }
     }
 
     return (
         <div>
-            <Paper className={imageIfFullScreen()+" overviewContainer"} elevation={2}>
-                <Typography variant="h6">Arbeitsstunden abgeleistet:</Typography>
-                {checkColorAndIcon(currentHours, maxHours)}
-                <Spacer vertical={10} />
+            <Paper className={imageIfFullScreen() + " overviewContainer"} elevation={2}>
+                {maxHours.map((value) => {
+                    return (<div>
+                        <Typography variant="h6">{value.name}:</Typography>
+                        {checkColorAndIcon("??", value.hours)}
+                        <Spacer vertical={10} />
+                    </div>
+                    )
+                })}
+
                 <Typography variant="h6">Wartet auf Genehmigung</Typography>
                 <Typography variant="h5">3h</Typography>
                 <Spacer vertical={10} />
