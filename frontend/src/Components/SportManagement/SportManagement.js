@@ -19,6 +19,9 @@ const SportManagement = () => {
                 <Typography variant="h5">Sportarten</Typography>
                 <Spacer vertical={20} />
                 {sports.map((value) => {
+                    if (value.id === 1) {
+                        return ""
+                    }
                     return <div key={value.id}>
                         <Spacer vertical={5} />
                         <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={setrefresh} />

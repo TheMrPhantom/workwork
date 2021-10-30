@@ -145,6 +145,18 @@ def members():
     return util.build_response(output)
 
 
+@app.route('/api/members/trainer', methods=["GET"])
+@authenticated
+def trainer():
+    members = db.getMembers()
+    output = []
+    for m in members:
+        isTrainer = db.isTrainer(m[0])
+        output.append({"id": m[0], "firstname": m[1],
+                       "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
+    return util.build_response(output)
+
+
 @app.route('/api/work/request/<int:sportID>', methods=["GET"])
 @authenticated
 def getRequestsFromSport(sportID):
@@ -220,7 +232,7 @@ def addRequest():
     sportID = request.json["sportID"]
     description = request.json["description"]
     minutes = request.json["minutes"]
-
+    #trainer=request.json["trainer"] if "trainer" in request.json else None
     db.addWorkRequest(memberID, sportID, description, minutes)
 
     return util.build_response("OK")

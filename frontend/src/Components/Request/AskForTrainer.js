@@ -8,15 +8,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import "./MemberEntry.css"
-import { TextField } from '@material-ui/core';
 import Spacer from '../Common/Spacer';
-import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
+import { getAndStore } from '../Common/StaticFunctions';
 import { Checkbox, Paper, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
+import "../Members/MemberEntry.css";
+
+const AskForTrainer = ({  open, setOpen, addFunction}) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -57,82 +57,47 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
     };
 
 
-    const [open, setOpen] = React.useState(false);
-    const [sportnames, setsportnames] = useState([])
+    const [trainer, settrainer] = useState([])
     const memberOfSport = new Set()
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
     const handleClose = () => {
         setOpen(false);
     };
 
 
     useEffect(() => {
-        getAndStore("sports/names", setsportnames)
+        getAndStore("members/trainer", settrainer)
     }, [])
 
-    var firstname = "";
-    var lastname = "";
-    var email = "";
-
     const addMember = async () => {
-        if (firstname === "" || lastname === "" || email === "") {
-            alert("Bitte alle Felder ausfüllen")
-            return
-        }
-        if(memberOfSport.size===0){
+        if (memberOfSport.size === 0) {
             alert("Bitte mindestens eine Sportart auswählen")
             return
         }
-        handleClose()
-
-        const lowercaseMail = email.toLocaleLowerCase()
-
-        const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: lowercaseMail, membership: [...memberOfSport] })
-        if (resp.code === 200) {
-            if (refresh !== undefined) {
-                refresh()
-            }
-            alert("Passwort: " + resp.content)
-        }
-
+        const selectedTrainersArray = []
+        memberOfSport.forEach((value) => selectedTrainersArray.push(value))
+        addFunction(selectedTrainersArray)
     }
 
     return (
         <div>
-            <Button className="outlinedAddButton" variant="outlined" onClick={handleClickOpen}>
-                {buttonText}
-            </Button>
             <BootstrapDialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
                 <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} >
-                    {headlineText}
+                    Trainer wählen
                 </BootstrapDialogTitle>
                 <DialogContent dividers className="dialogFlex">
-                    <Typography variant="subtitle1"><b>Mitgliedsdaten</b></Typography>
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
-                    <Spacer vertical={20} />
-                    <Typography variant="subtitle1"><b>Sparten zugehörigkeit</b></Typography>
+                    <Typography variant="subtitle1"><b>Bitte wähle mindestens einen Trainer</b></Typography>
                     <Spacer vertical={10} />
                     <div className="checkboxFlex">
-                        {sportnames.sort((c1, c2) => c1.name.localeCompare(c2.name)).map((value) => {
-                            if(value.id===1){
-                                return ""
-                            }
+                        {trainer.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)).map((value) => {
                             return (
                                 <Paper key={value.id} className="checkboxPaper">
                                     <FormControlLabel control={<Checkbox />}
-                                        label={value.name}
+                                        label={value.firstname}
                                         className="checkboxFormControll"
                                         onChange={(checkvalue) => {
                                             const ischecked = checkvalue.target.value
@@ -150,7 +115,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button className="outlinedAddButton" onClick={() => addMember()}>
-                        {confirmText}
+                        Anfrage Stellen
                     </Button>
                 </DialogActions>
             </BootstrapDialog>
@@ -158,4 +123,4 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
     );
 }
 
-export default AddMember
+export default AskForTrainer

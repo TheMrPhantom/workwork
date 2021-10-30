@@ -21,15 +21,15 @@ const Sports = (props) => {
             {requests.length > 0 ? <Typography variant="h5">Anfragen</Typography> : ""}
             {requests.length > 0 ? <Spacer vertical={10} /> : ""}
             {requests.map((value) => {
-                return <div key={value.id}><Request name={value.firstname + " " + value.lastname} work={value.description} amount={value.duration} id={value.id} refresh={setrefresh}/>
+                return <div key={value.id}><Request name={value.firstname + " " + value.lastname} work={value.description} amount={value.duration} id={value.id} refresh={setrefresh} />
                 </div>
             })}
             {requests.length > 0 ? <Spacer vertical={20} /> : ""}
 
-            <Typography variant="h5">Mitglieder</Typography>
+            {parseInt(props.match.params.id) !== 1 ? <Typography variant="h5">Mitglieder</Typography> : <Typography variant="h5">Aktuell keine Anfragen</Typography>}
             <Spacer vertical={10} />
             {members.map((value) => {
-                return <Member key={value.id} id={value.id} name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer||value.isExecutive} refresh={setrefresh}/>
+                return <Member key={value.id} id={value.id} name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer || value.isExecutive} refresh={setrefresh} />
             })}
         </div>
     )

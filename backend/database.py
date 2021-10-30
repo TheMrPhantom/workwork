@@ -12,7 +12,8 @@ class SQLiteWrapper:
             self.db_name = dbName
         else:
             self.db_name = "database.db"
-
+        self.standardSportName = os.environ.get(
+            "standard_sport_name") if os.environ.get("standard_sport_name") else "Standard"
         self.__create_tables()
         self.__initialize_database()
 
@@ -30,6 +31,8 @@ class SQLiteWrapper:
             hashedPassword, salt = TokenManager.hashPassword(util.admin_pw)
             con.cursor().execute(
                 "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0, ?);", (hashedPassword, salt,))
+            con.cursor().execute(
+                "INSERT INTO sport values (?, 0, 0);", (self.standardSportName,))
             con.cursor().execute("INSERT INTO standardworktime values (720);")
             con.commit()
         con.close()

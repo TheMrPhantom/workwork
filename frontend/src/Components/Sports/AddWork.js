@@ -8,18 +8,21 @@ import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 
 import "./AddWork.css"
 import "./Request.css"
+import AskForTrainer from '../Request/AskForTrainer';
 const AddWork = ({ memberID, refresh }) => {
     const [selectorValue, setselectorValue] = useState("")
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
     const [canDisplayWarning, setcanDisplayWarning] = useState(false)
+    const [dialogOpen, setdialogOpen] = useState(false)
+
     useEffect(() => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
     }, [memberID, refresh])
 
 
-    const addWork = async () => {
+    const addWork = async (trainer) => {
         if (selectorValue === "") {
             alert("Sportart auswählen")
             return
@@ -32,7 +35,16 @@ const AddWork = ({ memberID, refresh }) => {
             alert("Mehr als 0 Minuten eintragen")
             return
         }
-        await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes })
+        if (selectorValue === -1 && trainer === undefined) {
+            setdialogOpen(true)
+            return
+        }
+        if (trainer == null) {
+            await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes })
+        } else {
+            setdialogOpen(false)
+            await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes, "trainer": trainer })
+        }
         setselectorValue("")
         setreason("")
         setminutes(0)
@@ -53,7 +65,9 @@ const AddWork = ({ memberID, refresh }) => {
                                 label="sport"
                                 onChange={(value) => setselectorValue(value.target.value)}
                             >
+
                                 {sportNames.map((value) => { return <MenuItem key={value.id} value={value.id}>{value.name}</MenuItem> })}
+                                <MenuItem key={0} value={0}>Andere Sparte</MenuItem>
 
                             </Select>
                         </FormControl>
@@ -63,6 +77,12 @@ const AddWork = ({ memberID, refresh }) => {
                         <TextField className="workTimeBox" label="Zeit in Minuten" type="number" value={minutes} onChange={(value) => setminutes(value.target.value)} />
                     </div>
                     <Spacer horizontal={5} />
+                    <AskForTrainer
+                        confirmText="Anfrage Stellen"
+                        addFunction={addWork}
+                        open={dialogOpen}
+                        setOpen={setdialogOpen}
+                    />
                     <div>
                         <Button className="accept" onClick={() => addWork()}>
                             <AddBoxIcon />
@@ -75,7 +95,7 @@ const AddWork = ({ memberID, refresh }) => {
     const addWorkNotPossible = () => {
         if (canDisplayWarning) {
             return <div className="sportWarning">Noch keinen Sportarten beigetreten (trage dich in den Einstellungen für Sparten ein)</div>
-        }else{
+        } else {
             return ""
         }
     }

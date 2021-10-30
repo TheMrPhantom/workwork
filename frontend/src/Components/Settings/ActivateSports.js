@@ -45,9 +45,15 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
                 <TableBody>
                     {firstColumn === "Teilnehmer" ?
                         sportList.map((value) => {
+                            if (value.id === 1) {
+                                return ""
+                            }
                             return <ActivateSportsEntry key={value.id} isParticipant={value.isParticipant} name={value.name} id={value.id} checkedChange={changeTrainerOrParticipation} />
                         }) :
                         sportList.map((value) => {
+                            if (value.id === 1) {
+                                return ""
+                            }
                             return <ActivateSportsEntry key={value.id} isParticipant={value.isTrainer} name={value.name} id={value.id} checkedChange={changeTrainerOrParticipation} />
                         })}
                 </TableBody>
