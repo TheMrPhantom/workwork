@@ -10,16 +10,14 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames 
     const [progressEntries, setprogressEntries] = useState([])
 
     useEffect(() => {
-        if (!hasWorkHours) {
-            setprogressEntries([])
-        }
-        
+
         var progressEntryTemp = []
-        for (var i = 0; i < Math.min(currentWork.length, maxWork.length, name.length); i++) {
-            progressEntryTemp.push({ name: sportNames[i], currentWork: currentWork[i].hours, maxWork: maxWork[i].hours })
+        if (hasWorkHours) {
+            for (var i = 0; i < Math.min(currentWork.length, maxWork.length, name.length); i++) {
+                progressEntryTemp.push({ name: sportNames[i], currentWork: currentWork[i].hours, maxWork: maxWork[i].hours })
+            }
         }
 
-        console.log(progressEntryTemp)
         setprogressEntries(progressEntryTemp)
     }, [currentWork, maxWork, sportNames])
 
@@ -33,7 +31,7 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames 
             <div className="innerFlexMember">
                 <Typography variant="h6">{name}</Typography>
                 {hasWorkHours ? <Spacer horizontal={20} /> : ""}
-                {progressEntries.map((value) => <div style={{minWidth:"100px",marginRight:"10px"}}>
+                {progressEntries.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
                     <Typography variant="caption">{value.name}</Typography>
                     <Spacer horizontal={10} />
                     <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
