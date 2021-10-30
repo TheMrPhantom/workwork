@@ -62,8 +62,6 @@ const OverviewBox = () => {
                     )
                 })}
 
-                <Typography variant="h6">Wartet auf Genehmigung</Typography>
-                <Typography variant="h5">3h</Typography>
                 <Spacer vertical={10} />
                 <Typography variant="h6">Nächster Arbeitsdienst</Typography>
                 <Typography variant="h5" className="imageTextWidth">Donnerstag 25.November, um 15 Uhr auf dem Hundeplatz</Typography>
