@@ -65,10 +65,10 @@ const Member = ({ name, currentWork, maxWork, isTrainer, id }) => {
         <Paper elevation={2} className="requestBox">
             <div className="outterFlex">
                 <div className="innerFlex fullWidth">
-                    <Typography className="border">{name}</Typography>
+                    <Typography variant="h6" className="border">{name}</Typography>
                     <Spacer horizontal={20} />
                     {hours.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
-                        <Typography>{value.name}</Typography>
+                        <Typography variant="caption">{value.name}</Typography>
                         <Spacer horizontal={10} />
                         <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
                         <Spacer horizontal={20} />

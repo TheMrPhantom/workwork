@@ -31,10 +31,10 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames 
     return (
         <Paper elevation={2} className="outterBoxMember">
             <div className="innerFlexMember">
-                <Typography>{name}</Typography>
+                <Typography variant="h6">{name}</Typography>
                 {hasWorkHours ? <Spacer horizontal={20} /> : ""}
                 {progressEntries.map((value) => <div style={{minWidth:"100px",marginRight:"10px"}}>
-                    <Typography>{value.name}</Typography>
+                    <Typography variant="caption">{value.name}</Typography>
                     <Spacer horizontal={10} />
                     <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
                     <Spacer horizontal={20} />
