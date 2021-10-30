@@ -73,18 +73,64 @@ class SQLiteWrapper:
 
     def getCurrentWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
-        minutes = 0
-        for link in con.cursor().execute('''SELECT minutes FROM worktime WHERE memberID=? AND pending=0 AND deleted=0''', (memberID,)):
-            minutes += link[0]
+        work = {}
+        for link in con.cursor().execute('''SELECT SUM(minutes), sportID FROM worktime WHERE memberID=? AND pending=0 AND deleted=0 GROUP BY sportID''', (memberID,)):
+            work[link[1]] = {'minutes': link[0], 'sportID': link[1]}
         con.close()
 
-        return minutes
+        sports = self.getSportsOfMember(memberID)
+        sportDict = {}
+
+        standardWorkTime = self.getStandardWorkTime()
+
+        currentTimePerID = {'Standard': standardWorkTime}
+
+        for s in sports:
+            sportDict[s['id']] = s['extraHours']
+            if s['extraHours'] > 0:
+                currentTimePerID[s['id']] = s['extraHours']
+
+        for w in work:
+            workDict = work[w]
+            if sportDict[workDict['sportID']] == 0:
+                currentTimePerID['Standard'] = max(
+                    0, currentTimePerID['Standard']-workDict['minutes'])
+            else:
+                dif = currentTimePerID[workDict['sportID']]-workDict['minutes']
+                if dif >= 0:
+                    currentTimePerID[workDict['sportID']
+                                     ] = currentTimePerID[workDict['sportID']]-workDict['minutes']
+                else:
+                    currentTimePerID[workDict['sportID']] = 0
+                    currentTimePerID['Standard'] = max(
+                        0, currentTimePerID['Standard']-abs(dif))
+
+        output = [{'name': 'Standard', 'hours': round(
+            (standardWorkTime - currentTimePerID['Standard'])/60, 2)}]
+
+        for s in sports:
+            if s['extraHours'] > 0:
+                output.append({'name': s['name'], 'hours': round(
+                    (s['extraHours']-currentTimePerID[s['id']])/60, 2)})
+
+        return output
+
+    def getSportsOfMember(self, memberID):
+        '''
+        [{id:x, name:x, extraHours:x}]
+        '''
+        sports = self.getSports()
+        output = []
+        for s in sports:
+            if self.isMemberof(memberID, s['id']):
+                output.append(s)
+        return output
 
     def getNeededWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         sportIDs = []
         standardTime = 0
-        noHoursOutput=[{'name': 'Standard', 'hours': 0}]
+        noHoursOutput = [{'name': 'Standard', 'hours': 0}]
         if self.isExecutive(memberID) == 1:
             return noHoursOutput
 
@@ -117,6 +163,13 @@ class SQLiteWrapper:
         con.close()
 
         return neededWorkNames
+
+    def getStandardWorkTime(self):
+        con = sqlite3.connect(self.db_name)
+        for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
+            standardTime = link[0]
+        con.close()
+        return standardTime
 
     def getPendingWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
@@ -242,6 +295,9 @@ class SQLiteWrapper:
         return
 
     def getSports(self):
+        '''
+        {id:x, name:x, extraHours:x}
+        '''
         con = sqlite3.connect(self.db_name)
         output = []
         for link in con.cursor().execute("SELECT ROWID, name, extraHours FROM sport WHERE deleted=0"):
