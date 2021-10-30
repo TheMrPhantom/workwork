@@ -83,7 +83,6 @@ class SQLiteWrapper:
     def getNeededWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         sportIDs = []
-        extraHours = []
         standardTime = 0
         noHoursOutput=[{'name': 'Standard', 'hours': 0}]
         if self.isExecutive(memberID) == 1:
