@@ -92,7 +92,10 @@ class SQLiteWrapper:
 
         for w in work:
             workDict = work[w]
-            if sportDict[workDict['sportID']] == 0:
+            if workDict['sportID'] not in sportDict:
+                currentTimePerID['Standard'] = max(
+                    0, currentTimePerID['Standard']-workDict['minutes'])
+            elif sportDict[workDict['sportID']] == 0:
                 currentTimePerID['Standard'] = max(
                     0, currentTimePerID['Standard']-workDict['minutes'])
             else:

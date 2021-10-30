@@ -137,8 +137,8 @@ def members():
     members = db.getMembers()
     output = []
     for m in members:
-        currentWork = round(db.getCurrentWorkMinutes(m[0])/60, 2)
-        maxWork = round(db.getNeededWorkMinutes(m[0])/60, 2)
+        currentWork = db.getCurrentWorkMinutes(m[0])
+        maxWork = db.getNeededWorkMinutes(m[0])
         isTrainer = db.isTrainer(m[0])
         output.append({"id": m[0], "firstname": m[1],
                        "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
