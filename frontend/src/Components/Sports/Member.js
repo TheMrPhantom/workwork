@@ -31,7 +31,7 @@ const Member = ({ name, currentWork, maxWork, isTrainer, id }) => {
             }
         }
         sethours(newArray)
-    }, [currentWork, maxWork])
+    }, [currentWork, maxWork, isTrainer])
 
     const displayAddDialog = () => {
         if (addIsOpen) {

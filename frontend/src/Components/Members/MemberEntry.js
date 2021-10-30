@@ -19,7 +19,7 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames 
         }
 
         setprogressEntries(progressEntryTemp)
-    }, [currentWork, maxWork, sportNames])
+    }, [currentWork, maxWork, sportNames, hasWorkHours,name])
 
     const history = useHistory();
     const calcProgress = (cW, mW) => {
