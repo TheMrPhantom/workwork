@@ -13,7 +13,7 @@ class SQLiteWrapper:
         else:
             self.db_name = "database.db"
         self.standardSportName = os.environ.get(
-            "standard_sport_name") if os.environ.get("standard_sport_name") else "Standard"
+            "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
         self.__create_tables()
         self.__initialize_database()
 
