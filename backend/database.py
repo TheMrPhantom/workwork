@@ -85,8 +85,9 @@ class SQLiteWrapper:
         sportIDs = []
         extraHours = []
         standardTime = 0
+        noHoursOutput=[{'name': 'Standard', 'hours': 0}]
         if self.isExecutive(memberID) == 1:
-            return 0
+            return noHoursOutput
 
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
             standardTime = link[0]
@@ -94,7 +95,7 @@ class SQLiteWrapper:
         for link in con.cursor().execute('''SELECT sportID, isTrainer  FROM sportMember WHERE memberID=?''', (memberID,)):
             if link[1] > 0:
                 con.close()
-                return 0
+                return noHoursOutput
             sportIDs.append(link[0])
 
         neededWorkIDs = {}
