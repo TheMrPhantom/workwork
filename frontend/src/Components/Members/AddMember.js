@@ -82,6 +82,10 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
             alert("Bitte alle Felder ausfüllen")
             return
         }
+        if(memberOfSport.size==0){
+            alert("Bitte mindestens eine Sportart auswählen")
+            return
+        }
         handleClose()
 
         const lowercaseMail = email.toLocaleLowerCase()
