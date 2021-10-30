@@ -162,8 +162,8 @@ def getSportsMembers(sportID):
     req = db.getMembersOfSport(sportID)
     output = []
     for r in req:
-        currentWork = round(db.getCurrentWorkMinutes(r[0])/60, 2)
-        maxWork = round(db.getNeededWorkMinutes(r[0])/60, 2)
+        currentWork = db.getCurrentWorkMinutes(r[0])
+        maxWork = db.getNeededWorkMinutes(r[0])
         isTrainer = db.isTrainer(r[0])
         isExecutive = db.isExecutive(r[0])
         output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
