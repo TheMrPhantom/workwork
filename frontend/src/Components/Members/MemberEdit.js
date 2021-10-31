@@ -54,7 +54,6 @@ const MemberEdit = (props) => {
     return (
         <div>
             {!isTrainer && !isExecutive ? <div>
-                {console.log("a")}
                 <Request memberID={props.match.params.id} refresh={refresh}/>
                 <Spacer vertical={50} />
             </div> : ""}

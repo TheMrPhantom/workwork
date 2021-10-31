@@ -185,7 +185,7 @@ const AddWork = ({ memberID, refresh }) => {
                     <div className="innerAddWorkTimeFlex">
                         <Typography variant="h6">Kurzauswahl</Typography>
                         <Spacer vertical={5} />
-                        <Button onClick={() => { console.log(minutes); setminutes(15) }} variant="outlined" style={{ width: "100%" }}>Viertel Stunde</Button>
+                        <Button onClick={() => setminutes(15)} variant="outlined" style={{ width: "100%" }}>Viertel Stunde</Button>
                         <Spacer vertical={5} />
                         <Button onClick={() => setminutes(30)} variant="outlined" style={{ width: "100%" }}>Halbe Stunde</Button>
                         <Spacer vertical={5} />
