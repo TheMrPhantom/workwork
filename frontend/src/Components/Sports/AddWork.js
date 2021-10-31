@@ -35,7 +35,7 @@ const AddWork = ({ memberID, refresh }) => {
             alert("Mehr als 0 Minuten eintragen")
             return
         }
-        if (selectorValue === -1 && trainer === undefined) {
+        if (selectorValue === 0 && trainer === undefined) {
             setdialogOpen(true)
             return
         }
