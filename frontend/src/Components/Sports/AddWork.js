@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 });
 
 const AddWork = ({ memberID, refresh }) => {
-    const [selectorValue, setselectorValue] = useState(-1)
+    const [selectorValue, setselectorValue] = useState(0)
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
@@ -47,7 +47,7 @@ const AddWork = ({ memberID, refresh }) => {
     };
 
     const addWork = async (trainer) => {
-        if (selectorValue === "") {
+        if (selectorValue === 0) {
             alert("Sportart auswählen")
             return
         }
@@ -106,7 +106,7 @@ const AddWork = ({ memberID, refresh }) => {
                 alert("Mehr als 0 Minuten eintragen")
                 return
             }
-            if (selectorValue === 0) {
+            if (selectorValue === 1) {
                 setdialogOpen(true)
                 return
             }
@@ -170,7 +170,7 @@ const AddWork = ({ memberID, refresh }) => {
                         )
                     })
                 }
-                <ToggleButton value={0} aria-label="left aligned" className={classes.buttonColor}>
+                <ToggleButton value={1} aria-label="left aligned" className={classes.buttonColor}>
                     Andere Sparte
                 </ToggleButton>
 
