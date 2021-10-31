@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 });
 
 const AddWork = ({ memberID, refresh }) => {
-    const [selectorValue, setselectorValue] = useState(0)
+    const [selectorValue, setselectorValue] = useState(null)
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
@@ -47,7 +47,7 @@ const AddWork = ({ memberID, refresh }) => {
     };
 
     const addWork = async (trainer) => {
-        if (selectorValue === 0) {
+        if (selectorValue === null) {
             alert("Sportart auswählen")
             return
         }
@@ -92,7 +92,7 @@ const AddWork = ({ memberID, refresh }) => {
         }
 
         if (activeStep === 0) {
-            if (selectorValue === -1) {
+            if (selectorValue === null) {
                 alert("Sportart auswählen")
                 return
             }
