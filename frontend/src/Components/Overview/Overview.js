@@ -51,7 +51,7 @@ const Overview = () => {
             maxWork += hours[1]
 
             var remainingHours = hours[1] - hours[0]
-            var category = Math.min(Math.floor((remainingHours) / 2), hourCategories.length - 1)
+            var category = Math.min(Math.ceil((remainingHours) / 2), hourCategories.length - 1)
             
             hourCategories[category] += 1
         })
