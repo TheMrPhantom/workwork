@@ -168,6 +168,16 @@ def getRequestsFromSport(sportID):
     return util.build_response(output)
 
 
+@app.route('/api/work/request/pendingAmount', methods=["GET"])
+@authenticated
+def getPendingRequestAmount():
+    output = 0
+    sports = db.getSports()
+    for s in sports:
+        output += len(db.getPendingWorkRequestsBySport(s["id"]))
+    return util.build_response(output)
+
+
 @app.route('/api/sports/<int:sportID>/members', methods=["GET"])
 @authenticated
 def getSportsMembers(sportID):

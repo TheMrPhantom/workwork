@@ -57,3 +57,17 @@ export const getAndStore = (path, stateFunction) => {
     }
     getInfos()
 };
+
+export const getHoursFromMember = (members) => {
+    var currentWork = 0
+    members.currentWork.forEach(element => {
+        currentWork += element.hours
+    });
+
+    var maxWork = 0
+    members.maxWork.forEach(element => {
+        maxWork += element.hours
+    });
+
+    return [currentWork, maxWork]
+}
