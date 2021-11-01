@@ -90,15 +90,15 @@ const Overview = () => {
         //Is Executive
         return (
             <div style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
-                <Paper style={{ height: "280px", width: "500px", padding: "10px", margin: "5px" }}>
+                <Paper style={{ height: "280px", minWidth:"320px",maxWidth:"500px", width: "40%", padding: "10px", margin: "5px" }}>
                     <Typography variant="h6">Arbeitsstunden Übersicht</Typography>
                     <PeopleWorkProgressChart done={currentWork} needed={maxWork} />
                 </Paper>
-                <Paper style={{ height: "280px", width: "500px", padding: "10px", margin: "5px" }}>
+                <Paper style={{ height: "280px", minWidth:"320px",maxWidth:"500px", width: "40%", padding: "10px", margin: "5px" }}>
                     <Typography variant="h6">Offene Arbeitsstunden</Typography>
                     <BadMemberLineChart memberData={memberWorkStatus} />
                 </Paper>
-                <Grid container spacing={2} style={{ margin: "5px", height: "280px", width: "500px" }} sx={{
+                <Grid container spacing={2} style={{ margin: "5px", minWidth:"320px",maxWidth:"500px", width: "40%" }} sx={{
                     '& .MuiGrid-item': {
                         padding: '5px',
                     },

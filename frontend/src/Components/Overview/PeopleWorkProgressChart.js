@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PieChart, Pie, Sector,ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Sector, ResponsiveContainer } from 'recharts';
 
 
 const renderActiveShape = (props) => {
@@ -18,9 +18,10 @@ const renderActiveShape = (props) => {
 
     return (
         <g>
+            {window.innerWidth > 900 ?
             <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
                 {payload.name}
-            </text>
+            </text>:""}
             <Sector
                 cx={cx}
                 cy={cy}
@@ -42,9 +43,11 @@ const renderActiveShape = (props) => {
             <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
             <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
             <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value} Stunden`}</text>
-            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
-                {`(Anteil ${(percent * 100).toFixed(2)}%)`}
-            </text>
+            {window.innerWidth > 900 ?
+                <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
+                    {`(Anteil ${(percent * 100).toFixed(2)}%)`}
+                </text>
+                : ""}
         </g>
     );
 };
@@ -61,21 +64,25 @@ const PeopleWorkProgressChart = ({ done, needed }) => {
     };
 
     return (
-        <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
-            <Pie
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
-                data={data}
-                cx="50%"
-                cy="50%"
-                innerRadius={"32%"}
-                outerRadius={"42%"}
-                dataKey="value"
-                onMouseEnter={onPieEnter}
-            />
-        </PieChart>
-        </ResponsiveContainer>
+        <div style={{
+            width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center"
+        }}>
+            <ResponsiveContainer width="100%" height="100%" >
+                <PieChart>
+                    <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={data}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={window.innerWidth < 900 ? "20%" : "32%"}
+                        outerRadius={window.innerWidth < 900 ? "35%" : "42%"}
+                        dataKey="value"
+                        onMouseEnter={onPieEnter}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+        </div >
     );
 
 }
