@@ -7,6 +7,7 @@ import Request from './Request';
 import Grid from '@mui/material/Grid';
 import BadMemberOverview from './BadMemberOverview';
 import BadMemberLineChart from './BadMemberLineChart';
+import Spacer from '../Common/Spacer';
 
 const Overview = () => {
 
@@ -52,7 +53,7 @@ const Overview = () => {
 
             var remainingHours = hours[1] - hours[0]
             var category = Math.min(Math.ceil((remainingHours) / 2), hourCategories.length - 1)
-            
+
             hourCategories[category] += 1
         })
         const memberWorkStatus = []
@@ -89,48 +90,54 @@ const Overview = () => {
     } else if (memberState === 5 || memberState === 7) {
         //Is Executive
         return (
-            <div style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
-                <Paper style={{ height: "280px", minWidth:"320px",maxWidth:"500px", width: "40%", padding: "10px", margin: "5px" }}>
-                    <Typography variant="h6">Arbeitsstunden Übersicht</Typography>
-                    <PeopleWorkProgressChart done={currentWork} needed={maxWork} />
-                </Paper>
-                <Paper style={{ height: "280px", minWidth:"320px",maxWidth:"500px", width: "40%", padding: "10px", margin: "5px" }}>
-                    <Typography variant="h6">Offene Arbeitsstunden</Typography>
-                    <BadMemberLineChart memberData={memberWorkStatus} />
-                </Paper>
-                <Grid container spacing={2} style={{ margin: "5px", minWidth:"320px",maxWidth:"500px", width: "40%" }} sx={{
-                    '& .MuiGrid-item': {
-                        padding: '5px',
-                    },
-                }}>
-                    <Grid item xs={6} >
-                        <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
-                            <Typography variant="h6">Mitglieder</Typography>
-                            <Typography variant="h5">{membercount}</Typography>
-                        </Paper>
+            <div>
+                <div style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
+                    <Paper style={{ height: "280px", minWidth: "320px", maxWidth: "500px", width: "40%", padding: "10px", margin: "5px" }}>
+                        <Typography variant="h6">Arbeitsstunden Übersicht</Typography>
+                        <PeopleWorkProgressChart done={currentWork} needed={maxWork} />
+                    </Paper>
+                    <Paper style={{ height: "280px", minWidth: "320px", maxWidth: "500px", width: "40%", padding: "10px", margin: "5px" }}>
+                        <Typography variant="h6">Offene Arbeitsstunden</Typography>
+                        <BadMemberLineChart memberData={memberWorkStatus} />
+                    </Paper>
+                    <Grid container spacing={2} style={{ margin: "5px", minWidth: "320px", maxWidth: "500px", width: "40%" }} sx={{
+                        '& .MuiGrid-item': {
+                            padding: '5px',
+                        },
+                    }}>
+                        <Grid item xs={6} >
+                            <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
+                                <Typography variant="h6">Mitglieder</Typography>
+                                <Typography variant="h5">{membercount}</Typography>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
+                                <Typography variant="h6">Trainer</Typography>
+                                <Typography variant="h5">{trainercount}</Typography>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
+                                <Typography variant="h6">Vorstände</Typography>
+                                <Typography variant="h5">{executivecount}</Typography>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
+                                <Typography variant="h6">Noch nicht genehmigt</Typography>
+                                <Typography variant="h5">{notApprovedYet}</Typography>
+                            </Paper>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
-                            <Typography variant="h6">Trainer</Typography>
-                            <Typography variant="h5">{trainercount}</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
-                            <Typography variant="h6">Vorstände</Typography>
-                            <Typography variant="h5">{executivecount}</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
-                            <Typography variant="h6">Noch nicht genehmigt</Typography>
-                            <Typography variant="h5">{notApprovedYet}</Typography>
-                        </Paper>
-                    </Grid>
-                </Grid>
 
+
+                </div >
+                <Spacer vertical={20} />
+                <Typography variant="h5">Mitglieder mit offenen Arbeitsstunden</Typography>
+                <Spacer vertical={20} />
                 {sports.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
-            </div >
+            </div>
         )
     }
     else if (memberState === 1) {
