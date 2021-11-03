@@ -15,6 +15,7 @@ import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 import { Checkbox, Paper, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import HSFAlert from '../Common/HSFAlert';
 
 const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
 
@@ -60,6 +61,8 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
     const [open, setOpen] = React.useState(false);
     const [sportnames, setsportnames] = useState([])
     const memberOfSport = new Set()
+    const [messageOpen, setmessageOpen] = useState(false)
+    const [errorMessge, seterrorMessge] = useState("")
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -79,11 +82,13 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
 
     const addMember = async () => {
         if (firstname === "" || lastname === "" || email === "") {
-            alert("Bitte alle Felder ausfüllen")
+            seterrorMessge("Bitte alle Felder ausfüllen")
+            setmessageOpen(true)
             return
         }
-        if(memberOfSport.size===0){
-            alert("Bitte mindestens eine Sportart auswählen")
+        if (memberOfSport.size === 0) {
+            seterrorMessge("Bitte mindestens eine Sportart auswählen")
+            setmessageOpen(true)
             return
         }
         handleClose()
@@ -126,7 +131,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                     <Spacer vertical={10} />
                     <div className="checkboxFlex">
                         {sportnames.sort((c1, c2) => c1.name.localeCompare(c2.name)).map((value) => {
-                            if(value.id===1){
+                            if (value.id === 1) {
                                 return ""
                             }
                             return (
@@ -154,6 +159,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                     </Button>
                 </DialogActions>
             </BootstrapDialog>
+            <HSFAlert message={errorMessge} short={"Bitte Felder korrekt ausfüllen"} open={messageOpen} setOpen={setmessageOpen}/>
         </div>
     );
 }

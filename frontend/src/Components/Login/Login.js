@@ -3,24 +3,25 @@ import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import AddMember from '../Members/AddMember'
-
+import HSFAlert from '../Common/HSFAlert'
 
 import "./Login.css"
 
 const Login = ({ redirect }) => {
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
+    const [open, setopen] = useState(false)
 
     const login = async () => {
         const resp = await doPostRequest("login", { username: username, password: password });
         if (resp.code === 200) {
             if (resp.content === null) {
-                alert("Email oder Benutzername falsch")
+                setopen(true)
                 return
             }
             redirect()
         } else {
-            alert("Email oder Benutzername falsch")
+            setopen(true)
         }
     }
 
@@ -33,6 +34,7 @@ const Login = ({ redirect }) => {
     }
 
     return (
+
         <Paper elevation={2} className="loginBox padding loginPic">
 
             <Typography variant="h5">Login</Typography>
@@ -47,8 +49,10 @@ const Login = ({ redirect }) => {
                 <AddMember buttonText="Registrieren" headlineText="Registrieren" confirmText="Registrieren" />
                 <Button variant={boderType()} className="loginButton" onClick={() => login()}>Login</Button>
             </div>
-
+            <HSFAlert message="Benutzername oder Passwort falsch" short="Bitte erneut versuchen" open={open} setOpen={setopen}/>
         </Paper>
+
+
     )
 }
 

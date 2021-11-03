@@ -1,6 +1,7 @@
 import { Button, Paper, TextField } from '@material-ui/core'
 import Cookies from 'js-cookie'
 import React, { useEffect, useState } from 'react'
+import HSFAlert from '../Common/HSFAlert'
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import "./Settings.css"
@@ -11,6 +12,8 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
     const [pwconfirm, setpwconfirm] = useState("")
     const [isPwError, setisPwError] = useState(false)
     const [pwErrorText, setpwErrorText] = useState("")
+    const [open, setopen] = useState(false)
+    const [message, setmessage] = useState("")
 
     useEffect(() => {
         if (pw === "" && pwconfirm === "") {
@@ -42,15 +45,18 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
 
     const setNewPassword = () => {
         if (pw === "" || pwconfirm === "") {
-            alert("Passwort darf nicht leer sein!")
+            setmessage("Passwort darf nicht leer sein!")
+            setopen(true)
             return
         }
         if (pw.length < 8) {
-            alert("Passwort muss mindestens 8 Zeichen lang sein")
+            setmessage("Passwort muss mindestens 8 Zeichen lang sein")
+            setopen(true)
             return
         }
         if (pw !== pwconfirm) {
-            alert("Passwörter stimmen nicht überein")
+            setmessage("Passwörter stimmen nicht überein")
+            setopen(true)
             return
         }
         const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
@@ -83,6 +89,7 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
                     </Button>
                 </div>
             </div>
+            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setopen={setopen} />
         </Paper>
     )
 }

@@ -1,13 +1,16 @@
 import { Button, Paper, TextField, Typography } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 
 
 import "./SportManagement.css"
 import { doPostRequest } from '../Common/StaticFunctions';
+import HSFAlert from '../Common/HSFAlert';
 
 const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
+
+    const [open, setopen] = useState(false)
 
     const clickRemove = () => {
         doPostRequest("sports/" + sportsID + "/delete")
@@ -16,7 +19,7 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
 
     const changedTextValue = (value) => {
         if (value < 0) {
-            alert("Zahl muss größer 0 sein")
+            setopen(true)
             return
         }
 
@@ -36,7 +39,7 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
                     <IndeterminateCheckBoxIcon className="denyBackground" />
                 </Button>
             </div>
-
+            <HSFAlert message="Zahl muss größer 0 sein" short="Bitte Feld korrekt ausfüllen" open={open} setopen={setopen} />
         </Paper>
     )
 }

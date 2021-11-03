@@ -17,6 +17,7 @@ import AskForTrainer from '../Request/AskForTrainer';
 
 import "./AddWork.css"
 import "./Request.css"
+import HSFAlert from '../Common/HSFAlert';
 
 const useStyles = makeStyles({
     buttonColor: {
@@ -36,6 +37,8 @@ const AddWork = ({ memberID, refresh }) => {
     const steps = ['Sparte Auswählen', 'Tätigkeit', 'Arbeitsaufwand'];
     const [activeStep, setActiveStep] = useState(0);
     const [skipped, setSkipped] = useState(new Set());
+    const [open, setopen] = useState(false)
+    const [message, setmessage] = useState("")
 
     useEffect(() => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
@@ -48,15 +51,18 @@ const AddWork = ({ memberID, refresh }) => {
 
     const addWork = async (trainer) => {
         if (selectorValue === null) {
-            alert("Sportart auswählen")
+            setmessage("Sportart auswählen")
+            setopen(true)
             return
         }
         if (reason === "") {
-            alert("Arbeit eintragen")
+            setmessage("Arbeit eintragen")
+            setopen(true)
             return
         }
         if (minutes === 0) {
-            alert("Mehr als 0 Minuten eintragen")
+            setmessage("Mehr als 0 Minuten eintragen")
+            setopen(true)
             return
         }
         if (selectorValue === 0 && trainer === undefined) {
@@ -93,17 +99,20 @@ const AddWork = ({ memberID, refresh }) => {
 
         if (activeStep === 0) {
             if (selectorValue === null) {
-                alert("Sportart auswählen")
+                setmessage("Sportart auswählen")
+                setopen(true)
                 return
             }
         } else if (activeStep === 1) {
             if (reason === "") {
-                alert("Arbeit eintragen")
+                setmessage("Arbeit eintragen")
+                setopen(true)
                 return
             }
         } else if (activeStep === 2) {
             if (minutes === 0) {
-                alert("Mehr als 0 Minuten eintragen")
+                setmessage("Mehr als 0 Minuten eintragen")
+                setopen(true)
                 return
             }
             if (selectorValue === 1) {
@@ -279,6 +288,7 @@ const AddWork = ({ memberID, refresh }) => {
                     </Box>
                 </React.Fragment>
             )}
+            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
         </Box>
     ) : addWorkNotPossible();
 }

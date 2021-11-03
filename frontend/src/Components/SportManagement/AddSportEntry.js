@@ -3,18 +3,23 @@ import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { doPostRequest } from '../Common/StaticFunctions';
+import HSFAlert from '../Common/HSFAlert';
 
 const AddSportEntry = ({ refresh }) => {
 
     const [name, setname] = useState("")
     const [extraHours, setextraHours] = useState(0)
+    const [open, setopen] = useState(false)
+    const [message, setmessage] = useState("")
 
     const addSport = () => {
         if (name === "") {
-            alert("Bitte name ausfüllen")
+            setmessage("Bitte name ausfüllen")
+            setopen(true)
             return
         } else if (extraHours < 0) {
-            alert("Zahl muss größer 0 sein")
+            setmessage("Zahl muss größer 0 sein")
+            setopen(true)
             return
         }
 
@@ -36,6 +41,7 @@ const AddSportEntry = ({ refresh }) => {
                     <AddBoxIcon className="successBackground" />
                 </Button>
             </div>
+            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
         </div>
     )
 }
