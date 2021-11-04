@@ -15,7 +15,7 @@ const HSFAlert = ({ message, type, short, open, setOpen }) => {
 
     if (type === "success") {
         return (
-            <Snackbar open={open} autoHideDuration={4000} onClose={handleClose} sx={{ width: '100%' }}>
+            <Snackbar anchorOrigin={{ vertical:'bottom', horizontal:'center' }} open={open} autoHideDuration={4000} onClose={handleClose} sx={{ width: '100%' }}>
                 <Alert variant="outlined" severity="success" sx={{ minWidth: "300px", width: '40%', backgroundColor: "white" }}>
                     <AlertTitle>Erfolg</AlertTitle>
                     {message}{short !== undefined ? <strong> - {short}</strong> : ""}
@@ -24,7 +24,7 @@ const HSFAlert = ({ message, type, short, open, setOpen }) => {
         )
     } else {
         return (
-            <Snackbar open={open} autoHideDuration={4000} onClose={handleClose} sx={{ width: '100%' }}>
+            <Snackbar anchorOrigin={{ vertical:'bottom', horizontal:'center' }} open={open} autoHideDuration={4000} onClose={handleClose} sx={{ width: '100%' }}>
                 <Alert variant="outlined" severity="error" sx={{ minWidth: "300px", width: '40%', backgroundColor: "white" }}>
                     <AlertTitle>Fehler</AlertTitle>
                     {message}{short !== undefined ? <strong> - {short}</strong> : ""}
