@@ -1,5 +1,5 @@
 
-name: Build Backend
+name: Build and push Frontend
 
 # Controls when the workflow will run
 on:
@@ -34,4 +34,4 @@ jobs:
           push: true
           tags: themrphantom/workwork-frontend:latest
           file: frontend/Dockerfile
-          context: ./frontend
+          
