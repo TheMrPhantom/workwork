@@ -34,4 +34,4 @@ jobs:
           push: true
           tags: themrphantom/workwork-frontend:latest
           file: frontend/Dockerfile
-          context: frontend/
+          context: ./frontend/
