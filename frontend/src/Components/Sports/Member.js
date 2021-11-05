@@ -74,7 +74,7 @@ const Member = ({ name, currentWork, maxWork, isTrainer, id, setRefs, refresh, s
                 <div className="innerFlex fullWidth">
                     <Typography variant="h6" className="border" ref={ref}>{name}</Typography>
                     <Spacer horizontal={20} />
-                    <div className={window.innerWidth > 1000 ? "sportAlignDesktop" : ""} style={{ left: sportsPosition }}>
+                    <div className={window.innerWidth > 1100 ? "sportAlignDesktop" : ""} style={{ left: sportsPosition }}>
                         {hours.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
                             <Typography variant="caption">{value.name}</Typography>
                             <Spacer horizontal={10} />
