@@ -107,7 +107,7 @@ def listSports():
 def listSportsOfTrainer():
     sports = db.getSports()
     if not db.isExecutive(request.cookies.get('memberID')):
-        output = []
+        output = [sports[0]]
         for s in sports:
             if db.isTrainerof(request.cookies.get('memberID'), s["id"]):
                 output.append(s)
