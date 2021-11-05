@@ -39,6 +39,7 @@ const AddWork = ({ memberID, refresh }) => {
     const [skipped, setSkipped] = useState(new Set());
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
+    const [messageOpen, setmessageOpen] = useState(true)
 
     useEffect(() => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
@@ -289,6 +290,13 @@ const AddWork = ({ memberID, refresh }) => {
                 </React.Fragment>
             )}
             <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
+            <HSFAlert
+                type="success"
+                message="Arbeisstunde erfolgreich erstellt"
+                short="Ein Trainer wird sich deine Anfrage bald anschauen"
+                open={messageOpen}
+                setOpen={setmessageOpen}
+                time={10000} />
         </Box>
     ) : addWorkNotPossible();
 }
