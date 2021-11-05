@@ -15,7 +15,6 @@ import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import "../Members/MemberEntry.css";
-import HSFAlert from '../Common/HSFAlert';
 
 const AskForTrainer = ({  open, setOpen, addFunction}) => {
 
@@ -120,7 +119,6 @@ const AskForTrainer = ({  open, setOpen, addFunction}) => {
                     </Button>
                 </DialogActions>
             </BootstrapDialog>
-            <HSFAlert message="Bitte mindestens eine Sportart auswählen" open={open} setOpen={setOpen} />
         </div>
     );
 }

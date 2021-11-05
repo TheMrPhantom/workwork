@@ -39,7 +39,7 @@ const AddWork = ({ memberID, refresh }) => {
     const [skipped, setSkipped] = useState(new Set());
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
-    const [messageOpen, setmessageOpen] = useState(true)
+    const [messageOpen, setmessageOpen] = useState(false)
 
     useEffect(() => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
@@ -72,10 +72,12 @@ const AddWork = ({ memberID, refresh }) => {
         }
         if (trainer == null) {
             await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes })
+            setmessageOpen(true)
         } else {
             setdialogOpen(false)
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
             await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes, "trainer": trainer })
+            setmessageOpen(true)
         }
         setselectorValue("")
         setreason("")
@@ -117,6 +119,7 @@ const AddWork = ({ memberID, refresh }) => {
                 return
             }
             if (selectorValue === 1) {
+                setopen(false)
                 setdialogOpen(true)
                 return
             }
