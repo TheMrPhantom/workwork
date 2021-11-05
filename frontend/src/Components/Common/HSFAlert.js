@@ -12,8 +12,7 @@ const HSFAlert = ({ message, type, short, open, setOpen, time }) => {
         }
         setOpen(false);
     };
-console.log(time === undefined ? 5000 : time)
-console.log(time)
+
     if (type === "success") {
         return (
             <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
