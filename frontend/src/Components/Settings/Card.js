@@ -89,7 +89,7 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
                     </Button>
                 </div>
             </div>
-            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setopen={setopen} />
+            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
         </Paper>
     )
 }
