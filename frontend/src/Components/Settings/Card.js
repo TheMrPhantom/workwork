@@ -14,6 +14,8 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
     const [pwErrorText, setpwErrorText] = useState("")
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
+    const [sucMessage, setsucMessage] = useState("")
+    const [sucOpen, setsucOpen] = useState(false)
 
     useEffect(() => {
         if (pw === "" && pwconfirm === "") {
@@ -34,13 +36,17 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
         setpwErrorText("")
     }, [pw, pwconfirm])
 
-    const changeAttribute = (value, attribute) => {
+    const changeAttribute = async (value, attribute) => {
         const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
         var sendvalue = value
         if (attribute === "email") {
             sendvalue = value.toLocaleLowerCase()
         }
-        doPostRequest("member/" + mID + "/change/" + attribute, sendvalue)
+        const resp = await doPostRequest("member/" + mID + "/change/" + attribute, sendvalue)
+        if (resp.code === 200) {
+            setsucMessage("Erfolgreich '" + value + "' gespeichert")
+            setsucOpen(true)
+        }
     }
 
     const setNewPassword = () => {
@@ -63,6 +69,8 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
         doPostRequest("member/" + mID + "/change/password", { "newPassword": pw })
         setpw("")
         setpwconfirm("")
+        setsucMessage("Passwort wurde erfolgreich gesetzt")
+        setsucOpen(true)
     }
 
     return (
@@ -90,6 +98,7 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
                 </div>
             </div>
             <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
+            <HSFAlert type="success" message={sucMessage} open={sucOpen} setOpen={setsucOpen} />
         </Paper>
     )
 }
