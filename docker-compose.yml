@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: workwork-frontend
+    image: themrphantom/workwork-frontend
     ports:
       - 3000:80
     user: root
@@ -8,7 +8,7 @@ services:
     build:
       context: frontend/
   backend:
-    image: workwork-backend
+    image: themrphantom/workwork-backend
     ports:
       - 4000:5000
     user: root
