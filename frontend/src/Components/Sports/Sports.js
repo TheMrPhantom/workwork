@@ -9,12 +9,34 @@ const Sports = (props) => {
     const [requests, setrequests] = useState([])
     const [members, setmembers] = useState([])
     const [refresh, setrefresh] = useState(false)
+    const [sportPos, setsportPos] = useState(250)
+    const [refs, setrefs] = useState(new Map())
 
     useEffect(() => {
         getAndStore("work/request/" + props.match.params.id, setrequests)
         getAndStore("sports/" + props.match.params.id + "/members", setmembers)
         setrefresh(false)
     }, [props.match.params.id, refresh])
+
+    useEffect(() => {
+        var minPos = 0
+        if (refs === undefined) {
+            return
+        }
+        refs.forEach((element) => {
+            if (element.current === null) {
+                return;
+            }
+            minPos = Math.max(minPos, element.current.offsetWidth + 30)
+        })
+        setsportPos(minPos)
+    }, [refs, refresh, members])
+
+    const setRefsCorrect = (id, ref) => {
+        const temp = refs
+        temp.set(id, ref)
+        setrefs(temp)
+    }
 
     return (
         <div>
@@ -25,11 +47,19 @@ const Sports = (props) => {
                 </div>
             })}
             {requests.length > 0 ? <Spacer vertical={20} /> : ""}
-            {requests.length === 0 && parseInt(props.match.params.id) === 1 ? <Typography variant="h5">Aktuell keine Anfragen</Typography>:""}
+            {requests.length === 0 && parseInt(props.match.params.id) === 1 ? <Typography variant="h5">Aktuell keine Anfragen</Typography> : ""}
             {parseInt(props.match.params.id) !== 1 ? <Typography variant="h5">Mitglieder</Typography> : ""}
             <Spacer vertical={10} />
             {members.map((value) => {
-                return <Member key={value.id} id={value.id} name={value.firstname + " " + value.lastname} currentWork={value.currentWork} maxWork={value.maxWork} isTrainer={value.isTrainer || value.isExecutive} refresh={setrefresh} />
+                return (<Member key={value.id}
+                    id={value.id}
+                    name={value.firstname + " " + value.lastname}
+                    currentWork={value.currentWork}
+                    maxWork={value.maxWork}
+                    isTrainer={value.isTrainer || value.isExecutive}
+                    refresh={setrefresh}
+                    setRefs={setRefsCorrect}
+                    sportsPosition={sportPos} />)
             })}
         </div>
     )

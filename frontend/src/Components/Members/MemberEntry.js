@@ -1,11 +1,11 @@
 import { Button, LinearProgress, Paper, Typography } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import EditIcon from '@material-ui/icons/Edit';
 import { useHistory } from "react-router-dom";
 import "./MemberEntry.css"
 
-const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames }) => {
+const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames, setRefs, refresh, sportsPosition }) => {
 
     const [progressEntries, setprogressEntries] = useState([])
 
@@ -19,32 +19,41 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames 
         }
 
         setprogressEntries(progressEntryTemp)
-    }, [currentWork, maxWork, sportNames, hasWorkHours,name])
+    }, [currentWork, maxWork, sportNames, hasWorkHours, name])
+
+    useEffect(() => {
+        refresh(true)
+    }, [refresh])
 
     const history = useHistory();
     const calcProgress = (cW, mW) => {
         return (cW / mW) * 100
     }
 
+    var ref = useRef(null)
+    setRefs(id, ref)
+
     return (
-        <Paper elevation={2} className="outterBoxMember">
+        <Paper elevation={2} className="outterBoxMember" style={{ position: "relative" }}>
             <div className="innerFlexMember">
-                <Typography variant="h6">{name}</Typography>
+                <Typography variant="h6" ref={ref}>{name}</Typography>
                 {hasWorkHours ? <Spacer horizontal={20} /> : ""}
-                {progressEntries.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
-                    <Typography variant="caption">{value.name}</Typography>
-                    <Spacer horizontal={10} />
-                    <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
-                    <Spacer horizontal={20} />
-                    <Typography>{value.currentWork}/{value.maxWork}</Typography>
-                </div>)}
+                <div className={window.innerWidth > 1000 ? "sportAlignDesktop" : ""} style={{ left: sportsPosition }}>
+                    {progressEntries.map((value) => <div className="sportProgress">
+                        <Typography variant="caption">{value.name}</Typography>
+                        <Spacer horizontal={10} />
+                        <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100px" }} />
+                        <Spacer horizontal={20} />
+                        <Typography>{value.currentWork}/{value.maxWork}</Typography>
+                    </div>)}
+                </div>
             </div>
             <div>
                 <Button onClick={() => history.push('/members/edit/' + id)}>
                     <EditIcon />
                 </Button>
             </div>
-        </Paper>
+        </Paper >
     )
 }
 

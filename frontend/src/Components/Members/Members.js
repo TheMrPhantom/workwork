@@ -5,11 +5,14 @@ import MemberEntry from './MemberEntry'
 import { getAndStore } from '../Common/StaticFunctions'
 import AddMember from './AddMember'
 import "./MemberEntry.css"
+
 const Members = () => {
     const [members, setmembers] = useState([])
     const [filteredState, setfilteredMembers] = useState([])
     const [displayedMembers, setdisplayedMembers] = useState([])
     const [refresh, setrefresh] = useState(false)
+    const [sportPos, setsportPos] = useState(250)
+    const [refs, setrefs] = useState(new Map())
 
     useEffect(() => {
         getAndStore("members", setmembers)
@@ -31,6 +34,21 @@ const Members = () => {
         setdisplayedMembers(newArray)
     }, [filteredState])
 
+    useEffect(() => {
+        var minPos = 0
+        if (refs === undefined) {
+            return
+        }
+
+        refs.forEach((element) => {
+            if (element.current === null) {
+                return;
+            }
+            minPos = Math.max(minPos, element.current.offsetWidth + 30)
+        })
+        setsportPos(minPos)
+    }, [refs, refresh,displayedMembers])
+
     const filterMembers = (text) => {
         const newList = members.filter((item) => {
             var firstname = item.firstname
@@ -51,6 +69,12 @@ const Members = () => {
         setrefresh(!refresh)
     }
 
+    const setRefsCorrect = (id, ref) => {
+        const temp = refs
+        temp.set(id, ref)
+        setrefs(temp)
+    }
+
     return (
         <div>
             <Typography variant="h5">Mitglieder</Typography>
@@ -61,7 +85,19 @@ const Members = () => {
             </div>
             <Spacer vertical={20} />
             {displayedMembers.map((value) => {
-                return <div key={value.id}><MemberEntry name={value.firstname + " " + value.lastname} sportNames={value.sportNames} currentWork={value.currentWork} maxWork={value.maxWork} hasWorkHours={!(value.isTrainer || value.isExecutive)} id={value.id} /> <Spacer vertical={2} /></div>
+                return (<div key={value.id}>
+                    <MemberEntry
+                        name={value.firstname + " " + value.lastname}
+                        sportNames={value.sportNames}
+                        currentWork={value.currentWork}
+                        maxWork={value.maxWork}
+                        hasWorkHours={!(value.isTrainer || value.isExecutive)}
+                        id={value.id}
+                        setRefs={setRefsCorrect}
+                        sportsPosition={sportPos}
+                        refresh={setrefresh}/>
+                    <Spacer vertical={2} />
+                </div>)
             })}
         </div>
     )

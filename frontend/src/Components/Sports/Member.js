@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Paper, Typography } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import AddBoxIcon from '@material-ui/icons/AddBox';
@@ -11,7 +11,7 @@ import "./Member.css";
 import "./Request.css"
 
 
-const Member = ({ name, currentWork, maxWork, isTrainer, id }) => {
+const Member = ({ name, currentWork, maxWork, isTrainer, id, setRefs, refresh, sportsPosition }) => {
 
     const [addIsOpen, setaddIsOpen] = useState(false)
     const [hours, sethours] = useState([])
@@ -32,6 +32,13 @@ const Member = ({ name, currentWork, maxWork, isTrainer, id }) => {
         }
         sethours(newArray)
     }, [currentWork, maxWork, isTrainer])
+
+    useEffect(() => {
+        refresh(true)
+    }, [refresh])
+
+    var ref = useRef(null)
+    setRefs(id, ref)
 
     const displayAddDialog = () => {
         if (addIsOpen) {
@@ -62,18 +69,20 @@ const Member = ({ name, currentWork, maxWork, isTrainer, id }) => {
     }
 
     return (
-        <Paper elevation={2} className="requestBox">
+        <Paper elevation={2} className="requestBox" style={{ position: "relative" }}>
             <div className="outterFlex">
                 <div className="innerFlex fullWidth">
-                    <Typography variant="h6" className="border">{name}</Typography>
+                    <Typography variant="h6" className="border" ref={ref}>{name}</Typography>
                     <Spacer horizontal={20} />
-                    {hours.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
-                        <Typography variant="caption">{value.name}</Typography>
-                        <Spacer horizontal={10} />
-                        <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
-                        <Spacer horizontal={20} />
-                        <Typography>{value.currentWork}/{value.maxWork}</Typography>
-                    </div>)}
+                    <div className={window.innerWidth > 1000 ? "sportAlignDesktop" : ""} style={{ left: sportsPosition }}>
+                        {hours.map((value) => <div style={{ minWidth: "100px", marginRight: "10px" }}>
+                            <Typography variant="caption">{value.name}</Typography>
+                            <Spacer horizontal={10} />
+                            <LinearProgress variant="determinate" value={calcProgress(value.currentWork, value.maxWork)} style={{ width: "100%" }} />
+                            <Spacer horizontal={20} />
+                            <Typography>{value.currentWork}/{value.maxWork}</Typography>
+                        </div>)}
+                    </div>
                 </div>
                 <Spacer horizontal={5} />
                 {displayButton()}
