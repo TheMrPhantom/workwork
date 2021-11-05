@@ -5,16 +5,13 @@ services:
       - 3000:80
     user: root
     restart: always
-    build:
-      context: frontend/
+
   backend:
     image: themrphantom/workwork-backend
     ports:
       - 4000:5000
     user: root
     restart: always
-    build:
-      context: backend/
     environment:
       - cookie_expire=<time>
       - domain=<domain>
