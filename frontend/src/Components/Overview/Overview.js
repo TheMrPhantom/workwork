@@ -1,5 +1,5 @@
 import { Paper, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { getAndStore, getHoursFromMember } from '../Common/StaticFunctions';
 import OverviewBox from './OverviewBox';
 import PeopleWorkProgressChart from './PeopleWorkProgressChart';
@@ -21,6 +21,7 @@ const Overview = () => {
     const [maxWork, setmaxWork] = useState(0)
     const [currentWork, setcurrentWork] = useState(0)
     const [memberWorkStatus, setmemberWorkStatus] = useState([])
+    const [trainerSports, settrainerSports] = useState([])
 
     useEffect(() => {
         getAndStore("memberstate", setmemberState)
@@ -91,15 +92,15 @@ const Overview = () => {
 
     }, [members])
 
-    if (memberState === 3) {
-        //Is trainer
-        return (
-            <PeopleWorkProgressChart />
-        )
-    } else if (memberState === 5 || memberState === 7) {
-        //Is Executive
-        return (
-            <div>
+    useEffect(() => {
+        if (memberState === 3) {
+            getAndStore("sports/names/trainerof", settrainerSports)
+        }
+    }, [memberState])
+
+    const trainerOrExecutiveView = useCallback((sport) => {
+        return (<div>
+            {memberState !== 3 ?
                 <div style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
                     <Paper style={{ height: "280px", minWidth: "320px", maxWidth: "500px", width: "40%", padding: "10px", margin: "5px" }}>
                         <Typography variant="h6">Arbeitsstunden Übersicht</Typography>
@@ -141,13 +142,33 @@ const Overview = () => {
                     </Grid>
 
 
-                </div >
-                <Spacer vertical={20} />
-                <Typography variant="h5">Mitglieder mit offenen Arbeitsstunden</Typography>
-                <Spacer vertical={20} />
-                {sports.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
-            </div>
-        )
+                </div > : ""}
+            <Spacer vertical={20} />
+            <Typography variant="h5">Mitglieder mit offenen Arbeitsstunden</Typography>
+            <Spacer vertical={20} />
+            {sport.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
+        </div>)
+    }, [currentWork, executivecount, maxWork, memberWorkStatus, membercount, notApprovedYet, trainercount, memberState])
+
+
+    useEffect(() => {
+        if (memberState === 3) {
+            //Is trainer
+            trainerOrExecutiveView(trainerSports)
+
+        } else if (memberState === 5 || memberState === 7) {
+            //Is Executive
+            trainerOrExecutiveView(members)
+        }
+    }, [members, memberState, trainerOrExecutiveView, trainerSports])
+
+    if (memberState === 3) {
+        //Is trainer
+        return trainerOrExecutiveView(trainerSports)
+
+    } else if (memberState === 5 || memberState === 7) {
+        //Is Executive
+        return trainerOrExecutiveView(sports)
     }
     else if (memberState === 1) {
         //Is Member
