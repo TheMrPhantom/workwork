@@ -1,9 +1,13 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
+import HSFAlert from '../Common/HSFAlert'
 import { doPostRequest } from '../Common/StaticFunctions'
 import ActivateSportsEntry from './ActivateSportsEntry'
 
 const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
+
+    const [alertOpen, setalertOpen] = useState(false)
+
     const changeTrainerOrParticipation = async (id, checked) => {
         var output = null
         if (sportList === null) {
@@ -16,8 +20,10 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
                 }
                 return value
             })
-            await doPostRequest("user/" + memberID + "/changeParticipation", output)
-
+            const resp = await doPostRequest("user/" + memberID + "/changeParticipation", output)
+            if (resp.code === 200) {
+                setalertOpen(true)
+            }
         } else {
             output = sportList.map((value) => {
                 if (value.id === id) {
@@ -25,7 +31,10 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
                 }
                 return value
             })
-            await doPostRequest("user/" + memberID + "/changeTrainer", output)
+            const resp = await doPostRequest("user/" + memberID + "/changeTrainer", output)
+            if (resp.code === 200) {
+                setalertOpen(true)
+            }
         }
 
         if (refresh !== null) {
@@ -58,6 +67,7 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
                         })}
                 </TableBody>
             </Table>
+            <HSFAlert type="success" message="Gespeichert" open={alertOpen} setOpen={setalertOpen} />
         </TableContainer>
     )
 }
