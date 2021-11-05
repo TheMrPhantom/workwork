@@ -47,13 +47,22 @@ const Overview = () => {
             if (value.isExecutive) {
                 executivecount += 1;
             }
+
+            if (value.isTrainer || value.isExecutive) {
+                return;
+            }
+
             var hours = getHoursFromMember(value)
             currentWork += hours[0]
             maxWork += hours[1]
 
             var remainingHours = hours[1] - hours[0]
             var category = Math.min(Math.ceil((remainingHours) / 2), hourCategories.length - 1)
+            var isInt = (remainingHours / 2) - Math.floor(remainingHours / 2) === 0
 
+            if (isInt && category < hourCategories.length - 1 && category !== 0) {
+                category += 1;
+            }
             hourCategories[category] += 1
         })
         const memberWorkStatus = []
@@ -65,7 +74,7 @@ const Overview = () => {
             } else if (counter < hourCategories.length - 1) {
                 memberWorkStatus.push({ name: "<" + tempHour + "h", Mitglieder: value, amt: tempHour })
             } else {
-                memberWorkStatus.push({ name: ">=" + tempHour + "h", Mitglieder: value, amt: tempHour })
+                memberWorkStatus.push({ name: ">=" + (tempHour - 2) + "h", Mitglieder: value, amt: tempHour })
             }
             counter += 1
         })
