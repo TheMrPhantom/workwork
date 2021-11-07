@@ -92,7 +92,7 @@ export default function ClippedDrawer() {
     }));
 
     const handleDrawerOpen = () => {
-        setOpen(true); console.log("laa")
+        setOpen(true);
     };
 
     const handleDrawerClose = () => {
