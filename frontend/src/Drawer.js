@@ -12,12 +12,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Config from "./environment.json";
-
 import PetsIcon from '@material-ui/icons/Pets';
 import PersonIcon from '@material-ui/icons/Person';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
-
 import Overview from './Components/Overview/Overview';
 import Sports from './Components/Sports/Sports';
 import { useLocation } from 'react-router-dom'
@@ -31,12 +29,13 @@ import MemberEdit from './Components/Members/MemberEdit';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Button } from '@material-ui/core';
 import Spacer from './Components/Common/Spacer';
 import { doGetRequest, getAndStore } from './Components/Common/StaticFunctions';
 import { useEffect, useState } from 'react'
 import Login from './Components/Login/Login';
 import Header from './Components/Header/Header';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import "./index.css"
 
@@ -93,7 +92,7 @@ export default function ClippedDrawer() {
     }));
 
     const handleDrawerOpen = () => {
-        setOpen(true);
+        setOpen(true); console.log("laa")
     };
 
     const handleDrawerClose = () => {
@@ -212,19 +211,18 @@ export default function ClippedDrawer() {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" style={{ zIndex: 2 }}>
+            <AppBar position="fixed" open={open}>
                 <Toolbar>
-                    <Button
+                    <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
                         sx={{ mr: 2, ...(open && { display: 'none' }) }}
-                        style={{ width: "20px" }}
                     >
                         <MenuIcon />
-                    </Button>
-                    {open ? <Spacer horizontal={drawerWidth - 60} /> : ""}
+                    </IconButton>
+                    {open ? <Spacer horizontal={drawerWidth} /> : ""}
                     <Header logoutRoutine={logout} />
 
                 </Toolbar>
@@ -243,10 +241,14 @@ export default function ClippedDrawer() {
                 anchor="left"
                 open={open}
             >
-                <DrawerHeader style={{ backgroundColor: "var(--primaryColor)", boxShadow: "2px 2px 9px grey" }}>
-                    <Button onClick={handleDrawerClose}>
+                <DrawerHeader style={{
+                    display: "flex", flexDirection: "row",
+                    justifyContent: "space-between"
+                }}>
+                    <Typography variant="h6" style={{ marginLeft: "10px" }}>Menü</Typography>
+                    <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                    </Button>
+                    </IconButton>
                 </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
                     {buildNormalUserView()}
