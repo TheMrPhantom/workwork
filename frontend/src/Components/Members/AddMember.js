@@ -91,7 +91,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
             setmessageOpen(true)
             return
         }
-        handleClose()
+        
 
         const lowercaseMail = email.toLocaleLowerCase()
 
@@ -100,7 +100,11 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
             if (refresh !== undefined) {
                 refresh()
             }
+            handleClose()
             alert("Passwort: " + resp.content)
+        } else if (resp.code === 409) {
+            seterrorMessge("Email existiert bereits")
+            setmessageOpen(true)
         }
 
     }
@@ -159,7 +163,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                     </Button>
                 </DialogActions>
             </BootstrapDialog>
-            <HSFAlert message={errorMessge} short={"Bitte Felder korrekt ausfüllen"} open={messageOpen} setOpen={setmessageOpen}/>
+            <HSFAlert message={errorMessge} short={"Bitte Felder korrekt ausfüllen"} open={messageOpen} setOpen={setmessageOpen} />
         </div>
     );
 }
