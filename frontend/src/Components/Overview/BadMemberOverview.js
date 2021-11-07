@@ -1,4 +1,5 @@
 import { Typography } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer';
 import { getAndStore, getHoursFromMember } from '../Common/StaticFunctions';
@@ -7,7 +8,7 @@ import Member from '../Sports/Member';
 const BadMemberOverview = ({ sportID, sportName }) => {
 
     const [members, setmembers] = useState([])
-    const [displayedMembers, setdisplayedMembers] = useState([])
+    const [displayedMembers, setdisplayedMembers] = useState(null)
     const [refresh, setrefresh] = useState(false)
     const [sportPos, setsportPos] = useState(250)
     const [refs, setrefs] = useState(new Map())
@@ -42,6 +43,16 @@ const BadMemberOverview = ({ sportID, sportName }) => {
         const temp = refs
         temp.set(id, ref)
         setrefs(temp)
+    }
+
+    if (displayedMembers === null && sportID !== 1) {
+        return (<div style={{ width: "100%" }}>
+            <Typography variant="h6">{sportName}</Typography>
+            <CircularProgress />
+            <Spacer vertical={10} />
+        </div>)
+    } else if (displayedMembers === null) {
+        return ""
     }
 
     if (displayedMembers.length > 0) {
