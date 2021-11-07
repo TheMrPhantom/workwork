@@ -388,6 +388,7 @@ def loginCheck():
 @authenticated
 def logout():
     token_manager.delete_token(request.cookies.get('token'))
+    util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")
     return util.build_response("OK")
 
 
