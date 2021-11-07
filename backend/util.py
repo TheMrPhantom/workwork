@@ -34,5 +34,5 @@ def log(prefix, message):
     if logging_enabled:
         time = datetime.datetime.now().strftime("%x %X")
         output_string = f"[{time}] {prefix} -> {message}"
-        with open("logging/log.txt", 'a+') as f:
+        with open("logs/log.txt", 'a+') as f:
             f.write(f"{output_string}\n")
