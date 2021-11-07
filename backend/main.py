@@ -94,6 +94,8 @@ def makeExecutive(memberID):
     if not db.isExecutive(request.cookies.get("memberID")):
         return util.build_response("unauthorized", code=401)
     db.setExecutive(memberID, toBeSet)
+    util.log("Executive permissions changed",
+             f"Member: {memberID} to {toBeSet}")
     return util.build_response(db.isExecutive(memberID))
 
 
@@ -212,6 +214,7 @@ def getMemberState():
 def deleteSport(sportID):
 
     db.removeSport(sportID)
+    util.log("Sport deleted",f"SportID: {sportID}")
 
     return util.build_response("OK")
 
@@ -221,7 +224,7 @@ def deleteSport(sportID):
 def changeExtraHours(sportID):
     minutes = request.json["minutes"]
     db.changeExtraHours(sportID, minutes)
-
+    util.log("Extra hours changed",f"SportID: {sportID} to {minutes}")
     return util.build_response("OK")
 
 
@@ -231,7 +234,7 @@ def addSport():
     name = request.json["name"]
     extraHours = request.json["extraHours"]
     db.addSport(name, extraHours)
-
+    util.log("Sport added",f"{name} with {extraHours} extra hours")
     return util.build_response("OK")
 
 
@@ -244,7 +247,7 @@ def addRequest():
     minutes = request.json["minutes"]
     #trainer=request.json["trainer"] if "trainer" in request.json else None
     db.addWorkRequest(memberID, sportID, description, minutes)
-
+    util.log("Request added",f"{memberID} with {minutes} min because {description}")
     return util.build_response("OK")
 
 
@@ -252,6 +255,7 @@ def addRequest():
 @authenticated
 def acceptWorkRequest(requestID):
     db.acceptWorkRequest(requestID)
+    util.log("Request accepted",f"RequestID: {requestID}")
     return util.build_response("OK")
 
 
@@ -259,6 +263,7 @@ def acceptWorkRequest(requestID):
 @authenticated
 def denyWorkRequest(requestID):
     db.denyWorkRequest(requestID)
+    util.log("Request denied",f"RequestID: {requestID}")
     return util.build_response("OK")
 
 
@@ -269,6 +274,7 @@ def changeParticipation(memberID):
     for membership in input:
         db.changeParticipation(
             memberID, membership["id"], membership["isParticipant"])
+    util.log("Memberships changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -279,6 +285,7 @@ def changeTrainer(memberID):
     for membership in input:
         db.changeTrainer(
             memberID, membership["id"], membership["isTrainer"])
+    util.log("Trainerships changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -286,6 +293,7 @@ def changeTrainer(memberID):
 @authenticated
 def changeFirstname(memberID):
     db.changeFirstname(memberID, request.json)
+    util.log("Firstname changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -293,6 +301,7 @@ def changeFirstname(memberID):
 @authenticated
 def changeLastname(memberID):
     db.changeLastname(memberID, request.json)
+    util.log("Lastname changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -302,6 +311,7 @@ def changeEmail(memberID):
     if db.checkMailExists(request.json):
         return util.build_response("Mail Already Exists", code=409)
     db.changeMail(memberID, request.json)
+    util.log("Email changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -316,6 +326,7 @@ def changePassword(memberID):
 
     newPassword = request.json["newPassword"]
     db.changePassword(memberID, newPassword)
+    util.log("Password changed",f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -337,6 +348,7 @@ def addMember():
         db.changeParticipation(memberID, sportMembership, True)
 
     if pw:
+        util.log("User Created", f"{firstName} {lastname}")
         return util.build_response(pw)
     else:
         return util.build_response("OK")
@@ -348,16 +360,19 @@ def deleteMember(memberID):
     if not db.isExecutive(request.cookies.get("memberID")):
         return util.build_response("OK", code=401)
     db.deleteMember(memberID)
-
+    util.log("Member deleted",f"MemberID: {memberID}")
     return util.build_response("OK")
 
 
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json
-    rights = db.checkPassword(post_data["username"], post_data["password"])
+    username = post_data["username"]
+    password = post_data["password"]
+    rights = db.checkPassword(username, password)
 
     if rights:
+        util.log("Login", f"{username} logged in")
         token = token_manager.create_token(rights["memberID"])
         return util.build_response("OK", cookieToken=token, cookieMemberID=rights["memberID"])
     return util.build_response("Unauthorized", code=403)
