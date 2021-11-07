@@ -31,7 +31,8 @@ def build_response(message: object, code: int = 200, type: str = "application/js
 
 
 def log(prefix, message):
-    time = datetime.datetime.now().strftime("%x %X")
-    output_string = f"[{time}] {prefix} -> {message}"
-    with open("log.txt", 'a+') as f:
-        f.write(f"{output_string}\n")
+    if logging_enabled:
+        time = datetime.datetime.now().strftime("%x %X")
+        output_string = f"[{time}] {prefix} -> {message}"
+        with open("log.txt", 'a+') as f:
+            f.write(f"{output_string}\n")
