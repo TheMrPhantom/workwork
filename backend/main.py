@@ -108,8 +108,10 @@ def listSports():
 @authenticated
 def listSportsOfTrainer():
     sports = db.getSports()
+    output=[]
     if not db.isExecutive(request.cookies.get('memberID')):
-        output = [sports[0]]
+        if db.isTrainer(request.cookies.get('memberID')):
+            output = [sports[0]]
         for s in sports:
             if db.isTrainerof(request.cookies.get('memberID'), s["id"]):
                 output.append(s)
@@ -154,8 +156,21 @@ def trainer():
     output = []
     for m in members:
         isTrainer = db.isTrainer(m[0])
-        output.append({"id": m[0], "firstname": m[1],
-                       "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
+        if isTrainer:
+            output.append({"id": m[0], "firstname": m[1],
+                        "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
+    return util.build_response(output)
+
+@app.route('/api/members/trainerOrExecutive', methods=["GET"])
+@authenticated
+def trainerOrExecutive():
+    members = db.getMembers()
+    output = []
+    for m in members:
+        isTrainer = db.isTrainer(m[0])
+        if isTrainer or int(m[5]) == 1:
+            output.append({"id": m[0], "firstname": m[1],
+                        "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
     return util.build_response(output)
 
 

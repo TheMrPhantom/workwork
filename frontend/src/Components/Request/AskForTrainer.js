@@ -66,7 +66,7 @@ const AskForTrainer = ({  open, setOpen, addFunction}) => {
 
 
     useEffect(() => {
-        getAndStore("members/trainer", settrainer)
+        getAndStore("members/trainerOrExecutive", settrainer)
     }, [])
 
     const addMember = async () => {
