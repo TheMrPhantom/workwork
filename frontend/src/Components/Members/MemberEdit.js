@@ -9,6 +9,7 @@ import { doPostRequest, getAndStore } from '../Common/StaticFunctions'
 import { useHistory } from 'react-router'
 
 import "./MemberEntry.css"
+import EditWorkHourOfUser from './EditWorkHourOfUser'
 
 const MemberEdit = (props) => {
     const [participant, setparticipant] = useState([])
@@ -60,6 +61,9 @@ const MemberEdit = (props) => {
             <Typography variant="h5">Informationen</Typography>
             <Spacer vertical={20} />
             {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} memberID={props.match.params.id} /> : ""}
+            <Spacer vertical={20} />
+            <Typography variant="h6">Arbeitsstunden in Minuten</Typography>
+            <EditWorkHourOfUser memberID={props.match.params.id}/>
             <ActivateSports memberID={props.match.params.id} sportList={participant} firstColumn="Teilnehmer" setsports={setparticipant} refresh={toggleReload} />
             <ActivateSports memberID={props.match.params.id} sportList={trainer} firstColumn="Trainer" setsports={settrainer} refresh={toggleReload} />
             <Spacer vertical={50} />

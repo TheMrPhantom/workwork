@@ -304,6 +304,18 @@ def changeTrainer(memberID):
     return util.build_response("OK")
 
 
+@app.route('/api/member/<int:memberID>/extraHours', methods=["GET"])
+@authenticated
+def getExtraHoursOfMember(memberID):
+    return util.build_response(db.getExtraHoursOfUser(memberID))
+
+@app.route('/api/member/<int:memberID>/change/extraHours', methods=["POST"])
+@authenticated
+def changeExtraHoursOfMember(memberID):
+    db.changeMemberWorkHours(memberID, request.json)
+    util.log("ExtraHours changed",f"Of {memberID}")
+    return util.build_response("OK")
+
 @app.route('/api/member/<int:memberID>/change/firstname', methods=["POST"])
 @authenticated
 def changeFirstname(memberID):

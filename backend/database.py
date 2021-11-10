@@ -30,7 +30,7 @@ class SQLiteWrapper:
         if not isinitialized:
             hashedPassword, salt = TokenManager.hashPassword(util.admin_pw)
             con.cursor().execute(
-                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0, ?);", (hashedPassword, salt,))
+                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0, ?, 0);", (hashedPassword, salt,))
             con.cursor().execute(
                 "INSERT INTO sport values (?, 0, 0);", (self.standardSportName,))
             con.cursor().execute("INSERT INTO standardworktime values (720);")
@@ -42,7 +42,7 @@ class SQLiteWrapper:
             con = sqlite3.connect(self.db_name)
             con.cursor().execute(
                 '''CREATE TABLE member
-                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER, salt TEXT)'''
+                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER, salt TEXT, extraHours INTEGER)'''
             )
             con.commit()
 
@@ -84,7 +84,7 @@ class SQLiteWrapper:
         sports = self.getSportsOfMember(memberID)
         sportDict = {}
 
-        standardWorkTime = self.getStandardWorkTime()
+        standardWorkTime = self.getStandardWorkTime(memberID)
 
         currentTimePerID = {'Standard': standardWorkTime}
 
@@ -121,6 +121,13 @@ class SQLiteWrapper:
 
         return output
 
+    def getExtraHoursOfUser(self, memberID):
+        con = sqlite3.connect(self.db_name)
+        output = 0
+        for link in con.cursor().execute('''SELECT extraHours FROM member WHERE ROWID=?''', (memberID,)):
+            output = link[0]
+        return output
+
     def getSportsOfMember(self, memberID):
         '''
         [{id:x, name:x, extraHours:x}]
@@ -135,13 +142,10 @@ class SQLiteWrapper:
     def getNeededWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         sportIDs = []
-        standardTime = 0
+        standardTime = self.getStandardWorkTime(memberID)
         noHoursOutput = [{'name': 'Standard', 'hours': 0}]
         if self.isExecutive(memberID) == 1:
             return noHoursOutput
-
-        for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
-            standardTime = link[0]
 
         for link in con.cursor().execute('''SELECT sportID, isTrainer  FROM sportMember WHERE memberID=?''', (memberID,)):
             if link[1] > 0:
@@ -170,12 +174,13 @@ class SQLiteWrapper:
 
         return neededWorkNames
 
-    def getStandardWorkTime(self):
+    def getStandardWorkTime(self, memberID):
         con = sqlite3.connect(self.db_name)
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
             standardTime = link[0]
         con.close()
-        return standardTime
+        extraHoursOfUser = self.getExtraHoursOfUser(memberID)
+        return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
 
     def getPendingWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
@@ -492,6 +497,12 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    def changeMemberWorkHours(self, memberID, minutes):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("UPDATE member SET extraHours=? WHERE ROWID=?;", (minutes, memberID,))
+        con.commit()
+        con.close()
+
     def addWorkRequest(self, memberID, sportID, description, minutes):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (?, ?, ?, ?, 1, 0);",
@@ -510,7 +521,7 @@ class SQLiteWrapper:
         hashedPassword, salt = TokenManager.hashPassword(usedPW)
 
         con.cursor().execute(
-            "INSERT INTO member values (?, ?, ?, ?, 0, 0, ?);", (firstName, lastname, email, hashedPassword, salt))
+            "INSERT INTO member values (?, ?, ?, ?, 0, 0, ?, 0);", (firstName, lastname, email, hashedPassword, salt))
         con.commit()
 
         memberID = -1
@@ -541,7 +552,6 @@ class SQLiteWrapper:
 
     def checkMailExists(self, mail):
         con = sqlite3.connect(self.db_name)
-        print(mail)
         mail_exists = False
         for link in con.cursor().execute(''' SELECT mail FROM member WHERE mail=? AND deleted=0''', (mail,)):
             mail_exists = True
