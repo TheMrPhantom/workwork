@@ -108,7 +108,7 @@ def listSports():
 @authenticated
 def listSportsOfTrainer():
     sports = db.getSports()
-    output=[]
+    output = []
     if not db.isExecutive(request.cookies.get('memberID')):
         if db.isTrainer(request.cookies.get('memberID')):
             output = [sports[0]]
@@ -158,8 +158,9 @@ def trainer():
         isTrainer = db.isTrainer(m[0])
         if isTrainer:
             output.append({"id": m[0], "firstname": m[1],
-                        "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
+                           "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
     return util.build_response(output)
+
 
 @app.route('/api/members/trainerOrExecutive', methods=["GET"])
 @authenticated
@@ -170,7 +171,7 @@ def trainerOrExecutive():
         isTrainer = db.isTrainer(m[0])
         if isTrainer or int(m[5]) == 1:
             output.append({"id": m[0], "firstname": m[1],
-                        "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
+                           "lastname": m[2], "isTrainerOrExecutive": isTrainer or int(m[5]) == 1})
     return util.build_response(output)
 
 
@@ -229,7 +230,7 @@ def getMemberState():
 def deleteSport(sportID):
 
     db.removeSport(sportID)
-    util.log("Sport deleted",f"SportID: {sportID}")
+    util.log("Sport deleted", f"SportID: {sportID}")
 
     return util.build_response("OK")
 
@@ -239,7 +240,7 @@ def deleteSport(sportID):
 def changeExtraHours(sportID):
     minutes = request.json["minutes"]
     db.changeExtraHours(sportID, minutes)
-    util.log("Extra hours changed",f"SportID: {sportID} to {minutes}")
+    util.log("Extra hours changed", f"SportID: {sportID} to {minutes}")
     return util.build_response("OK")
 
 
@@ -249,7 +250,7 @@ def addSport():
     name = request.json["name"]
     extraHours = request.json["extraHours"]
     db.addSport(name, extraHours)
-    util.log("Sport added",f"{name} with {extraHours} extra hours")
+    util.log("Sport added", f"{name} with {extraHours} extra hours")
     return util.build_response("OK")
 
 
@@ -262,7 +263,8 @@ def addRequest():
     minutes = request.json["minutes"]
     #trainer=request.json["trainer"] if "trainer" in request.json else None
     db.addWorkRequest(memberID, sportID, description, minutes)
-    util.log("Request added",f"{memberID} with {minutes} min because {description}")
+    util.log("Request added",
+             f"{memberID} with {minutes} min because {description}")
     return util.build_response("OK")
 
 
@@ -270,7 +272,7 @@ def addRequest():
 @authenticated
 def acceptWorkRequest(requestID):
     db.acceptWorkRequest(requestID)
-    util.log("Request accepted",f"RequestID: {requestID}")
+    util.log("Request accepted", f"RequestID: {requestID}")
     return util.build_response("OK")
 
 
@@ -278,7 +280,7 @@ def acceptWorkRequest(requestID):
 @authenticated
 def denyWorkRequest(requestID):
     db.denyWorkRequest(requestID)
-    util.log("Request denied",f"RequestID: {requestID}")
+    util.log("Request denied", f"RequestID: {requestID}")
     return util.build_response("OK")
 
 
@@ -289,7 +291,7 @@ def changeParticipation(memberID):
     for membership in input:
         db.changeParticipation(
             memberID, membership["id"], membership["isParticipant"])
-    util.log("Memberships changed",f"Of {memberID}")
+    util.log("Memberships changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -300,7 +302,7 @@ def changeTrainer(memberID):
     for membership in input:
         db.changeTrainer(
             memberID, membership["id"], membership["isTrainer"])
-    util.log("Trainerships changed",f"Of {memberID}")
+    util.log("Trainerships changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -309,18 +311,20 @@ def changeTrainer(memberID):
 def getExtraHoursOfMember(memberID):
     return util.build_response(db.getExtraHoursOfUser(memberID))
 
+
 @app.route('/api/member/<int:memberID>/change/extraHours', methods=["POST"])
 @authenticated
 def changeExtraHoursOfMember(memberID):
     db.changeMemberWorkHours(memberID, request.json)
-    util.log("ExtraHours changed",f"Of {memberID}")
+    util.log("ExtraHours changed", f"Of {memberID}")
     return util.build_response("OK")
+
 
 @app.route('/api/member/<int:memberID>/change/firstname', methods=["POST"])
 @authenticated
 def changeFirstname(memberID):
     db.changeFirstname(memberID, request.json)
-    util.log("Firstname changed",f"Of {memberID}")
+    util.log("Firstname changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -328,7 +332,7 @@ def changeFirstname(memberID):
 @authenticated
 def changeLastname(memberID):
     db.changeLastname(memberID, request.json)
-    util.log("Lastname changed",f"Of {memberID}")
+    util.log("Lastname changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -338,7 +342,7 @@ def changeEmail(memberID):
     if db.checkMailExists(request.json):
         return util.build_response("Mail Already Exists", code=409)
     db.changeMail(memberID, request.json)
-    util.log("Email changed",f"Of {memberID}")
+    util.log("Email changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -353,7 +357,7 @@ def changePassword(memberID):
 
     newPassword = request.json["newPassword"]
     db.changePassword(memberID, newPassword)
-    util.log("Password changed",f"Of {memberID}")
+    util.log("Password changed", f"Of {memberID}")
     return util.build_response("OK")
 
 
@@ -387,7 +391,21 @@ def deleteMember(memberID):
     if not db.isExecutive(request.cookies.get("memberID")):
         return util.build_response("OK", code=401)
     db.deleteMember(memberID)
-    util.log("Member deleted",f"MemberID: {memberID}")
+    util.log("Member deleted", f"MemberID: {memberID}")
+    return util.build_response("OK")
+
+
+@app.route('/api/workhours', methods=["GET"])
+@authenticated
+def getWorkHours():
+    return util.build_response(db.getStandardWorkTime())
+
+
+@app.route('/api/workhours/change', methods=["POST"])
+@authenticated
+def setWorkHours():
+    db.setStandardWorkTime(request.json)
+    util.log("Standard worktime changed", f"To: {request.json} minutes")
     return util.build_response("OK")
 
 

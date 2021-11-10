@@ -3,16 +3,17 @@ import React, { useEffect, useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions'
 
-const EditWorkHourOfUser = ({ memberID }) => {
+const SharedWorkTimeSetter = () => {
 
     const [minutes, setminutes] = useState(0)
     const [messageOpen, setmessageOpen] = useState(false)
     const [messageText, setmessageText] = useState("")
     const [messageType, setmessageType] = useState("success")
+    const [messageShort, setmessageShort] = useState("")
 
     useEffect(() => {
-        getAndStore("member/" + memberID + "/extraHours", setminutes)
-    }, [memberID])
+        getAndStore("workhours", setminutes)
+    }, [])
 
     const setExtraHours = async (val) => {
         var newval = val
@@ -23,17 +24,17 @@ const EditWorkHourOfUser = ({ memberID }) => {
             newval = parseInt(newval)
             setminutes(newval)
         }
-        const resp = await doPostRequest("member/" + memberID + "/change/extraHours", newval)
+        const resp = await doPostRequest("workhours/change", newval)
         if (resp.code === 200) {
             setmessageType("success")
             setmessageText("Allgemeine Arbeitsstunden angepasst")
+            setmessageShort(newval + " Minuten")
         } else {
             setmessageText("error")
             setmessageText("Allgemeine Arbeitsstunden konnten nicht aktualisiert werden")
         }
         setmessageOpen(true)
     }
-
     return (
         <div>
             <TextField
@@ -46,9 +47,9 @@ const EditWorkHourOfUser = ({ memberID }) => {
                 style={{ width: "200px" }}
                 onChange={(value) => setExtraHours(value.target.value)}
             />
-            <HSFAlert type={messageType} message={messageText} open={messageOpen} setOpen={setmessageOpen} />
+            <HSFAlert type={messageType} message={messageText} open={messageOpen} setOpen={setmessageOpen} short={messageShort} />
         </div>
     )
 }
 
-export default EditWorkHourOfUser
+export default SharedWorkTimeSetter

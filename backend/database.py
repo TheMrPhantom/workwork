@@ -174,13 +174,23 @@ class SQLiteWrapper:
 
         return neededWorkNames
 
-    def getStandardWorkTime(self, memberID):
+    def getStandardWorkTime(self, memberID=None):
         con = sqlite3.connect(self.db_name)
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
             standardTime = link[0]
         con.close()
         extraHoursOfUser = self.getExtraHoursOfUser(memberID)
-        return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
+        if memberID is not None:
+            return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
+        else:
+            return standardTime
+    
+    def setStandardWorkTime(self, worktime):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute('''UPDATE standardworktime SET time=?''',
+                             (worktime, ))
+        con.commit()
+        con.close()
 
     def getPendingWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
