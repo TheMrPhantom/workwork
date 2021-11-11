@@ -1,5 +1,6 @@
 from flask import Flask, redirect
 from flask import request
+from flask.wrappers import Request
 from flask_cors import CORS
 from functools import wraps
 import authenticator
@@ -23,27 +24,63 @@ def authenticated(fn):
     return wrapper
 
 
+def checkTrainer(request: Request):
+    if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
+        return util.build_response("Unauthorized", 403)
+        
+    if not (db.isTrainer(request.cookies.get('memberID')) or db.isExecutive(request.cookies.get('memberID'))):
+        return util.build_response("Unauthorized", 403)
+    return None
+
+
+def checkExecutive(request: Request):
+    if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
+        return util.build_response("Unauthorized", 403)
+    if not db.isExecutive(request.cookies.get('memberID')):
+        return util.build_response("Unauthorized", 403)
+    return None
+
+
+def memberIDFromRequest(request: Request):
+    return request.cookies.get('memberID')
+
+
+def infosAboutSelfOrTrainer(request: Request, memberID):
+    if checkTrainer(request):
+        if not int(memberID) == int(memberIDFromRequest(request)):
+            return util.build_response("Unauthorized", 403)
+    return None
+
+
 @app.route('/api/user/<int:userID>', methods=["GET"])
 @authenticated
 def memberInfo(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     return util.build_response(db.getMemberInfo(userID))
 
 
 @app.route('/api/user/<int:userID>/currentHours', methods=["GET"])
 @authenticated
 def currentHours(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     return util.build_response(db.getCurrentWorkMinutes(userID))
 
 
 @app.route('/api/user/<int:userID>/neededHours', methods=["GET"])
 @authenticated
 def neededHours(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     return util.build_response(db.getNeededWorkMinutes(userID))
 
 
 @app.route('/api/user/<int:userID>/requests/accepted', methods=["GET"])
 @authenticated
 def getAcceptedWork(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     dbResponse = db.getAcceptedWorkRequests(userID)
     output = []
     for resp in dbResponse:
@@ -55,18 +92,24 @@ def getAcceptedWork(userID):
 @app.route('/api/user/<int:userID>/participantIn', methods=["GET"])
 @authenticated
 def participantIn(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     return util.build_response(db.participantIn(userID))
 
 
 @app.route('/api/user/<int:userID>/trainerIn', methods=["GET"])
 @authenticated
 def trainerIn(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     return util.build_response(db.trainerIn(userID))
 
 
 @app.route('/api/user/<int:userID>/requests/pending', methods=["GET"])
 @authenticated
 def getPendingWork(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     dbResponse = db.getPendingWorkRequests(userID)
     output = []
     for resp in dbResponse:
@@ -90,6 +133,9 @@ def isTrainer(memberID):
 @app.route('/api/user/<int:memberID>/setExecutive', methods=["POST"])
 @authenticated
 def makeExecutive(memberID):
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     toBeSet = request.json["isExecutive"]
     if not db.isExecutive(request.cookies.get("memberID")):
         return util.build_response("unauthorized", code=401)
@@ -123,6 +169,8 @@ def listSportsOfTrainer():
 @app.route('/api/sports/names/membership/<int:userID>', methods=["GET"])
 @authenticated
 def listSportsOfMember(userID):
+    if infosAboutSelfOrTrainer(request, userID):
+        return infosAboutSelfOrTrainer(request, userID)
     sports = db.getSports()
     memberID = userID
     if not db.isExecutive(memberID):
@@ -138,6 +186,9 @@ def listSportsOfMember(userID):
 @app.route('/api/members', methods=["GET"])
 @authenticated
 def members():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
     members = db.getMembers()
     output = []
     for m in members:
@@ -199,6 +250,9 @@ def getPendingRequestAmount():
 @app.route('/api/sports/<int:sportID>/members', methods=["GET"])
 @authenticated
 def getSportsMembers(sportID):
+    check = checkTrainer(request)
+    if check is not None:
+        return check
     req = db.getMembersOfSport(sportID)
     output = []
     for r in req:
@@ -228,7 +282,9 @@ def getMemberState():
 @app.route('/api/sports/<int:sportID>/delete', methods=["POST"])
 @authenticated
 def deleteSport(sportID):
-
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     db.removeSport(sportID)
     util.log("Sport deleted", f"SportID: {sportID}")
 
@@ -238,6 +294,9 @@ def deleteSport(sportID):
 @app.route('/api/sports/<int:sportID>/workhours', methods=["POST"])
 @authenticated
 def changeExtraHours(sportID):
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     minutes = request.json["minutes"]
     db.changeExtraHours(sportID, minutes)
     util.log("Extra hours changed", f"SportID: {sportID} to {minutes}")
@@ -247,6 +306,9 @@ def changeExtraHours(sportID):
 @app.route('/api/sports/add', methods=["POST"])
 @authenticated
 def addSport():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     name = request.json["name"]
     extraHours = request.json["extraHours"]
     db.addSport(name, extraHours)
@@ -271,6 +333,9 @@ def addRequest():
 @app.route('/api/request/<int:requestID>/accept', methods=["POST"])
 @authenticated
 def acceptWorkRequest(requestID):
+    check = checkTrainer(request)
+    if check is not None:
+        return check
     db.acceptWorkRequest(requestID)
     util.log("Request accepted", f"RequestID: {requestID}")
     return util.build_response("OK")
@@ -279,6 +344,9 @@ def acceptWorkRequest(requestID):
 @app.route('/api/request/<int:requestID>/deny', methods=["POST"])
 @authenticated
 def denyWorkRequest(requestID):
+    check = checkTrainer(request)
+    if check is not None:
+        return check
     db.denyWorkRequest(requestID)
     util.log("Request denied", f"RequestID: {requestID}")
     return util.build_response("OK")
@@ -287,6 +355,8 @@ def denyWorkRequest(requestID):
 @app.route('/api/user/<int:memberID>/changeParticipation', methods=["POST"])
 @authenticated
 def changeParticipation(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     input = request.json
     for membership in input:
         db.changeParticipation(
@@ -298,6 +368,9 @@ def changeParticipation(memberID):
 @app.route('/api/user/<int:memberID>/changeTrainer', methods=["POST"])
 @authenticated
 def changeTrainer(memberID):
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     input = request.json
     for membership in input:
         db.changeTrainer(
@@ -309,12 +382,17 @@ def changeTrainer(memberID):
 @app.route('/api/member/<int:memberID>/extraHours', methods=["GET"])
 @authenticated
 def getExtraHoursOfMember(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     return util.build_response(db.getExtraHoursOfUser(memberID))
 
 
 @app.route('/api/member/<int:memberID>/change/extraHours', methods=["POST"])
 @authenticated
 def changeExtraHoursOfMember(memberID):
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     db.changeMemberWorkHours(memberID, request.json)
     util.log("ExtraHours changed", f"Of {memberID}")
     return util.build_response("OK")
@@ -323,6 +401,8 @@ def changeExtraHoursOfMember(memberID):
 @app.route('/api/member/<int:memberID>/change/firstname', methods=["POST"])
 @authenticated
 def changeFirstname(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     db.changeFirstname(memberID, request.json)
     util.log("Firstname changed", f"Of {memberID}")
     return util.build_response("OK")
@@ -331,6 +411,8 @@ def changeFirstname(memberID):
 @app.route('/api/member/<int:memberID>/change/lastname', methods=["POST"])
 @authenticated
 def changeLastname(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     db.changeLastname(memberID, request.json)
     util.log("Lastname changed", f"Of {memberID}")
     return util.build_response("OK")
@@ -339,6 +421,8 @@ def changeLastname(memberID):
 @app.route('/api/member/<int:memberID>/change/email', methods=["POST"])
 @authenticated
 def changeEmail(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     if db.checkMailExists(request.json):
         return util.build_response("Mail Already Exists", code=409)
     db.changeMail(memberID, request.json)
@@ -349,6 +433,8 @@ def changeEmail(memberID):
 @app.route('/api/member/<int:memberID>/change/password', methods=["POST"])
 @authenticated
 def changePassword(memberID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     isTrueMember = token_manager.check_token(
         memberID, request.cookies.get("token"))
 
@@ -404,6 +490,9 @@ def getWorkHours():
 @app.route('/api/workhours/change', methods=["POST"])
 @authenticated
 def setWorkHours():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     db.setStandardWorkTime(request.json)
     util.log("Standard worktime changed", f"To: {request.json} minutes")
     return util.build_response("OK")
