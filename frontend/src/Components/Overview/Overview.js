@@ -143,7 +143,7 @@ const Overview = () => {
                     <Spacer vertical={20} />
 
                 </div > : ""}
-            <Spacer vertical={40} />
+            {memberState !== 3 ? <Spacer vertical={40} /> : ""}
             <Typography variant="h5">Mitglieder mit offenen Arbeitsstunden</Typography>
             <Spacer vertical={20} />
             {sport.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
