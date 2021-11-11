@@ -18,7 +18,7 @@ const SportManagement = () => {
     return (
         <div>
             <Paper style={{ padding: "10px" }} elevation={2}>
-                <Typography variant="h5">Allgemeinde Arbeitsstunden</Typography>
+                <Typography variant="h5">Allgemeine Arbeitsstunden</Typography>
                 <Spacer vertical={5} />
                 <SharedWorkTimeSetter />
             </Paper>
