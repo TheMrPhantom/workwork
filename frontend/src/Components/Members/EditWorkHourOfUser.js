@@ -28,7 +28,7 @@ const EditWorkHourOfUser = ({ memberID }) => {
             setmessageType("success")
             setmessageText("Allgemeine Arbeitsstunden angepasst")
         } else {
-            setmessageText("error")
+            setmessageType("error")
             setmessageText("Allgemeine Arbeitsstunden konnten nicht aktualisiert werden")
         }
         setmessageOpen(true)

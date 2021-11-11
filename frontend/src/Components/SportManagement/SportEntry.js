@@ -39,7 +39,7 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
                     <IndeterminateCheckBoxIcon className="denyBackground" />
                 </Button>
             </div>
-            <HSFAlert message="Zahl muss größer 0 sein" short="Bitte Feld korrekt ausfüllen" open={open} setopen={setopen} />
+            <HSFAlert message="Zahl muss größer 0 sein" short="Bitte Feld korrekt ausfüllen" open={open} setOpen={setopen} />
         </Paper>
     )
 }
