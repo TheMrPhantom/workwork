@@ -65,7 +65,7 @@ def getWorkHourAddedHTML(trainerName, memberName, requestURL):
             <br />
             {memberName} hat eine Arbeitsstunde hinzugefügt und dich als bestätigende Person eingetragen.
             <br />
-            Bitte schaue dir die Anfrage unter <a href="{util.domain}/{requestURL}">{util.domain}"/"{requestURL}</a> an.
+            Bitte schaue dir die Anfrage unter <a href="{util.domain}/{requestURL}">{util.domain}/{requestURL}</a> an.
 
             <p>
             Viele Grüße<br />
