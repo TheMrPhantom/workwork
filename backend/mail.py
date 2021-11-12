@@ -3,7 +3,10 @@ import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import threading
-import config
+try:
+    import config
+except:
+    pass
 import os
 
 port = 587
