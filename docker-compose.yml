@@ -18,6 +18,10 @@ services:
       - adminpw=<pw>
       - db_name=database/data.db
       - standard_sport_name=Allgemein
+      - smtp_server=<smtp_server>
+      - mail_username=<mail_username>
+      - mail_password=<mail_password>
+      - server_mail=<server_mail>
     volumes:
       - ./docker-volume:/usr/src/app/database
 
