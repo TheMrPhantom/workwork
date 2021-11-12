@@ -30,7 +30,7 @@ const SharedWorkTimeSetter = () => {
             setmessageText("Allgemeine Arbeitsstunden angepasst")
             setmessageShort(newval + " Minuten")
         } else {
-            setmessageText("error")
+            setmessageType("error")
             setmessageText("Allgemeine Arbeitsstunden konnten nicht aktualisiert werden")
         }
         setmessageOpen(true)
