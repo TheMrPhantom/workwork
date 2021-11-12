@@ -184,7 +184,7 @@ class SQLiteWrapper:
             return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
         else:
             return standardTime
-    
+
     def setStandardWorkTime(self, worktime):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE standardworktime SET time=?''',
@@ -328,6 +328,18 @@ class SQLiteWrapper:
 
         return output
 
+    def getSportName(self, id):
+        '''
+        returns name
+        '''
+        con = sqlite3.connect(self.db_name)
+        output = None
+        for link in con.cursor().execute("SELECT name FROM sport WHERE deleted=0 AND ROWID=?", (id,)):
+            output = link[0]
+        con.close()
+
+        return output
+
     def removeSport(self, sportID):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE sport SET deleted=1 WHERE ROWID=?;", (sportID,))
@@ -386,6 +398,9 @@ class SQLiteWrapper:
         return requests
 
     def getMemberInfo(self, memberID):
+        """
+        {firstname,lastname,mail}
+        """
         con = sqlite3.connect(self.db_name)
         output = None
         for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):

@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import HSFAlert from '../Common/HSFAlert';
 
-const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
+const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistrationOpen }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -101,7 +101,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh }) => {
                 refresh()
             }
             handleClose()
-            alert("Passwort: " + resp.content)
+            setRegistrationOpen(true)
         } else if (resp.code === 409) {
             seterrorMessge("Email existiert bereits")
             setmessageOpen(true)

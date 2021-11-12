@@ -11,6 +11,7 @@ const Login = ({ redirect }) => {
     const [username, setusername] = useState("")
     const [password, setpassword] = useState("")
     const [open, setopen] = useState(false)
+    const [openSuccess, setopenSuccess] = useState(false)
 
     const login = async () => {
         const resp = await doPostRequest("login", { username: username, password: password });
@@ -46,10 +47,22 @@ const Login = ({ redirect }) => {
             </form>
             <Spacer vertical={20} />
             <div className="verticalFloatLogin mail-login">
-                <AddMember buttonText="Registrieren" headlineText="Registrieren" confirmText="Registrieren" />
+                <AddMember
+                    buttonText="Registrieren"
+                    headlineText="Registrieren"
+                    confirmText="Registrieren"
+                    setRegistrationOpen={setopenSuccess} />
                 <Button variant={boderType()} className="loginButton" onClick={() => login()}>Login</Button>
             </div>
-            <HSFAlert message="Benutzername oder Passwort falsch" short="Bitte erneut versuchen" open={open} setOpen={setopen}/>
+            <HSFAlert message="Benutzername oder Passwort falsch" short="Bitte erneut versuchen" open={open} setOpen={setopen} />
+            <HSFAlert
+                type="success"
+                message="Erfolgreich Registriert, wir schicken dir eine Mail mit deinem initial Passwort zu"
+                short="Dies kann ein paar Minuten dauern"
+                open={openSuccess}
+                setOpen={setopenSuccess}
+                time={15000} />
+            
         </Paper>
 
 

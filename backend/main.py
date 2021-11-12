@@ -6,6 +6,8 @@ from functools import wraps
 import authenticator
 import util
 import database
+import mail
+import mail_templates
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -27,7 +29,7 @@ def authenticated(fn):
 def checkTrainer(request: Request):
     if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
         return util.build_response("Unauthorized", 403)
-        
+
     if not (db.isTrainer(request.cookies.get('memberID')) or db.isExecutive(request.cookies.get('memberID'))):
         return util.build_response("Unauthorized", 403)
     return None
@@ -323,8 +325,21 @@ def addRequest():
     sportID = request.json["sportID"]
     description = request.json["description"]
     minutes = request.json["minutes"]
-    #trainer=request.json["trainer"] if "trainer" in request.json else None
+    trainer = request.json["trainer"] if "trainer" in request.json else []
+
     db.addWorkRequest(memberID, sportID, description, minutes)
+
+    for tID in trainer:
+        trainer_info = db.getMemberInfo(tID)
+        member_info = db.getMemberInfo(memberID)
+        mail_txt = mail_templates.getWorkHourAddedText(
+            trainer_info['firstname'], member_info['firstname'], "sport/1")
+        mail_html = mail_templates.getWorkHourAddedHTML(
+            trainer_info['firstname'], member_info['firstname'], "sport/1")
+
+        mail.send_async("Bestätigung von Arbeitsstunden",
+                        trainer_info['mail'], mail_txt, mail_html, trainer_info['firstname'])
+
     util.log("Request added",
              f"{memberID} with {minutes} min because {description}")
     return util.build_response("OK")
@@ -466,6 +481,22 @@ def addMember():
 
     if pw:
         util.log("User Created", f"{firstName} {lastname}")
+
+        formattedName = str(firstName).capitalize()
+        sportNameString = ""
+
+        for sID in memberships:
+            sportNameString += f"{db.getSportName(sID)}, "
+
+        sportNameString = sportNameString[:-2]
+
+        text = mail_templates.getRegistrationText(
+            formattedName, sportNameString, pw)
+        html = mail_templates.getRegistrationHTML(
+            formattedName, sportNameString, pw)
+
+        mail.send_async(subject="AMS Registrierung",
+                        to=email, text=text, html=html, receiver_Name=formattedName)
         return util.build_response(pw)
     else:
         return util.build_response("OK")
