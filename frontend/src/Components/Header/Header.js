@@ -16,7 +16,7 @@ const Header = ({ logoutRoutine }) => {
     return (
         <div className="headerFlex">
             <Typography variant="h6" noWrap component="div">
-                {Config.ORGA_NAME} - WorkWork
+                {Config.ORGA_NAME} - Arbeisstunden Management System
             </Typography>
             <Switch>
                 <Route exact path="/login"></Route>
