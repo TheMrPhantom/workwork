@@ -529,6 +529,26 @@ def setWorkHours():
     return util.build_response("OK")
 
 
+@app.route('/api/mail/mailToSport/<int:sportID>', methods=["POST"])
+@authenticated
+def sendSportMail(sportID):
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    members = db.getMembersOfSport(sportID)
+    sportName = db.getSportName(sportID)
+    mails = []
+    for m in members:
+        mails.append(m[5])
+    subject = request.json['subject']
+    body = request.json['body']
+    if subject == "" or body == "":
+        return util.build_response("Subject and Body not both set", code=400)
+    mail.sendBCC_async(subject, mails, body, sportName+" Mitglieder")
+    return util.build_response("OK")
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json

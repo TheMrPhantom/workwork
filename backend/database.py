@@ -382,10 +382,13 @@ class SQLiteWrapper:
         return requests
 
     def getMembersOfSport(self, sportID):
+        """
+        [[memberID,firstname,lastname,isTrainer,memberID,mail],...]
+        """
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID
+            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID, member.mail
             FROM sportMember, member
             WHERE sportMember.sportid=?
             AND sportMember.memberID=member.ROWID
