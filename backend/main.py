@@ -549,6 +549,16 @@ def sendSportMail(sportID):
     return util.build_response("OK")
 
 
+@app.route('/api/event/add', methods=["POST"])
+@authenticated
+def addEvent():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    print(request.json)
+    return util.build_response("OK")
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json
