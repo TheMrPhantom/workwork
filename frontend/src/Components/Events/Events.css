@@ -29,3 +29,58 @@
     justify-content: flex-start;
     width: fit-content;
 }
+
+.upcomingEventsBox {
+    padding: 10px;
+    margin-bottom: 15px;
+    margin-right: 15px;
+}
+
+.eventNameTimeslot {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.eventListEntryMainInfoOutter {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.eventListEntryMainInfo {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.eventSlotList {
+    display: flex;
+    margin-top: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.eventSlotListRight {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.eventSlotListLeft {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.upcomingEventsFlex{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

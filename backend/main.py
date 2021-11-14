@@ -556,8 +556,54 @@ def addEvent():
     if check is not None:
         return check
 
-    print(request.json)
+    eventName = request.json["name"]
+    sportID = request.json["sportID"]
+    date = request.json["date"]
+    timeslots = request.json["timeslots"]
+    eventID = db.addEvent(eventName, sportID, date)
+    print("la", eventID)
+    if eventID is None:
+        return util.build_response("Event already Exists", code=409)
+
+    for t in timeslots:
+        print("le", eventID[0], t["name"], t["helper"], t["start"], t["end"])
+        db.addTimeslot(eventID[0], t["name"],
+                       t["helper"], t["start"], t["end"])
+
     return util.build_response("OK")
+
+
+@app.route('/api/event', methods=["GET"])
+@authenticated
+def getEvents():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    events = db.getEvents()
+    print(events)
+    output = []
+    for e in events:
+        eventID = e[0]
+        timeslots = db.getTimeslots(eventID)
+        output.append(
+            {"eventID": e[0], "name": e[1], "sportID": e[2], "date": e[3], "timeslots": timeslots})
+
+    return util.build_response(output)
+
+
+@app.route('/api/event/delete', methods=["POST"])
+@authenticated
+def deleteEvent():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+    eventID = request.json
+
+    db.deleteEvent(eventID)
+
+    return util.build_response("OK")
+
 
 @app.route('/api/login', methods=["POST"])
 def login():

@@ -34,7 +34,7 @@ const CreateEvent = () => {
 
     const addEvent = () => {
         if (date !== null && eventName !== "" && selectedSport !== "" && timeslots.length > 0) {
-            doPostRequest("event/add", { "name": eventName, "date": date, "timeslots": timeslots })
+            doPostRequest("event/add", { "name": eventName, "sportID": selectedSport, "date": date, "timeslots": timeslots })
             setdate(null)
             seteventName("")
             setselectedSport("")
