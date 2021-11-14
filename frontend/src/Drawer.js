@@ -40,6 +40,8 @@ import EventIcon from '@mui/icons-material/Event';
 
 import "./index.css"
 import EventOverview from './Components/Events/EventOverview';
+import EventList from './Components/Events/EventList';
+import CreateEvent from './Components/Events/CreateEvent';
 
 const drawerWidth = 210;
 
@@ -286,7 +288,8 @@ export default function ClippedDrawer() {
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
-                <Route path="/events" component={EventOverview} />
+                <Route exact path="/events" component={EventList} />
+                <Route exact path="/events/create" component={CreateEvent} />
                 <Route path="/request" component={Request} />
                 <Switch>
                     <Route path="/sport/admin" component={SportManagement} />

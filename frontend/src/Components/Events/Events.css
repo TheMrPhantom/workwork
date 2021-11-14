@@ -84,3 +84,9 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+.upcomingEventsHeadline{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

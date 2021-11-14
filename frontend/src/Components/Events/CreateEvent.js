@@ -12,8 +12,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import "./Events.css"
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
+import { useHistory } from "react-router-dom";
+import "./Events.css"
 
 const CreateEvent = () => {
     const [date, setdate] = useState(null)
@@ -21,6 +22,7 @@ const CreateEvent = () => {
     const [selectedSport, setselectedSport] = useState("")
     const [sportNames, setsportNames] = useState([])
     const [timeslots, settimeslots] = useState([])
+    const history = useHistory();
 
     useEffect(() => {
         getAndStore("sports/names", setsportNames)
@@ -39,6 +41,7 @@ const CreateEvent = () => {
             seteventName("")
             setselectedSport("")
             settimeslots([])
+            history.push("/events")
         }
     }
 
