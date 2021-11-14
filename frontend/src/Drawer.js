@@ -36,8 +36,10 @@ import Login from './Components/Login/Login';
 import Header from './Components/Header/Header';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import EventIcon from '@mui/icons-material/Event';
 
 import "./index.css"
+import EventOverview from './Components/Events/EventOverview';
 
 const drawerWidth = 210;
 
@@ -184,6 +186,25 @@ export default function ClippedDrawer() {
         )
     }
 
+    const buildEventSettings = () => {
+        if (memberState < 2) {
+            return
+        }
+        return (
+            <div>
+                <List>
+                    <ListItem button key="0" onClick={() => redirect("/events")}>
+                        <ListItemIcon>
+                            <EventIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Events" />
+                    </ListItem>
+                </List>
+                <Divider />
+            </div>
+        )
+    }
+
     const buildLogin = () => {
         if (memberState !== 0) {
             return
@@ -252,6 +273,7 @@ export default function ClippedDrawer() {
                 </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
                     {buildNormalUserView()}
+                    {buildEventSettings()}
                     {buildSportsList()}
                     {buildExecutiveList()}
                     {buildSettings()}
@@ -264,6 +286,7 @@ export default function ClippedDrawer() {
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
+                <Route path="/events" component={EventOverview} />
                 <Route path="/request" component={Request} />
                 <Switch>
                     <Route path="/sport/admin" component={SportManagement} />
