@@ -5,6 +5,7 @@ import MemberEntry from './MemberEntry'
 import { getAndStore } from '../Common/StaticFunctions'
 import AddMember from './AddMember'
 import "./MemberEntry.css"
+import HSFAlert from '../Common/HSFAlert'
 
 const Members = () => {
     const [members, setmembers] = useState([])
@@ -12,6 +13,7 @@ const Members = () => {
     const [displayedMembers, setdisplayedMembers] = useState([])
     const [refresh, setrefresh] = useState(false)
     const [sportPos, setsportPos] = useState(250)
+    const [openSuccess, setopenSuccess] = useState(false)
     const [refs, setrefs] = useState(new Map())
 
     useEffect(() => {
@@ -81,7 +83,14 @@ const Members = () => {
             <Spacer vertical={10} />
             <div className="horizontalMemberFloat">
                 <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
-                <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent} />
+                <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent} setRegistrationOpen={setopenSuccess} />
+                <HSFAlert
+                type="success"
+                message="Erfolgreich Registriert, das initiale Passwort wir dem Mitglied zugeschickt"
+                short="Dies kann ein paar Minuten dauern"
+                open={openSuccess}
+                setOpen={setopenSuccess}
+                time={15000} />
             </div>
             <Spacer vertical={20} />
             {displayedMembers.map((value) => {
