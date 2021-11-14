@@ -86,7 +86,7 @@ const Members = () => {
                 <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent} setRegistrationOpen={setopenSuccess} />
                 <HSFAlert
                 type="success"
-                message="Erfolgreich Registriert, das initiale Passwort wir dem Mitglied zugeschickt"
+                message="Erfolgreich Registriert, das initiale Passwort wird dem Mitglied zugeschickt"
                 short="Dies kann ein paar Minuten dauern"
                 open={openSuccess}
                 setOpen={setopenSuccess}
