@@ -70,7 +70,7 @@ const CreateEvent = () => {
                     onChange={(newValue) => {
                         setdate(newValue);
                     }}
-                    renderInput={(params) => <TextField {...params} className="eventsInput" error={date===null}/>}
+                    renderInput={(params) => <TextField {...params} className="eventsInput" error={date === null} />}
                 />
             </LocalizationProvider>
             <Spacer vertical={20} />
@@ -92,6 +92,8 @@ const CreateEvent = () => {
                         onDelete={() => { settimeslots(timeslots.filter((innerValue) => value.nonce !== innerValue.nonce)) }} />
                 </div>
             })}
+
+            {timeslots.length === 0 ? <div><Spacer vertical={10} /><Typography style={{ color: "var(--errorColor)" }}>Noch keine Schichten erstellt</Typography></div> : ""}
 
             <Spacer vertical={20} />
 
