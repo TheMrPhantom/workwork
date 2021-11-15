@@ -561,12 +561,10 @@ def addEvent():
     date = request.json["date"]
     timeslots = request.json["timeslots"]
     eventID = db.addEvent(eventName, sportID, date)
-    print("la", eventID)
     if eventID is None:
         return util.build_response("Event already Exists", code=409)
 
     for t in timeslots:
-        print("le", eventID[0], t["name"], t["helper"], t["start"], t["end"])
         db.addTimeslot(eventID[0], t["name"],
                        t["helper"], t["start"], t["end"])
 
@@ -581,7 +579,6 @@ def getEvents():
         return check
 
     events = db.getEvents()
-    print(events)
     output = []
     for e in events:
         eventID = e[0]

@@ -39,7 +39,6 @@ import Typography from '@mui/material/Typography';
 import EventIcon from '@mui/icons-material/Event';
 
 import "./index.css"
-import EventOverview from './Components/Events/EventOverview';
 import EventList from './Components/Events/EventList';
 import CreateEvent from './Components/Events/CreateEvent';
 
