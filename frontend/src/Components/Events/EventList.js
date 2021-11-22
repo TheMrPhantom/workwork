@@ -9,19 +9,30 @@ import "./Events.css"
 const EventList = () => {
     const [events, setevents] = useState([])
     const [sportNames, setsportNames] = useState([])
+    const [memberState, setmemberState] = useState(0)
     const history = useHistory();
 
     useEffect(() => {
         getAndStore("event", setevents)
         getAndStore("sports/names", setsportNames)
+        getAndStore("memberstate", setmemberState)
     }, [])
+
+    const displayCreateButton = () => {
+        if (memberState > 1) {
+            return (
+                <Button variant="outlined" onClick={() => history.push("events/create")}>Event Erstellen</Button>
+            )
+        }
+    }
 
     return (
         <div>
             <div className="upcomingEventsHeadline">
                 <Typography variant="h5">Anstehende Events</Typography>
                 <Spacer horizontal={20} />
-                <Button variant="outlined" onClick={() => history.push("events/create")}>Event Erstellen</Button>
+                {displayCreateButton()}
+
             </div>
             <Spacer vertical={20} />
             <div className="upcomingEventsFlex">

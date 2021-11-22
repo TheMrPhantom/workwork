@@ -188,9 +188,6 @@ export default function ClippedDrawer() {
     }
 
     const buildEventSettings = () => {
-        if (memberState < 2) {
-            return
-        }
         return (
             <div>
                 <List>
