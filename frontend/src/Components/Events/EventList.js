@@ -42,8 +42,12 @@ const EventList = () => {
                     name={value.name}
                     sportName={sportNames.length > value.sportID ? sportNames[value.sportID]["name"] : "Lade ..."}
                     date={value.date}
-                    timeslots={value.timeslots} />)}
+                    timeslots={value.timeslots}
+                    memberState={memberState}
+                />)}
             </div>
+
+
         </div>
     )
 }

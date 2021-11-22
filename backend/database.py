@@ -647,6 +647,31 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    def addTimeslotParticipant(self, memberID, timeslotID):
+        if not self.isTimeslotParticipant(memberID, timeslotID):
+            con = sqlite3.connect(self.db_name)
+            con.cursor().execute('''INSERT INTO eventParticipant values (?, ?)''',
+                                 (memberID, timeslotID,))
+            con.commit()
+            con.close()
+
+    def removeTimeslotParticipant(self, memberID, timeslotID):
+        if self.isTimeslotParticipant(memberID, timeslotID):
+            con = sqlite3.connect(self.db_name)
+            con.cursor().execute('''DELETE FROM eventParticipant WHERE memberID=? AND timeslotID=?;''',
+                                 (memberID, timeslotID,))
+            con.commit()
+            con.close()
+
+    def isTimeslotParticipant(self, memberID, timeslotID):
+        con = sqlite3.connect(self.db_name)
+        output = False
+        for link in con.cursor().execute(''' SELECT ROWID FROM eventParticipant WHERE memberID=? AND timeslotID=?''', (memberID, timeslotID,)):
+            output = True
+        con.close()
+
+        return output
+
     def deleteEvent(self, eventID: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE event SET deleted=1 WHERE ROWID=?''',

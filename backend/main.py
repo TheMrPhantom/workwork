@@ -574,10 +574,6 @@ def addEvent():
 @app.route('/api/event', methods=["GET"])
 @authenticated
 def getEvents():
-    check = checkTrainer(request)
-    if check is not None:
-        return check
-
     events = db.getEvents()
     output = []
     for e in events:
@@ -600,6 +596,23 @@ def deleteEvent():
     db.deleteEvent(eventID)
 
     return util.build_response("OK")
+
+
+@app.route('/api/event/timeslot/<int:timeslotID>/participant/<int:memberID>', methods=["GET"])
+@authenticated
+def isTimeslotParticipant(memberID, timeslotID):
+    return util.build_response(db.isTimeslotParticipant(memberID, timeslotID))
+
+
+@app.route('/api/event/timeslot/<int:timeslotID>/participant/<int:memberID>', methods=["POST"])
+@authenticated
+def setTimeslotParticipant(memberID, timeslotID):
+    isSet = request.json
+    if isSet:
+        db.addTimeslotParticipant(memberID, timeslotID)
+    else:
+        db.removeTimeslotParticipant(memberID, timeslotID)
+    return util.build_response(isSet)
 
 
 @app.route('/api/login', methods=["POST"])

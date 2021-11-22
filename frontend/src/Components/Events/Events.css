@@ -90,3 +90,16 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+.eventCenter{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.eventNonSwitchCenter{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+}
