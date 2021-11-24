@@ -70,6 +70,24 @@ class SQLiteWrapper:
             )
             con.commit()
 
+            con.cursor().execute(
+                '''CREATE TABLE event
+                (name TEXT, sportID INTEGER, date TEXT, deleted INTEGER)'''
+            )
+            con.commit()
+
+            con.cursor().execute(
+                '''CREATE TABLE timeslot
+                (eventID INTEGER, name TEXT, helper INTEGER, start TEXT, end TEXT)'''
+            )
+            con.commit()
+
+            con.cursor().execute(
+                '''CREATE TABLE eventParticipant
+                (memberID INTEGER, timeslotID INTEGER)'''
+            )
+            con.commit()
+
             con.close()
         except sqlite3.OperationalError as e:
             print(e)
@@ -585,6 +603,91 @@ class SQLiteWrapper:
             mail_exists = True
         con.close()
         return mail_exists
+
+    def addEvent(self, name, sportID, date):
+        if(self.getEvent(name) is not None):
+            return None
+
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("INSERT INTO event values (?, ?, ?, 0);", (name, sportID, date))
+        con.commit()
+        con.close()
+
+        return self.getEvent(name)
+
+    def getEvent(self, name):
+        con = sqlite3.connect(self.db_name)
+        output = None
+        for link in con.cursor().execute(''' SELECT ROWID, name FROM event WHERE name=? AND deleted=0''', (name,)):
+            output = link
+        con.close()
+        return output
+
+    def getEvents(self):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute(''' SELECT ROWID, * FROM event WHERE deleted=0'''):
+            output.append(link)
+        con.close()
+        return output
+
+    def addTimeslot(self, eventID, name, helper, start, end):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute("INSERT INTO timeslot values (?, ?, ?, ?, ?);",
+                             (eventID, name, helper, start, end))
+        con.commit()
+        con.close()
+
+    def getTimeslots(self, eventID):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute(''' SELECT ROWID,* FROM timeslot WHERE eventID=?''', (eventID,)):
+            output.append({"timeslotID": link[0], "eventID": link[1],
+                           "name": link[2], "helper": link[3], "start": link[4], "end": link[5]})
+        con.close()
+        return output
+
+    def addTimeslotParticipant(self, memberID, timeslotID):
+        if not self.isTimeslotParticipant(memberID, timeslotID):
+            con = sqlite3.connect(self.db_name)
+            con.cursor().execute('''INSERT INTO eventParticipant values (?, ?)''',
+                                 (memberID, timeslotID,))
+            con.commit()
+            con.close()
+
+    def removeTimeslotParticipant(self, memberID, timeslotID):
+        if self.isTimeslotParticipant(memberID, timeslotID):
+            con = sqlite3.connect(self.db_name)
+            con.cursor().execute('''DELETE FROM eventParticipant WHERE memberID=? AND timeslotID=?;''',
+                                 (memberID, timeslotID,))
+            con.commit()
+            con.close()
+
+    def isTimeslotParticipant(self, memberID, timeslotID):
+        con = sqlite3.connect(self.db_name)
+        output = False
+        for link in con.cursor().execute(''' SELECT ROWID FROM eventParticipant WHERE memberID=? AND timeslotID=?''', (memberID, timeslotID,)):
+            output = True
+        con.close()
+
+        return output
+
+    def deleteEvent(self, eventID: int):
+        con = sqlite3.connect(self.db_name)
+        con.cursor().execute('''UPDATE event SET deleted=1 WHERE ROWID=?''',
+                             (eventID, ))
+        con.commit()
+        con.close()
+        return
+
+    def getTimeslotParticipants(self, timeslotID):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute(''' SELECT memberID FROM eventParticipant WHERE timeslotID=?''', (timeslotID,)):
+            output.append(self.getMemberInfo(link[0]))
+        con.close()
+
+        return output
 
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)

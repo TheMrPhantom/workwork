@@ -36,8 +36,12 @@ import Login from './Components/Login/Login';
 import Header from './Components/Header/Header';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import EventIcon from '@mui/icons-material/Event';
+import LoginIcon from '@mui/icons-material/Login';
 
 import "./index.css"
+import EventList from './Components/Events/EventList';
+import CreateEvent from './Components/Events/CreateEvent';
 
 const drawerWidth = 210;
 
@@ -184,6 +188,25 @@ export default function ClippedDrawer() {
         )
     }
 
+    const buildEventSettings = () => {
+        if (memberState === 0) {
+            return
+        }
+        return (
+            <div>
+                <List>
+                    <ListItem button key="0" onClick={() => redirect("/events")}>
+                        <ListItemIcon>
+                            <EventIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Events" />
+                    </ListItem>
+                </List>
+                <Divider />
+            </div>
+        )
+    }
+
     const buildLogin = () => {
         if (memberState !== 0) {
             return
@@ -192,7 +215,7 @@ export default function ClippedDrawer() {
             <List>
                 <ListItem button key="0" onClick={() => redirect("/login")}>
                     <ListItemIcon>
-                        <SettingsIcon />
+                        <LoginIcon />
                     </ListItemIcon>
                     <ListItemText primary="Login" />
                 </ListItem>
@@ -252,6 +275,7 @@ export default function ClippedDrawer() {
                 </DrawerHeader>
                 <Box sx={{ overflow: 'auto' }}>
                     {buildNormalUserView()}
+                    {buildEventSettings()}
                     {buildSportsList()}
                     {buildExecutiveList()}
                     {buildSettings()}
@@ -264,6 +288,8 @@ export default function ClippedDrawer() {
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
+                <Route exact path="/events" component={EventList} />
+                <Route exact path="/events/create" component={CreateEvent} />
                 <Route path="/request" component={Request} />
                 <Switch>
                     <Route path="/sport/admin" component={SportManagement} />
