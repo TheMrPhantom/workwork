@@ -65,7 +65,7 @@ const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
             <div className="eventSlotListRight">
                 <div className="eventNonSwitchCenter">
                     <Typography variant="subtitle2">Helfer</Typography>
-                    <Typography variant="body1">{helper}</Typography>
+                    <Typography variant="body1">{participantAmount}/{helper}</Typography>
                 </div>
                 <Spacer horizontal={30} />
                 <div className="eventNonSwitchCenter">
