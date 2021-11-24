@@ -37,6 +37,7 @@ import Header from './Components/Header/Header';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import EventIcon from '@mui/icons-material/Event';
+import LoginIcon from '@mui/icons-material/Login';
 
 import "./index.css"
 import EventList from './Components/Events/EventList';
@@ -188,6 +189,9 @@ export default function ClippedDrawer() {
     }
 
     const buildEventSettings = () => {
+        if (memberState === 0) {
+            return
+        }
         return (
             <div>
                 <List>
@@ -211,7 +215,7 @@ export default function ClippedDrawer() {
             <List>
                 <ListItem button key="0" onClick={() => redirect("/login")}>
                     <ListItemIcon>
-                        <SettingsIcon />
+                        <LoginIcon />
                     </ListItemIcon>
                     <ListItemText primary="Login" />
                 </ListItem>

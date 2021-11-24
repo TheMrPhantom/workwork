@@ -680,6 +680,15 @@ class SQLiteWrapper:
         con.close()
         return
 
+    def getTimeslotParticipants(self, timeslotID):
+        con = sqlite3.connect(self.db_name)
+        output = []
+        for link in con.cursor().execute(''' SELECT memberID FROM eventParticipant WHERE timeslotID=?''', (timeslotID,)):
+            output.append(self.getMemberInfo(link[0]))
+        con.close()
+
+        return output
+
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")

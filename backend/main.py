@@ -601,12 +601,16 @@ def deleteEvent():
 @app.route('/api/event/timeslot/<int:timeslotID>/participant/<int:memberID>', methods=["GET"])
 @authenticated
 def isTimeslotParticipant(memberID, timeslotID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     return util.build_response(db.isTimeslotParticipant(memberID, timeslotID))
 
 
 @app.route('/api/event/timeslot/<int:timeslotID>/participant/<int:memberID>', methods=["POST"])
 @authenticated
 def setTimeslotParticipant(memberID, timeslotID):
+    if infosAboutSelfOrTrainer(request, memberID):
+        return infosAboutSelfOrTrainer(request, memberID)
     isSet = request.json
     if isSet:
         db.addTimeslotParticipant(memberID, timeslotID)
@@ -614,6 +618,20 @@ def setTimeslotParticipant(memberID, timeslotID):
         db.removeTimeslotParticipant(memberID, timeslotID)
     return util.build_response(isSet)
 
+
+@app.route('/api/event/timeslot/<int:timeslotID>/participants', methods=["GET"])
+@authenticated
+def getTimeslotParticipants(timeslotID):
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    return util.build_response(db.getTimeslotParticipants(timeslotID))
+
+@app.route('/api/event/timeslot/<int:timeslotID>/participants/amount', methods=["GET"])
+@authenticated
+def getTimeslotParticipantsAmount(timeslotID):
+    return util.build_response(len(db.getTimeslotParticipants(timeslotID)))
 
 @app.route('/api/login', methods=["POST"])
 def login():
