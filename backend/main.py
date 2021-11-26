@@ -8,12 +8,17 @@ import util
 import database
 import mail
 import mail_templates
+import TaskScheduler
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
 token_manager = authenticator.TokenManager()
 db = database.SQLiteWrapper()
+
+taskScheduler = TaskScheduler.TaskScheduler()
+taskScheduler.add_Daily_Task(db.createRequestsFromEvents)
+taskScheduler.start()
 
 
 def authenticated(fn):
@@ -628,10 +633,12 @@ def getTimeslotParticipants(timeslotID):
 
     return util.build_response(db.getTimeslotParticipants(timeslotID))
 
+
 @app.route('/api/event/timeslot/<int:timeslotID>/participants/amount', methods=["GET"])
 @authenticated
 def getTimeslotParticipantsAmount(timeslotID):
     return util.build_response(len(db.getTimeslotParticipants(timeslotID)))
+
 
 @app.route('/api/login', methods=["POST"])
 def login():

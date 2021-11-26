@@ -2,6 +2,7 @@ import sqlite3
 import os
 from authenticator import TokenManager
 import util
+from datetime import datetime
 
 
 class SQLiteWrapper:
@@ -420,13 +421,13 @@ class SQLiteWrapper:
 
     def getMemberInfo(self, memberID):
         """
-        {firstname,lastname,mail}
+        {firstname,lastname,mail,id}
         """
         con = sqlite3.connect(self.db_name)
         output = None
         for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):
             output = {"firstname": link[0],
-                      "lastname": link[1], "mail": link[2]}
+                      "lastname": link[1], "mail": link[2], "memberID": memberID}
 
         con.close()
         return output
@@ -687,6 +688,42 @@ class SQLiteWrapper:
             output.append(self.getMemberInfo(link[0]))
         con.close()
 
+        return output
+
+    def createRequestsFromEvents(self):
+        expEvents = self.getExpiredEvents()
+        
+        for event in expEvents:
+            timeslots = self.getTimeslots(event[0])
+            for timeslot in timeslots:
+                timeslotID = timeslot["timeslotID"]
+                participants = self.getTimeslotParticipants(timeslotID)
+
+                start = timeslot["start"]
+                end = timeslot["end"]
+                startFormated = datetime.strptime(start, '%H:%M')
+                endFormated = datetime.strptime(end, '%H:%M')
+
+                minutes = int((endFormated-startFormated).total_seconds()/60)
+
+                for participant in participants:
+                    memberID = participant["memberID"]
+                    self.createWorkRequest(
+                        memberID, event[2], f"{event[1]} ({timeslot['name']})", minutes)
+        
+        for event in expEvents:
+            self.deleteEvent(event[0])
+
+    def getExpiredEvents(self):
+        output = []
+        events = self.getEvents()
+        for e in events:
+            timeString = e[3][:str(e[3]).find("T")]
+            timeString += "T23:59:59"
+            timeFormated = datetime.strptime(timeString, '%Y-%m-%dT%H:%M:%S')
+            now = datetime.now()
+            if timeFormated < now:
+                output.append(e)
         return output
 
     def __fillTestData(self):
