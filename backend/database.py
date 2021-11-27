@@ -690,9 +690,19 @@ class SQLiteWrapper:
 
         return output
 
+    def getTimeslot(self, timeslotID):
+        con = sqlite3.connect(self.db_name)
+        output = None
+        for link in con.cursor().execute(''' SELECT ROWID, * FROM timeslot WHERE ROWID=?''', (timeslotID,)):
+            output = link
+
+        con.close()
+        print(output)
+        return output
+
     def createRequestsFromEvents(self):
         expEvents = self.getExpiredEvents()
-        
+
         for event in expEvents:
             timeslots = self.getTimeslots(event[0])
             for timeslot in timeslots:
@@ -710,7 +720,7 @@ class SQLiteWrapper:
                     memberID = participant["memberID"]
                     self.createWorkRequest(
                         memberID, event[2], f"{event[1]} ({timeslot['name']})", minutes)
-        
+
         for event in expEvents:
             self.deleteEvent(event[0])
 

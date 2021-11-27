@@ -10,18 +10,20 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import "./Events.css"
+import HSFAlert from '../Common/HSFAlert';
 
 const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
     const [isParticipant, setisParticipant] = useState(false)
     const [reload, setreload] = useState(false)
     const [participants, setparticipants] = useState([])
     const [participantAmount, setparticipantAmount] = useState(0)
+    const [messageOpen, setmessageOpen] = useState(false)
 
     useEffect(() => {
         if (memberState < 2) {
             const memberID = Cookies.get("memberID")
             getAndStore("event/timeslot/" + id + "/participant/" + memberID, setisParticipant)
-            getAndStore("event/timeslot/" + id + "/participants/amount",setparticipantAmount)
+            getAndStore("event/timeslot/" + id + "/participants/amount", setparticipantAmount)
         } else {
             getAndStore("event/timeslot/" + id + "/participants", setparticipants)
         }
@@ -48,9 +50,10 @@ const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
     const changeParticipation = async (value) => {
         const memberID = Cookies.get("memberID")
         const resp = await doPostRequest("event/timeslot/" + id + "/participant/" + memberID, value)
-        if (resp.code === 200) {
-            setreload(!reload)
+        if (resp.code === 409) {
+            setmessageOpen(true)
         }
+        setreload(!reload)
     }
 
     const memberView = () => {
@@ -81,9 +84,10 @@ const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
 
                 <div className="eventCenter">
                     <Typography variant="subtitle2">Teilnehmen</Typography>
-                    <GreenSwitch disabled={participantAmount>=helper&&!isParticipant} checked={isParticipant} onClick={(value) => changeParticipation(value.target.checked)} />
+                    <GreenSwitch disabled={participantAmount >= helper && !isParticipant} checked={isParticipant} onClick={(value) => changeParticipation(value.target.checked)} />
                 </div>
             </div>
+            <HSFAlert message="Schicht inzwischen voll" short="Bitte andere Schicht auswählen " open={messageOpen} setOpen={setmessageOpen} />
         </div>)
     }
     const trainerView = () => {

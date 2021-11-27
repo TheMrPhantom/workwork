@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, helpers, redirect
 from flask import request
 from flask.wrappers import Request
 from flask_cors import CORS
@@ -617,8 +617,16 @@ def setTimeslotParticipant(memberID, timeslotID):
     if infosAboutSelfOrTrainer(request, memberID):
         return infosAboutSelfOrTrainer(request, memberID)
     isSet = request.json
+
     if isSet:
-        db.addTimeslotParticipant(memberID, timeslotID)
+        maxhelper = db.getTimeslot(timeslotID)[3]
+        participants = db.getTimeslotParticipants(timeslotID)
+        currentHelper = len(participants) if participants else 0
+        
+        if currentHelper < maxhelper:
+            db.addTimeslotParticipant(memberID, timeslotID)
+        else:
+            return util.build_response("Timeslot already full", code=409)
     else:
         db.removeTimeslotParticipant(memberID, timeslotID)
     return util.build_response(isSet)
