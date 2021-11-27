@@ -27,7 +27,7 @@ const EventList = () => {
         }
     }
 
-    const reloadEvents=()=>{
+    const reloadEvents = () => {
         setreloadEventState(!reloadEventState)
     }
 
@@ -45,7 +45,7 @@ const EventList = () => {
                     key={value.eventID}
                     eventID={value.eventID}
                     name={value.name}
-                    sportName={sportNames.length > value.sportID ? sportNames[value.sportID-1]["name"] : "Lade ..."}
+                    sportName={sportNames.length > value.sportID ? sportNames[value.sportID - 1]["name"] : "Lade ..."}
                     date={value.date}
                     timeslots={value.timeslots}
                     memberState={memberState}
