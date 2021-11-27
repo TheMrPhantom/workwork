@@ -11,10 +11,11 @@ import "./Events.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
 
-const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState }) => {
+const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState,reloadEvents }) => {
 
     const deleteEvent = async () => {
-        doPostRequest("event/delete", eventID)
+        await doPostRequest("event/delete", eventID)
+        reloadEvents()
     }
 
     return (<div>

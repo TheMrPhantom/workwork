@@ -10,13 +10,14 @@ const EventList = () => {
     const [events, setevents] = useState([])
     const [sportNames, setsportNames] = useState([])
     const [memberState, setmemberState] = useState(0)
+    const [reloadEventState, setreloadEventState] = useState(false)
     const history = useHistory();
 
     useEffect(() => {
         getAndStore("event", setevents)
         getAndStore("sports/names", setsportNames)
         getAndStore("memberstate", setmemberState)
-    }, [])
+    }, [reloadEventState])
 
     const displayCreateButton = () => {
         if (memberState > 1) {
@@ -24,6 +25,10 @@ const EventList = () => {
                 <Button variant="outlined" onClick={() => history.push("events/create")}>Event Erstellen</Button>
             )
         }
+    }
+
+    const reloadEvents=()=>{
+        setreloadEventState(!reloadEventState)
     }
 
     return (
@@ -44,6 +49,7 @@ const EventList = () => {
                     date={value.date}
                     timeslots={value.timeslots}
                     memberState={memberState}
+                    reloadEvents={reloadEvents}
                 />)}
             </div>
 
