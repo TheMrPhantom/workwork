@@ -11,7 +11,7 @@ import "./Events.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
 
-const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState,reloadEvents }) => {
+const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState, reloadEvents }) => {
 
     const deleteEvent = async () => {
         await doPostRequest("event/delete", eventID)
@@ -44,6 +44,7 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
                             </LocalizationProvider>
                         </div>
                     </div>
+                    {memberState > 1 ? <Spacer horizontal={20} /> : ""}
                     {memberState > 1 ?
                         <Button onClick={() => deleteEvent()}>
                             <IndeterminateCheckBoxIcon className="denyBackground" />
