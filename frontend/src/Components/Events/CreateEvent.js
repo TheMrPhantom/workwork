@@ -14,6 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 import { useHistory } from "react-router-dom";
+import HSFAlert from '../Common/HSFAlert'
 import "./Events.css"
 
 const CreateEvent = () => {
@@ -23,6 +24,9 @@ const CreateEvent = () => {
     const [sportNames, setsportNames] = useState([])
     const [timeslots, settimeslots] = useState([])
     const history = useHistory();
+    const [messageOpen, setmessageOpen] = useState(false)
+    const [badDialogMessageOpen, setbadDialogMessageOpen] = useState(false)
+    const [badDialogMessage, setbadDialogMessage] = useState("")
 
     useEffect(() => {
         getAndStore("sports/names", setsportNames)
@@ -34,14 +38,29 @@ const CreateEvent = () => {
         settimeslots(slots)
     }
 
-    const addEvent = () => {
+    const addEvent = async () => {
         if (date !== null && eventName !== "" && selectedSport !== "" && timeslots.length > 0) {
-            doPostRequest("event/add", { "name": eventName, "sportID": selectedSport, "date": date, "timeslots": timeslots })
+            const resp = await doPostRequest("event/add", { "name": eventName, "sportID": selectedSport, "date": date, "timeslots": timeslots })
+            if (resp.code === 409) {
+                setmessageOpen(true)
+                return
+            }
             setdate(null)
             seteventName("")
             setselectedSport("")
             settimeslots([])
             history.push("/events")
+        } else {
+            if (eventName === "") {
+                setbadDialogMessage("Keinen Eventnamen gesetzt")
+            } else if (selectedSport === "") {
+                setbadDialogMessage("Keine Sportart ausgewählt")
+            } else if (date === null) {
+                setbadDialogMessage("Kein Datum gesetzt")
+            } else if (timeslots.length === 0) {
+                setbadDialogMessage("Keine Zeitslots angelegt")
+            }
+            setbadDialogMessageOpen(true)
         }
     }
 
@@ -103,6 +122,8 @@ const CreateEvent = () => {
             <Button variant="contained" className="accept" onClick={() => addEvent()}>
                 Event erstellen
             </Button>
+            <HSFAlert message="Event existiert bereits" short="Bitte mit anderem Namen erneut versuchen" open={messageOpen} setOpen={setmessageOpen} />
+            <HSFAlert message={badDialogMessage} short="Bitte Felder korrekt ausfüllen" open={badDialogMessageOpen} setOpen={setbadDialogMessageOpen} />
         </div>
     )
 }
