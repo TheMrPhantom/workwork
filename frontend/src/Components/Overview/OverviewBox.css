@@ -6,6 +6,19 @@
     margin-bottom: 10px;
 }
 
+.overviewEventsContainer{
+    width: 40%;
+    min-width: 300px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.fullscreenCard{
+    width: 40%;
+    min-width: 600px;
+    min-height: 300px;
+}
+
 .flexHorizontalSpaced{
     display: flex;
     align-items: center;

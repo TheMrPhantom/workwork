@@ -8,6 +8,8 @@ import Grid from '@mui/material/Grid';
 import BadMemberOverview from './BadMemberOverview';
 import BadMemberLineChart from './BadMemberLineChart';
 import Spacer from '../Common/Spacer';
+import UpcomingEventsList from './UpcomingEventsList';
+import Constants from "../../environment.json";
 
 const Overview = () => {
 
@@ -22,12 +24,14 @@ const Overview = () => {
     const [currentWork, setcurrentWork] = useState(0)
     const [memberWorkStatus, setmemberWorkStatus] = useState([])
     const [trainerSports, settrainerSports] = useState([])
+    const [events, setevents] = useState([])
 
     useEffect(() => {
         getAndStore("memberstate", setmemberState)
         getAndStore("sports/names", setsports)
         getAndStore("members", setmembers)
         getAndStore("work/request/pendingAmount", setnotApprovedYet)
+        getAndStore("event", setevents)
     }, [])
 
     useEffect(() => {
@@ -174,7 +178,11 @@ const Overview = () => {
         //Is Member
         return (
             <div>
-                <OverviewBox />
+                <div style={{ display: "flex", flexWrap: "wrap" }}>
+                    <OverviewBox />
+                    {window.innerWidth > Constants.COMPACT_SIZE_THRESHOLD ? <Spacer horizontal={20} /> : ""}
+                    {events.length > 0 ? <UpcomingEventsList events={events} /> : ""}
+                </div>
                 <Request headline="Ausstehende Anfragen" requestName="requests/pending" />
                 <Request headline="Genehmigte Anfragen" requestName="requests/accepted" />
             </div>

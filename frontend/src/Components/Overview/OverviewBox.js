@@ -31,9 +31,9 @@ const OverviewBox = () => {
 
     const checkColorAndIcon = (currentHours, maxHours) => {
         if (currentHours < maxHours) {
-            return <div className="flexHorizontalSpaced warningColor" style={{position:"relative"}}>
+            return <div className="flexHorizontalSpaced warningColor" style={{ position: "relative" }}>
                 <Typography variant="h5">{currentHours}/{maxHours}h</Typography>
-                <WarningIcon style={{position:"absolute",right:"50%"}}></WarningIcon>
+                <WarningIcon style={{ position: "absolute", right: "50%" }}></WarningIcon>
             </div>
         } else {
             return <div className="flexHorizontalSpaced successColor">
@@ -61,10 +61,6 @@ const OverviewBox = () => {
                     </div>
                     )
                 })}
-
-                <Spacer vertical={10} />
-                <Typography variant="h6">Nächster Arbeitsdienst</Typography>
-                <Typography variant="h5" className="imageTextWidth">Donnerstag 25.November, um 15 Uhr auf dem Hundeplatz</Typography>
             </Paper>
         </div>
     )
