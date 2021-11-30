@@ -16,7 +16,7 @@ const Header = ({ logoutRoutine }) => {
     return (
         <div className="headerFlex">
             <Typography variant="h6" noWrap component="div">
-                {Config.ORGA_NAME} - Arbeisstunden Management System
+                {Config.ORGA_NAME} - {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ? "Arbeisstunden Management System" : "AMS"}
             </Typography>
             <Switch>
                 <Route exact path="/login"></Route>
