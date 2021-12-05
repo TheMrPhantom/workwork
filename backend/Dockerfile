@@ -2,6 +2,7 @@ FROM python:3.8-buster
 
 WORKDIR /usr/src/app
 
+RUN apt update
 RUN apt install texlive
 
 COPY requirements.txt ./
