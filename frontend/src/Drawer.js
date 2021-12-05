@@ -38,10 +38,12 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import EventIcon from '@mui/icons-material/Event';
 import LoginIcon from '@mui/icons-material/Login';
+import DownloadIcon from '@mui/icons-material/Download';
 
 import "./index.css"
 import EventList from './Components/Events/EventList';
 import CreateEvent from './Components/Events/CreateEvent';
+import DownloadOverview from './Components/Downloads/DownloadOverview';
 
 const drawerWidth = 210;
 
@@ -159,6 +161,12 @@ export default function ClippedDrawer() {
                             <PlaylistAddCheckIcon />
                         </ListItemIcon>
                         <ListItemText primary="Mitglieder" />
+                    </ListItem>
+                    <ListItem button key="0" onClick={() => redirect("/downloads")}>
+                        <ListItemIcon>
+                            <DownloadIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Downloads" />
                     </ListItem>
                     <ListItem button key="1" onClick={() => redirect("/sport/admin")}>
                         <ListItemIcon>
@@ -295,6 +303,7 @@ export default function ClippedDrawer() {
                     <Route path="/sport/admin" component={SportManagement} />
                     <Route path="/sport/:id" component={Sports} />
                 </Switch>
+                <Route path="/downloads" component={DownloadOverview} />
                 <Switch>
                     <Route exact path="/members" component={Members} />
                     <Route path="/members/edit/:id" component={MemberEdit} />

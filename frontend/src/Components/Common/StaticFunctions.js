@@ -46,6 +46,48 @@ export const doGetRequest = async (path) => {
     }
 };
 
+export const downloadPDF = async (path) => {
+    return fetch(Config.DOMAIN + path, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/pdf',
+            'Access-Control-Allow-Origin': '*'
+        },
+    })
+        .then((response) => {
+            if (response.status === 200) {
+                return response.blob()
+            } else {
+                return 400
+            }
+        })
+        .then((blob) => {
+            if (blob === 400) {
+                return 400
+            }
+            // Create blob link to download
+            const url = window.URL.createObjectURL(
+                new Blob([blob]),
+            );
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute(
+                'download',
+                `BerichtArbeitsstunden.pdf`,
+            );
+
+            // Append to html link element page
+            document.body.appendChild(link);
+
+            // Start download
+            link.click();
+
+            // Clean up and remove the link
+            link.parentNode.removeChild(link);
+        });
+};
+
 export const getAndStore = (path, stateFunction) => {
     const getInfos = async () => {
         const req = await doGetRequest(path)

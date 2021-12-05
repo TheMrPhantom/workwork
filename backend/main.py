@@ -9,6 +9,8 @@ import database
 import mail
 import mail_templates
 import TaskScheduler
+import Latex.tex as latex
+import os
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -646,6 +648,13 @@ def getTimeslotParticipants(timeslotID):
 @authenticated
 def getTimeslotParticipantsAmount(timeslotID):
     return util.build_response(len(db.getTimeslotParticipants(timeslotID)))
+
+@app.route('/api/report/remainingWorkhours/pdf', methods=["GET"])
+@authenticated
+def getRemainingWorkhoursPDF():
+    latex.build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [
+                        "Thorsten", 5, 12, 7]], 'Agility': [["Thorsten", 5, 12, 7], ["Thorsten", 5, 12, 7]]})
+    return helpers.send_from_directory(os.getcwd(),"BerichtArbeitsstunden.pdf")
 
 
 @app.route('/api/login', methods=["POST"])
