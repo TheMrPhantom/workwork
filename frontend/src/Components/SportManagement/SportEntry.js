@@ -12,8 +12,8 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
 
     const [open, setopen] = useState(false)
 
-    const clickRemove = () => {
-        doPostRequest("sports/" + sportsID + "/delete")
+    const clickRemove = async () => {
+        await doPostRequest("sports/" + sportsID + "/delete")
         refresh()
     }
 
@@ -24,7 +24,6 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
         }
 
         doPostRequest("sports/" + sportsID + "/workhours", { "minutes": value })
-        refresh()
     }
 
     return (

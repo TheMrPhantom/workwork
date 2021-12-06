@@ -12,7 +12,7 @@ const AddSportEntry = ({ refresh }) => {
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
 
-    const addSport = () => {
+    const addSport = async () => {
         if (name === "") {
             setmessage("Bitte name ausfüllen")
             setopen(true)
@@ -23,10 +23,10 @@ const AddSportEntry = ({ refresh }) => {
             return
         }
 
-        doPostRequest("sports/add", { "name": name, "extraHours": extraHours })
         setname("")
         setextraHours(0)
-        refresh(true)
+        await doPostRequest("sports/add", { "name": name, "extraHours": extraHours })
+        refresh()
     }
 
     return (

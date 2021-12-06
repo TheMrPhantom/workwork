@@ -7,13 +7,12 @@ import { getAndStore } from '../Common/StaticFunctions';
 import SharedWorkTimeSetter from './SharedWorkTimeSetter';
 import { Paper } from '@mui/material';
 
-const SportManagement = () => {
+const SportManagement = ({ refreshDrawer }) => {
     const [sports, setsports] = useState([])
-    const [refresh, setrefresh] = useState(false)
+
     useEffect(() => {
         getAndStore("sports/names", setsports)
-        setrefresh(false)
-    }, [refresh])
+    }, [])
 
     return (
         <div>
@@ -33,14 +32,14 @@ const SportManagement = () => {
                         }
                         return <div key={value.id}>
                             <Spacer vertical={5} />
-                            <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={setrefresh} />
+                            <SportEntry name={value.name} extraHours={value.extraHours} sportsID={value.id} refresh={() => { refreshDrawer() }} />
                         </div>
                     })}
                     <Spacer vertical={50} />
                 </div> : ""}
                 <Typography variant="h5">Sportart Hinzufügen</Typography>
                 <Spacer vertical={5} />
-                <AddSportEntry refresh={setrefresh} />
+                <AddSportEntry refresh={() => { refreshDrawer() }} />
             </Paper>
         </div>
     )

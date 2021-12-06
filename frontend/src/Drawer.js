@@ -56,6 +56,7 @@ export default function ClippedDrawer() {
     const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
     const location = useLocation()
+
     const redirect = useCallback((url) => {
         history.push(url);
         if (window.innerWidth < Config.COMPACT_SIZE_THRESHOLD) {
@@ -87,6 +88,11 @@ export default function ClippedDrawer() {
         checkLogin()
         getAndStore("sports/names/trainerof", setsports)
     }, [loginLoad, redirect])
+
+    const toggleRefresh = () => {
+        getAndStore("sports/names/trainerof", setsports)
+    }
+
 
     const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
@@ -304,7 +310,7 @@ export default function ClippedDrawer() {
                 <Route exact path="/events/create" component={CreateEvent} />
                 <Route path="/request" component={Request} />
                 <Switch>
-                    <Route path="/sport/admin" component={SportManagement} />
+                    <Route path="/sport/admin" component={() => <SportManagement refreshDrawer={toggleRefresh} />} />
                     <Route path="/sport/:id" component={Sports} />
                 </Switch>
                 <Route path="/downloads" component={DownloadOverview} />
