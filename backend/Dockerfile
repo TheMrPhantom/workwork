@@ -3,7 +3,7 @@ FROM python:3.8-buster
 WORKDIR /usr/src/app
 
 RUN apt update
-RUN apt -y install texlive texlive-luatex pandoc
+RUN apt -y install texlive texlive-luatex texlive-latex-extra pandoc
 RUN mkdir -p ~/.local/share/fonts
 COPY Latex/Exo-Regular.ttf ./
 RUN cp ./Exo-Regular.ttf ~/.local/share/fonts/
