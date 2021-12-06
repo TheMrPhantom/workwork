@@ -20,3 +20,9 @@ code {
   flex-direction: column !important;
   align-items: center;
 }
+
+.versionNumber {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}

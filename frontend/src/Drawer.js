@@ -12,6 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Config from "./environment.json";
+import BuildNumber from "./BuildNumber.json";
 import PetsIcon from '@material-ui/icons/Pets';
 import PersonIcon from '@material-ui/icons/Person';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -289,6 +290,9 @@ export default function ClippedDrawer() {
                     {buildSettings()}
                     {buildLogin()}
                 </Box>
+                <Typography variant="caption" className="versionNumber">
+                    Version {Config.VERSION} (Build {BuildNumber})
+                </Typography>
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
