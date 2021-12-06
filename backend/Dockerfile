@@ -8,6 +8,7 @@ RUN mkdir -p ~/.local/share/fonts
 
 COPY Latex/Exo-Regular.ttf ./
 RUN cp ./Exo-Regular.ttf ~/.local/share/fonts/
+RUN tlmgr init-usertree
 RUN tlmgr install luaotfload
 RUN luaotfload-tool --update
 
