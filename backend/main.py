@@ -693,7 +693,7 @@ def getRemainingWorkhoursPDF():
 
                 max = 0
                 for maxW in m["maxWork"]:
-                    current += maxW["hours"]
+                    max += maxW["hours"]
                 tables[sportName].append(
                     [f"{m['firstname']} {m['lastname']}", current, max, max-current])
 
