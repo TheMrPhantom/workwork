@@ -652,6 +652,9 @@ def getTimeslotParticipantsAmount(timeslotID):
 @app.route('/api/report/remainingWorkhours/pdf', methods=["GET"])
 @authenticated
 def getRemainingWorkhoursPDF():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
     latex.build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [
                         "Thorsten", 5, 12, 7]], 'Agility': [["Thorsten", 5, 12, 7], ["Thorsten", 5, 12, 7]]})
     return helpers.send_from_directory(os.getcwd(),"BerichtArbeitsstunden.pdf")

@@ -59,10 +59,13 @@ def build_workhour_overview(member_infos: dict):
         with open(f'{file_dir}/template_workhours.md', "w") as writer:
             writer.write(output_string)
 
+        pandoc_engine_string = "--latex-engine" if os.environ.get(
+            "deprecated_pandoc") else "--pdf-engine"
+
         subprocess.run(["pandoc", f"{file_dir}/template_workhours.md", "-s",
-                        "--latex-engine=lualatex", "-o", "BerichtArbeitsstunden.pdf", "-H", f"{file_dir}/workhours_header.tex"])
+                        f"{pandoc_engine_string}=lualatex", "-o", "BerichtArbeitsstunden.pdf", "-H", f"{file_dir}/workhours_header.tex"])
 
 
 # Example
-#build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [
+# build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [
 #                        "Thorsten", 5, 12, 7]], 'Agility': [["Thorsten", 5, 12, 7], ["Thorsten", 5, 12, 7]]})
