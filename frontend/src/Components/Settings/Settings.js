@@ -19,10 +19,10 @@ const Settings = () => {
 
     useEffect(() => {
         const memberID = Cookies.get("memberID")
-        doPostRequest("user/"+memberID+"/changeParticipation",sports)
+        doPostRequest("user/" + memberID + "/changeParticipation", sports)
     }, [sports])
 
-    const toggleRefresh=(value)=>{
+    const toggleRefresh = (value) => {
         setrefresh(!refresh)
     }
 
@@ -33,7 +33,7 @@ const Settings = () => {
             {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} /> : ""}
             <Spacer vertical={20} />
             <Typography variant="h5">Sparten</Typography>
-            <ActivateSports memberID={Cookies.get("memberID")} firstColumn="Teilnehmer" sportList={sports} setsports={setsports} refresh={toggleRefresh}/>
+            <ActivateSports memberID={Cookies.get("memberID")} firstColumn="Teilnehmer" sportList={sports} setsports={setsports} refresh={toggleRefresh} />
         </div>
     )
 }

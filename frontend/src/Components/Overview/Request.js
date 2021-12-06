@@ -41,7 +41,7 @@ const Request = ({ headline, requestName }) => {
                 </TableContainer>
             </div>
         )
-    }else{
+    } else {
         return ""
     }
 }

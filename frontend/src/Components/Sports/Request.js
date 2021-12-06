@@ -5,7 +5,7 @@ import { Button } from '@material-ui/core'
 import "./Request.css"
 import { doPostRequest } from '../Common/StaticFunctions'
 
-const Request = ({ name, work, amount, id ,refresh}) => {
+const Request = ({ name, work, amount, id, refresh }) => {
     const accept = () => {
         doPostRequest("request/" + id + "/accept")
         refresh(true)

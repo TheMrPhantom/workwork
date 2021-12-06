@@ -55,7 +55,7 @@ const MemberEdit = (props) => {
     return (
         <div>
             {!isTrainer && !isExecutive ? <div>
-                <Request memberID={props.match.params.id} refresh={refresh}/>
+                <Request memberID={props.match.params.id} refresh={refresh} />
                 <Spacer vertical={50} />
             </div> : ""}
             <Typography variant="h5">Informationen</Typography>
@@ -63,7 +63,7 @@ const MemberEdit = (props) => {
             {member ? <Card firstname={member.firstname} lastname={member.lastname} mail={member.mail} memberID={props.match.params.id} /> : ""}
             <Spacer vertical={20} />
             <Typography variant="h6">Arbeitsstunden in Minuten</Typography>
-            <EditWorkHourOfUser memberID={props.match.params.id}/>
+            <EditWorkHourOfUser memberID={props.match.params.id} />
             <ActivateSports memberID={props.match.params.id} sportList={participant} firstColumn="Teilnehmer" setsports={setparticipant} refresh={toggleReload} />
             <ActivateSports memberID={props.match.params.id} sportList={trainer} firstColumn="Trainer" setsports={settrainer} refresh={toggleReload} />
             <Spacer vertical={50} />

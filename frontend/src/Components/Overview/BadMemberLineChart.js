@@ -1,9 +1,9 @@
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 
 const BadMemberLineChart = ({ memberData }) => {
-    
+
 
     const data = []
     memberData.forEach(element => {
@@ -26,9 +26,9 @@ const BadMemberLineChart = ({ memberData }) => {
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
-                <YAxis allowDecimals={false}/>
+                <YAxis allowDecimals={false} />
                 <Tooltip />
-                <Legend verticalAlign="bottom" height={36}/>
+                <Legend verticalAlign="bottom" height={36} />
                 <Area type="monotone" dataKey="Mitglieder" stroke="var(--primaryColor)" fill="var(--secondaryColor)" />
             </AreaChart>
         </ResponsiveContainer>

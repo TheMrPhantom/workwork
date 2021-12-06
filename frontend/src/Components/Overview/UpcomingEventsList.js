@@ -18,7 +18,7 @@ const UpcomingEventsList = ({ events }) => {
     }
 
     return (
-        <Paper className={fullscreenCard() +" overviewEventsContainer"} elevation={2}>
+        <Paper className={fullscreenCard() + " overviewEventsContainer"} elevation={2}>
             <Typography variant="h6">Anstehende Events</Typography>
             <Spacer vertical={10} />
             <table>

@@ -4,14 +4,14 @@ import Spacer from '../Common/Spacer'
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import "./Events.css"
 
-const EventTimeSlot = ({ slotName, start, end, currentHelper, maxHelper,onDelete }) => {
+const EventTimeSlot = ({ slotName, start, end, currentHelper, maxHelper, onDelete }) => {
     return (
         <Paper elevation={2} className="timeslotPaper">
-            
-                <div>
-                    <Typography variant="caption">Schichtname</Typography>
-                    <Typography>{slotName}</Typography>
-                </div><div className="timeslotPaperInner">
+
+            <div>
+                <Typography variant="caption">Schichtname</Typography>
+                <Typography>{slotName}</Typography>
+            </div><div className="timeslotPaperInner">
                 <Spacer horizontal={40} />
                 <div>
                     <Typography variant="caption">Schicht beginn</Typography>
@@ -28,9 +28,9 @@ const EventTimeSlot = ({ slotName, start, end, currentHelper, maxHelper,onDelete
                     <Typography>{currentHelper}/{maxHelper}</Typography>
                 </div>
                 <Spacer horizontal={10} />
-            <Button onClick={()=>onDelete()}>
-                <IndeterminateCheckBoxIcon className="denyBackground" />
-            </Button></div>
+                <Button onClick={() => onDelete()}>
+                    <IndeterminateCheckBoxIcon className="denyBackground" />
+                </Button></div>
 
         </Paper>
     )

@@ -16,7 +16,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import "../Members/MemberEntry.css";
 
-const AskForTrainer = ({  open, setOpen, addFunction}) => {
+const AskForTrainer = ({ open, setOpen, addFunction }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {

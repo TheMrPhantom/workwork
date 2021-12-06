@@ -49,7 +49,7 @@ const Members = () => {
             minPos = Math.max(minPos, element.current.offsetWidth + 30)
         })
         setsportPos(minPos)
-    }, [refs, refresh,displayedMembers])
+    }, [refs, refresh, displayedMembers])
 
     const filterMembers = (text) => {
         const newList = members.filter((item) => {
@@ -85,12 +85,12 @@ const Members = () => {
                 <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
                 <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent} setRegistrationOpen={setopenSuccess} />
                 <HSFAlert
-                type="success"
-                message="Erfolgreich Registriert, das initiale Passwort wird dem Mitglied zugeschickt"
-                short="Dies kann ein paar Minuten dauern"
-                open={openSuccess}
-                setOpen={setopenSuccess}
-                time={15000} />
+                    type="success"
+                    message="Erfolgreich Registriert, das initiale Passwort wird dem Mitglied zugeschickt"
+                    short="Dies kann ein paar Minuten dauern"
+                    open={openSuccess}
+                    setOpen={setopenSuccess}
+                    time={15000} />
             </div>
             <Spacer vertical={20} />
             {displayedMembers.map((value) => {
@@ -104,7 +104,7 @@ const Members = () => {
                         id={value.id}
                         setRefs={setRefsCorrect}
                         sportsPosition={sportPos}
-                        refresh={setrefresh}/>
+                        refresh={setrefresh} />
                     <Spacer vertical={2} />
                 </div>)
             })}

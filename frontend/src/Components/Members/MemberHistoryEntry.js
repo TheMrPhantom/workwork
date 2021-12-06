@@ -20,7 +20,7 @@ const MemberHistoryEntry = ({ sport, activity, duration, id, refresh }) => {
             <TableCell >{activity}</TableCell>
             <TableCell >{duration}</TableCell>
             <TableCell align="right">
-                <Button disabled={disabled} onClick={() =>deleteItem()}>
+                <Button disabled={disabled} onClick={() => deleteItem()}>
                     <IndeterminateCheckBoxIcon className="denyBackground" />
                 </Button>
             </TableCell>
