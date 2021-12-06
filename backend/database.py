@@ -736,6 +736,16 @@ class SQLiteWrapper:
                 output.append(e)
         return output
 
+    def getMembersList(self,members):
+        output = []
+        for m in members:
+            currentWork = self.getCurrentWorkMinutes(m[0])
+            maxWork = self.getNeededWorkMinutes(m[0])
+            isTrainer = self.isTrainer(m[0])
+            output.append({"id": m[0], "firstname": m[1],
+                        "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
+        return output
+
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")

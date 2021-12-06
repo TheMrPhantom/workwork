@@ -199,14 +199,8 @@ def members():
     if check is not None:
         return check
     members = db.getMembers()
-    output = []
-    for m in members:
-        currentWork = db.getCurrentWorkMinutes(m[0])
-        maxWork = db.getNeededWorkMinutes(m[0])
-        isTrainer = db.isTrainer(m[0])
-        output.append({"id": m[0], "firstname": m[1],
-                       "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
-    return util.build_response(output)
+
+    return util.build_response(db.getMembersList(members))
 
 
 @app.route('/api/members/trainer', methods=["GET"])
@@ -624,7 +618,7 @@ def setTimeslotParticipant(memberID, timeslotID):
         maxhelper = db.getTimeslot(timeslotID)[3]
         participants = db.getTimeslotParticipants(timeslotID)
         currentHelper = len(participants) if participants else 0
-        
+
         if currentHelper < maxhelper:
             db.addTimeslotParticipant(memberID, timeslotID)
         else:
@@ -649,15 +643,62 @@ def getTimeslotParticipants(timeslotID):
 def getTimeslotParticipantsAmount(timeslotID):
     return util.build_response(len(db.getTimeslotParticipants(timeslotID)))
 
+
 @app.route('/api/report/remainingWorkhours/pdf', methods=["GET"])
 @authenticated
 def getRemainingWorkhoursPDF():
     check = checkExecutive(request)
     if check is not None:
         return check
-    latex.build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [
-                        "Thorsten", 5, 12, 7]], 'Agility': [["Thorsten", 5, 12, 7], ["Thorsten", 5, 12, 7]]})
-    return helpers.send_from_directory(os.getcwd(),"BerichtArbeitsstunden.pdf")
+
+    members = db.getMembersList(db.getMembers())
+    membersFiltered = []
+    for m in members:
+        current = 0
+        for cur in m["currentWork"]:
+            current += cur["hours"]
+
+        max = 0
+        for maxW in m["maxWork"]:
+            max += maxW["hours"]
+
+        if current < max:
+            membersFiltered.append(m)
+
+    tables = {}
+    tables['overview'] = []
+    for m in membersFiltered:
+        current = 0
+        for cur in m["currentWork"]:
+            current += cur["hours"]
+
+        max = 0
+        for maxW in m["maxWork"]:
+            max += maxW["hours"]
+        tables['overview'].append(
+            [f"{m['firstname']} {m['lastname']}", current, max, max-current])
+
+    for s in db.getSports():
+        if s['name'] == "Allgemein":
+            continue
+
+        sportName = s['name']
+        tables[sportName] = []
+
+        for m in members:
+            if db.isMemberof(m['id'], s['id']):
+                current = 0
+                for cur in m["currentWork"]:
+                    current += cur["hours"]
+
+                max = 0
+                for maxW in m["maxWork"]:
+                    current += maxW["hours"]
+                tables[sportName].append(
+                    [f"{m['firstname']} {m['lastname']}", current, max, max-current])
+
+    latex.build_workhour_overview(tables)
+    return helpers.send_from_directory(os.getcwd(), "BerichtArbeitsstunden.pdf")
 
 
 @app.route('/api/login', methods=["POST"])
