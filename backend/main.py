@@ -685,7 +685,7 @@ def getRemainingWorkhoursPDF():
         sportName = s['name']
         tables[sportName] = []
 
-        for m in members:
+        for m in membersFiltered:
             if db.isMemberof(m['id'], s['id']):
                 current = 0
                 for cur in m["currentWork"]:
