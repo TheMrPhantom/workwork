@@ -63,6 +63,9 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
     const memberOfSport = new Set()
     const [messageOpen, setmessageOpen] = useState(false)
     const [errorMessge, seterrorMessge] = useState("")
+    const [fName, setfName] = useState("")
+    const [lName, setlName] = useState("")
+    const [mail, setmail] = useState("")
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -81,6 +84,10 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
     var email = "";
 
     const addMember = async () => {
+        setfName(firstname)
+        setlName(lastname)
+        setmail(email)
+
         if (firstname === "" || lastname === "" || email === "") {
             seterrorMessge("Bitte alle Felder ausfüllen")
             setmessageOpen(true)
@@ -91,7 +98,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
             setmessageOpen(true)
             return
         }
-        
+
 
         const lowercaseMail = email.toLocaleLowerCase()
 
@@ -125,11 +132,11 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                 <DialogContent dividers className="dialogFlex">
                     <Typography variant="subtitle1"><b>Mitgliedsdaten</b></Typography>
                     <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
+                    <TextField className="reasonBox" defaultValue={fName} label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
                     <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
+                    <TextField className="reasonBox" defaultValue={lName} label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
                     <Spacer vertical={10} />
-                    <TextField className="reasonBox" label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
+                    <TextField className="reasonBox" defaultValue={mail} label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
                     <Spacer vertical={20} />
                     <Typography variant="subtitle1"><b>Sparten zugehörigkeit</b></Typography>
                     <Spacer vertical={10} />
