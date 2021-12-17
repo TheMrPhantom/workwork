@@ -79,21 +79,26 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
         getAndStore("sports/names", setsportnames)
     }, [])
 
-    var firstname = "";
-    var lastname = "";
-    var email = "";
+    var firstname = fName;
+    var lastname = lName;
+    var email = mail;
 
     const addMember = async () => {
-        setfName(firstname)
-        setlName(lastname)
-        setmail(email)
 
         if (firstname === "" || lastname === "" || email === "") {
+            setfName(firstname)
+            setlName(lastname)
+            setmail(email)
+
             seterrorMessge("Bitte alle Felder ausfüllen")
             setmessageOpen(true)
             return
         }
         if (memberOfSport.size === 0) {
+            setfName(firstname)
+            setlName(lastname)
+            setmail(email)
+
             seterrorMessge("Bitte mindestens eine Sportart auswählen")
             setmessageOpen(true)
             return
@@ -104,6 +109,9 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
 
         const resp = await doPostRequest("member/add", { firstname: firstname, lastname: lastname, email: lowercaseMail, membership: [...memberOfSport] })
         if (resp.code === 200) {
+            setfName("")
+            setlName("")
+            setmail("")
             if (refresh !== undefined) {
                 refresh()
             }
