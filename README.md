@@ -10,5 +10,7 @@ rafce
 * #343433
 * #c8c8c8
 
+## TODO: SQL Scheme
+
 ### Wordlist from 
 https://github.com/davidak/wortliste
