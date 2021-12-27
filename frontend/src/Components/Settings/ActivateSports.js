@@ -4,17 +4,17 @@ import HSFAlert from '../Common/HSFAlert'
 import { doPostRequest } from '../Common/StaticFunctions'
 import ActivateSportsEntry from './ActivateSportsEntry'
 
-const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
+const ActivateSports = ({ memberID, sportListMember, sportListTrainer, refresh }) => {
 
     const [alertOpen, setalertOpen] = useState(false)
 
-    const changeTrainerOrParticipation = async (id, checked) => {
+    const changeTrainerOrParticipation = async (column, id, checked) => {
         var output = null
-        if (sportList === null) {
-            return
-        }
-        if (firstColumn === "Teilnehmer") {
-            output = sportList.map((value) => {
+        //if (sportListMember === null) {
+        //    return
+        //}
+        if (column === "Teilnehmer") {
+            output = sportListMember.map((value) => {
                 if (value.id === id) {
                     value.isParticipant = checked
                 }
@@ -25,14 +25,14 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
                 setalertOpen(true)
             }
         } else {
-            output = sportList.map((value) => {
+            output = sportListTrainer.map((value) => {
                 if (value.id === id) {
                     value.isTrainer = checked
                 }
                 return value
             })
-            const resp = await doPostRequest("user/" + memberID + "/changeTrainer", output)
-            if (resp.code === 200) {
+            const respT = await doPostRequest("user/" + memberID + "/changeTrainer", output)
+            if (respT.code === 200) {
                 setalertOpen(true)
             }
         }
@@ -42,29 +42,43 @@ const ActivateSports = ({ memberID, firstColumn, sportList, refresh }) => {
         }
     }
 
+    const buildList = () => {
+        var output = []
+        for (var i = 1; i < Math.min(sportListMember.length, sportListTrainer.length); i++) {
+            output.push(<ActivateSportsEntry
+                key={i}
+                isParticipantMember={sportListMember[i].isParticipant}
+                isParticipantTrainer={sportListTrainer[i].isTrainer}
+                name={sportListMember[i].name}
+                id={sportListMember[i].id}
+                checkedChange={changeTrainerOrParticipation} />)
+        }
+        return output
+    }
     return (
         <TableContainer className="tableContainer" component={Paper}>
             <Table aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell>{firstColumn}</TableCell>
+                        <TableCell>Teilnehmer</TableCell>
+                        {sportListTrainer !== undefined ?
+                            <TableCell>Trainer</TableCell> : ""}
                         <TableCell>Sparte</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {firstColumn === "Teilnehmer" ?
-                        sportList.map((value) => {
+                    {sportListTrainer === undefined ?
+                        sportListMember.map((value) => {
                             if (value.id === 1) {
                                 return ""
                             }
-                            return <ActivateSportsEntry key={value.id} isParticipant={value.isParticipant} name={value.name} id={value.id} checkedChange={changeTrainerOrParticipation} />
+                            return <ActivateSportsEntry key={value.id} isParticipantMember={value.isParticipant} name={value.name} id={value.id} checkedChange={changeTrainerOrParticipation} />
                         }) :
-                        sportList.map((value) => {
-                            if (value.id === 1) {
-                                return ""
-                            }
-                            return <ActivateSportsEntry key={value.id} isParticipant={value.isTrainer} name={value.name} id={value.id} checkedChange={changeTrainerOrParticipation} />
+
+                        buildList().map((value) => {
+                            return value
                         })}
+
                 </TableBody>
             </Table>
             <HSFAlert type="success" message="Gespeichert" open={alertOpen} setOpen={setalertOpen} />

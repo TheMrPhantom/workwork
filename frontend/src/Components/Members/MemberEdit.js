@@ -64,8 +64,7 @@ const MemberEdit = (props) => {
             <Spacer vertical={20} />
             <Typography variant="h6">Arbeitsstunden in Minuten</Typography>
             <EditWorkHourOfUser memberID={props.match.params.id} />
-            <ActivateSports memberID={props.match.params.id} sportList={participant} firstColumn="Teilnehmer" setsports={setparticipant} refresh={toggleReload} />
-            <ActivateSports memberID={props.match.params.id} sportList={trainer} firstColumn="Trainer" setsports={settrainer} refresh={toggleReload} />
+            <ActivateSports memberID={props.match.params.id} sportListMember={participant} sportListTrainer={trainer} setsports={setparticipant} refresh={toggleReload} />
             <Spacer vertical={50} />
             <Typography variant="h5">Arbeitsstunden</Typography>
             <MemberHistory memberID={props.match.params.id} />
