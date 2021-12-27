@@ -2,8 +2,6 @@ import { Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
-import Switch from '@mui/material/Switch';
-import { alpha, styled } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -11,6 +9,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import "./Events.css"
 import HSFAlert from '../Common/HSFAlert';
+import GreenSwitch from '../Common/GreenSwitch';
 
 const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
     const [isParticipant, setisParticipant] = useState(false)
@@ -29,23 +28,7 @@ const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
         }
     }, [id, reload, memberState])
 
-    const GreenSwitch = styled(Switch)(({ theme }) => ({
-        '& .MuiSwitch-switchBase.Mui-checked': {
-            color: "var(--primaryColor)",
-            '&:hover': {
-                backgroundColor: alpha("#000000", theme.palette.action.hoverOpacity),
-            },
-        },
-        '& .MuiSwitch-switchBase.Mui-checked.Mui-disabled': {
-            color: "var(--secondaryColor)",
-            '&:hover': {
-                backgroundColor: alpha("#000000", theme.palette.action.hoverOpacity),
-            },
-        },
-        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-            backgroundColor: "var(--primaryColor)",
-        },
-    }));
+
 
     const changeParticipation = async (value) => {
         const memberID = Cookies.get("memberID")
