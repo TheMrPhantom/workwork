@@ -8,33 +8,8 @@ import "./Settings.css"
 
 const Card = ({ firstname, lastname, mail, memberID }) => {
 
-    const [pw, setpw] = useState("")
-    const [pwconfirm, setpwconfirm] = useState("")
-    const [isPwError, setisPwError] = useState(false)
-    const [pwErrorText, setpwErrorText] = useState("")
-    const [open, setopen] = useState(false)
-    const [message, setmessage] = useState("")
     const [sucMessage, setsucMessage] = useState("")
     const [sucOpen, setsucOpen] = useState(false)
-
-    useEffect(() => {
-        if (pw === "" && pwconfirm === "") {
-            setisPwError(false)
-            setpwErrorText("")
-            return
-        }
-        setisPwError(true)
-        if (pw.length < 8) {
-            setpwErrorText("Mindestens 8 Zeichen")
-            return
-        }
-        if (pw !== pwconfirm) {
-            setpwErrorText("Passwörter stimmen nicht überein")
-            return
-        }
-        setisPwError(false)
-        setpwErrorText("")
-    }, [pw, pwconfirm])
 
     const changeAttribute = async (value, attribute) => {
         const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
@@ -49,32 +24,9 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
         }
     }
 
-    const setNewPassword = () => {
-        if (pw === "" || pwconfirm === "") {
-            setmessage("Passwort darf nicht leer sein!")
-            setopen(true)
-            return
-        }
-        if (pw.length < 8) {
-            setmessage("Passwort muss mindestens 8 Zeichen lang sein")
-            setopen(true)
-            return
-        }
-        if (pw !== pwconfirm) {
-            setmessage("Passwörter stimmen nicht überein")
-            setopen(true)
-            return
-        }
-        const mID = memberID !== undefined ? memberID : Cookies.get("memberID")
-        doPostRequest("member/" + mID + "/change/password", { "newPassword": pw })
-        setpw("")
-        setpwconfirm("")
-        setsucMessage("Passwort wurde erfolgreich gesetzt")
-        setsucOpen(true)
-    }
 
     return (
-        <Paper id="settingsBox">
+        <Paper className="settingsBox">
             <div className="horizontalFloat">
                 <div>
                     <div className="cardFloat">
@@ -87,17 +39,8 @@ const Card = ({ firstname, lastname, mail, memberID }) => {
                         <TextField label="Email-Adresse" type="input" defaultValue={mail} onChange={(value) => changeAttribute(value.target.value, "email")} />
                     </div>
                 </div>
-                <div className="verticalFloat">
-                    <TextField error={isPwError} helperText={pwErrorText} label="Neues Passwort" type="password" value={pw} onChange={(value) => setpw(value.target.value)} />
-                    <Spacer vertical={20} />
-                    <TextField label="Passwort Bestätigen" type="password" value={pwconfirm} onChange={(value) => setpwconfirm(value.target.value)} />
-                    <Spacer vertical={20} />
-                    <Button onClick={() => setNewPassword()} variant="outlined">
-                        Passwort Setzen
-                    </Button>
-                </div>
             </div>
-            <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
+
             <HSFAlert type="success" message={sucMessage} open={sucOpen} setOpen={setsucOpen} />
         </Paper>
     )

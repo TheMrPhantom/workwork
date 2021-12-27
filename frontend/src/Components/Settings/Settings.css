@@ -1,24 +1,25 @@
-#settingsBox{
-    padding: 10px;
-    background-color: var(--secondaryColor);
+.settingsBox {
+    padding: 10px !important;
+    width: fit-content !important;
+    /*background-color: var(--secondaryColor);*/
 }
 
-.cardFloat{
+.cardFloat {
     display: flex;
 }
 
-.checkboxColor{
+.checkboxColor {
     color: var(--primaryColor) !important;
 }
 
-.horizontalFloat{
+.horizontalFloat {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
 }
 
-.verticalFloat{
+.verticalFloat {
     display: flex;
     flex-direction: column;
     align-items: center;
