@@ -53,11 +53,10 @@ const renderActiveShape = (props) => {
 };
 
 const PeopleWorkProgressChart = ({ done, needed }) => {
-
     const [activeIndex, setactiveIndex] = useState(1)
     const data = [
-        { name: 'Abgeleistet', value: done },
-        { name: 'Offen', value: needed },
+        { name: 'Abgeleistet', value: Math.round(done * 100) / 100 },
+        { name: 'Offen', value: Math.round(needed * 100) / 100 },
     ];
     const onPieEnter = (_, index) => {
         setactiveIndex(index)
