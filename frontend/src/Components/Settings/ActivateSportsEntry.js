@@ -5,7 +5,6 @@ import GreenSwitch from '../Common/GreenSwitch'
 import "./Settings.css"
 
 const ActivateSportsEntry = ({ isParticipantMember, isParticipantTrainer, name, id, checkedChange }) => {
-    console.log(isParticipantTrainer)
     return (
         <TableRow>
             <TableCell style={{ width: "100px" }}>
