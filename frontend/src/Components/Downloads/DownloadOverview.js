@@ -7,7 +7,7 @@ import Spacer from '../Common/Spacer'
 
 const DownloadOverview = () => {
     const [downloading, setdownloading] = useState(false)
-
+    const buttonStyle = { width: "170px" }
     const downloadP = async (path) => {
         setdownloading(true)
         const resp = await downloadPDF(path)
@@ -19,9 +19,11 @@ const DownloadOverview = () => {
 
     const displayButton = () => {
         if (downloading) {
-            return <CircularProgress style={{ color: "var(--primaryColor)", width: "30px", height: "30px" }} />
+            return <Button variant="outlined" disabled style={buttonStyle}>
+                <CircularProgress style={{ color: "var(--primaryColor)", width: "30px", height: "30px" }} />
+            </Button>
         } else {
-            return (<Button variant="outlined" onClick={() => downloadP("report/remainingWorkhours/pdf")}>
+            return (<Button variant="outlined" onClick={() => downloadP("report/remainingWorkhours/pdf")} style={buttonStyle}>
                 Download (PDF)
             </Button>
             )
