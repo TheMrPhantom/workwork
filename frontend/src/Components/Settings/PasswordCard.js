@@ -4,6 +4,7 @@ import { Button, Divider, List, ListItem, ListItemText, Paper, TextField, Typogr
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import Cookies from 'js-cookie'
+import Config from "../../environment.json"
 
 const PasswordCard = ({ memberID }) => {
 
@@ -109,22 +110,23 @@ const PasswordCard = ({ memberID }) => {
         }
     }
 
-    return (<Paper className="settingsBox horizontalFloat" style={{ height: "220px" }}>
-        <div style={{ position: "relative" }}>
+    return (<Paper className={window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ? "settingsBox horizontalFloat" : "settingsBox verticalFloat"}>
+        <div className="verticalFloat">
             <TextField error={isPwError} helperText={pwErrorText} label="Neues Passwort" type="password" value={pw} onChange={(value) => setpw(value.target.value)} />
             <Spacer vertical={20} />
             <TextField label="Passwort Bestätigen" type="password" value={pwconfirm} onChange={(value) => setpwconfirm(value.target.value)} />
             <Spacer vertical={20} />
-            <Button onClick={() => setNewPassword()} variant="outlined" style={{ position: "absolute", left: "10px", bottom: "10px" }}>
+            <Button onClick={() => setNewPassword()} variant="outlined" >
                 Passwort Setzen
             </Button>
             <HSFAlert message={message} short="Bitte Felder korrekt ausfüllen" open={open} setOpen={setopen} />
             <HSFAlert type="success" message={sucMessage} open={sucOpen} setOpen={setsucOpen} />
         </div>
-        <Spacer horizontal={20} />
-        <Divider orientation="vertical" style={{ height: "100%" }} />
-        <Spacer horizontal={30} />
+        {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ? <Spacer horizontal={20} /> : <Spacer vertical={20} />}
+        {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ? < Divider orientation="vertical" style={{ height: "200px" }} /> : ""}
+        {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ? <Spacer horizontal={30} /> : ""}
         <div>
+
             <Typography variant="overline">Anforderungen:</Typography>
             <List>
                 <ListItem style={triggerCharsColor()}>
