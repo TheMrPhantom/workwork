@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'
 import { Button, Divider, List, ListItem, ListItemText, Paper, TextField, Typography } from '@material-ui/core'
 import Spacer from '../Common/Spacer'
-import ActivateSports from './ActivateSports'
-import Card from './Card'
-import { doPostRequest, getAndStore } from '../Common/StaticFunctions'
+import { doPostRequest } from '../Common/StaticFunctions'
 import Cookies from 'js-cookie'
 
 const PasswordCard = ({ memberID }) => {

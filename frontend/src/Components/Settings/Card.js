@@ -1,6 +1,6 @@
-import { Button, Paper, TextField } from '@material-ui/core'
+import { Paper, TextField } from '@material-ui/core'
 import Cookies from 'js-cookie'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
