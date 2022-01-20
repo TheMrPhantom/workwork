@@ -1,7 +1,4 @@
 # workwork
-
-[![Docker_Backend_Build](https://github.com/TheMrPhantom/workwork/actions/workflows/buildAndPushBackend.yml/badge.svg?branch=master)](https://github.com/TheMrPhantom/workwork/actions/workflows/buildAndPushBackend.yml)
-[![Docker_Frontend_Build](https://github.com/TheMrPhantom/workwork/actions/workflows/buildAndPushFrontend.yml/badge.svg?branch=master)](https://github.com/TheMrPhantom/workwork/actions/workflows/buildAndPushFrontend.yml)
 [![CodeQL](https://github.com/TheMrPhantom/workwork/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/TheMrPhantom/workwork/actions/workflows/codeql-analysis.yml)
 [![njsscan sarif](https://github.com/TheMrPhantom/workwork/actions/workflows/njsscan-analysis.yml/badge.svg?branch=master)](https://github.com/TheMrPhantom/workwork/actions/workflows/njsscan-analysis.yml)
 
