@@ -2,7 +2,8 @@ import subprocess
 import datetime
 from threading import Lock
 import os
-critical_function_lock = Lock()
+critical_function_lock_workhour_overview = Lock()
+critical_function_lock_member_overview = Lock()
 
 
 def yaml_header(title):
@@ -22,7 +23,7 @@ lang: de-DE
 def build_workhour_table(name, table):
     output = f"""
 
-Table: {name} offene Arbeitsstunden 
+Table: {name} 
 
 |Name|Abgeleistete Stunden|Benötigte Stunden|Offene Stunden|
 | - | - | - | - |
@@ -41,7 +42,7 @@ Table: {name} offene Arbeitsstunden
 
 def build_workhour_overview(member_infos: dict):
     file_dir = os.path.dirname(__file__)
-    with critical_function_lock:
+    with critical_function_lock_workhour_overview:
 
         output_string = yaml_header(
             "Bericht: Personen mit offenen Arbeitsstunden")
@@ -50,11 +51,12 @@ def build_workhour_overview(member_infos: dict):
             if table[0] == "overview":
                 output_string += "# Alle Mitglieder\n"
                 output_string += build_workhour_table(
-                    "Alle Mitglieder", table[1])
+                    "Alle Mitglieder offene Arbeitsstunden", table[1])
                 output_string += "# Nach Sparte\n"
             else:
                 output_string += f"## {table[0]}\n"
-                output_string += build_workhour_table(table[0], table[1])
+                output_string += build_workhour_table(
+                    f"{table[0]} offene Arbeitsstunden", table[1])
 
         with open(f'{file_dir}/template_workhours.md', "w") as writer:
             writer.write(output_string)
@@ -65,6 +67,24 @@ def build_workhour_overview(member_infos: dict):
         subprocess.run(["pandoc", f"{file_dir}/template_workhours.md", "-s",
                         f"{pandoc_engine_string}=lualatex", "-o", "BerichtArbeitsstunden.pdf", "-H", f"{file_dir}/workhours_header.tex"])
 
+
+def build_member_overview(member_infos: dict):
+    file_dir = os.path.dirname(__file__)
+    with critical_function_lock_member_overview:
+
+        output_string = yaml_header(
+            "Mitgliederübersicht")
+        output_string += build_workhour_table(
+            "Übersicht über alle Mitglieder", member_infos)
+
+        with open(f'{file_dir}/template_member_workhours.md', "w") as writer:
+            writer.write(output_string)
+
+        pandoc_engine_string = "--latex-engine" if os.environ.get(
+            "deprecated_pandoc") else "--pdf-engine"
+
+        subprocess.run(["pandoc", f"{file_dir}/template_member_workhours.md", "-s",
+                        f"{pandoc_engine_string}=lualatex", "-o", "BerichtMitglieder.pdf", "-H", f"{file_dir}/member_header.tex"])
 
 # Example
 # build_workhour_overview({'overview': [["Thorsten", 5, 12, 7], [

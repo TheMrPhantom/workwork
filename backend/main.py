@@ -698,7 +698,37 @@ def getRemainingWorkhoursPDF():
                     [f"{m['firstname']} {m['lastname']}", current, max, max-current])
 
     latex.build_workhour_overview(tables)
-    return helpers.send_from_directory(os.getcwd(), "BerichtArbeitsstunden.pdf")
+    resp = helpers.send_from_directory(
+        os.getcwd(), "BerichtArbeitsstunden.pdf")
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return resp
+
+
+@app.route('/api/report/members/pdf', methods=["GET"])
+@authenticated
+def getMemberPDF():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
+
+    members = db.getMembersList(db.getMembers())
+
+    table = []
+    for m in members:
+        current = 0
+        for cur in m["currentWork"]:
+            current += cur["hours"]
+
+        max = 0
+        for maxW in m["maxWork"]:
+            max += maxW["hours"]
+        table.append(
+            [f"{m['firstname']} {m['lastname']}", current, max, max-current])
+
+    latex.build_member_overview(table)
+    resp = helpers.send_from_directory(os.getcwd(), "BerichtMitglieder.pdf")
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return resp
 
 
 @app.route('/api/login', methods=["POST"])

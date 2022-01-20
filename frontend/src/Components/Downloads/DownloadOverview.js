@@ -17,13 +17,13 @@ const DownloadOverview = () => {
         setdownloading(false)
     }
 
-    const displayButton = () => {
+    const displayPDFButton = (url) => {
         if (downloading) {
             return <Button variant="outlined" disabled style={buttonStyle}>
                 <CircularProgress style={{ color: "var(--primaryColor)", width: "30px", height: "30px" }} />
             </Button>
         } else {
-            return (<Button variant="outlined" onClick={() => downloadP("report/remainingWorkhours/pdf")} style={buttonStyle}>
+            return (<Button variant="outlined" onClick={() => downloadP(url)} style={buttonStyle}>
                 Download (PDF)
             </Button>
             )
@@ -32,10 +32,20 @@ const DownloadOverview = () => {
 
     return (
         <div>
+            <Typography variant="h6">Mitgliederübersicht</Typography>
+            <Spacer vertical={15} />
+            <div style={{ display: "flex" }}>
+                {displayPDFButton("report/members/pdf")}
+                <Spacer horizontal={20} />
+                <Button disabled variant="outlined" onClick={() => alert("Noch keine Funktion")}>
+                    Download (Excel)
+                </Button>
+            </div>
+            <Spacer vertical={30} />
             <Typography variant="h6">Mitglieder mit offenen Arbeitsstunden</Typography>
             <Spacer vertical={15} />
             <div style={{ display: "flex" }}>
-                {displayButton()}
+                {displayPDFButton("report/remainingWorkhours/pdf")}
                 <Spacer horizontal={20} />
                 <Button disabled variant="outlined" onClick={() => alert("Noch keine Funktion")}>
                     Download (Excel)
