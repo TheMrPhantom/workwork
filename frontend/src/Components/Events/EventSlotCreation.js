@@ -8,6 +8,7 @@ import deLocale from 'date-fns/locale/de';
 import { Button } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import "./Events.css"
+import { secureRandomNumber } from '../Common/StaticFunctions';
 
 const EventSlotCreation = ({ createNewSlot }) => {
 
@@ -28,7 +29,7 @@ const EventSlotCreation = ({ createNewSlot }) => {
             setstartTime(null)
             setendTime(null)
             sethelper(0)
-            createNewSlot(name, helper, formatTime(startTime), formatTime(endTime), Math.floor(Math.random() * 10000000000000))
+            createNewSlot(name, helper, formatTime(startTime), formatTime(endTime), secureRandomNumber())
         } else {
 
         }

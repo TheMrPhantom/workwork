@@ -113,3 +113,13 @@ export const getHoursFromMember = (members) => {
 
     return [currentWork, maxWork]
 }
+
+export const secureRandomNumber = () => {
+    var array = new Uint32Array(20);
+    crypto.getRandomValues(array);
+    var sum = 0
+    for (var i = 0; i < array.length; i++) {
+        sum += array[i];
+    }
+    return sum
+}
