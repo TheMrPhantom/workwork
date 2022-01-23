@@ -3,7 +3,7 @@ import util
 from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
-from database.ModelImports import *
+from backend.database.Models import *
 
 
 class Queries:
@@ -19,6 +19,7 @@ class Queries:
             # = "database.db"
             app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
         self.db: SQLAlchemy = SQLAlchemy(app)
+        import database.Models as Models
         self.session = self.db.session
         # self.standardSportName = os.environ.get(
         #    "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
@@ -82,6 +83,9 @@ class Queries:
         '''
         [{id:x, name:x, extraHours:x}]
         '''
+        sports = self.session.query(Member).filter_by(
+            id=memberID).first().sport
+
         sports = self.getSports()
         output = []
         for s in sports:
