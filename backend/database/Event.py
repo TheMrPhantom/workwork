@@ -1,6 +1,5 @@
 import sqlalchemy as sql
 from test import db
-from flask_sqlalchemy import SQLAlchemy
 
 
 class Event(db.Model):
