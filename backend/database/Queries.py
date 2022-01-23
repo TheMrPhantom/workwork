@@ -78,7 +78,6 @@ class Queries:
     def getExtraHoursOfUser(self, memberID):
         return self.session.query(Member).filter_by(id=memberID).first().extra_hours
 
-    # TODO
     def getSportsOfMember(self, memberID):
         '''
         [{id:x, name:x, extraHours:x}]
@@ -128,7 +127,6 @@ class Queries:
 
         return neededWorkNames
 
-    # TODO
     def getStandardWorkTime(self, memberID=None):
 
         standardTime = self.session.query(Settings).filter_by(
