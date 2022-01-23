@@ -1,4 +1,4 @@
-from sqlalchemy import delete
+from sqlalchemy import delete, false
 from authenticator import TokenManager
 import util
 from datetime import datetime
@@ -199,77 +199,60 @@ class Queries:
         self.session.add(SportMember(member_id=memberID, sport_id=sportID))
         self.session.commit()
 
-    # TODO
-
     def setSportTrainer(self, memberID: int, sportID: int, isTrainer: bool):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE sportMember SET isTrainer=? WHERE memberID=? AND sportID=?''',
-                             (isTrainer, memberID, sportID,))
-        con.commit()
-        con.close()
+        self.session.query(SportMember).filter_by(
+            member_id=memberID, sport_id=sportID).first().is_trainer = isTrainer
+        self.session.commit()
         return
 
-    # TODO
     def updateMemberInfo(self, memberID: int, firstname: str, lastname: str, email: str):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE member SET firstname=?, lastname=?, email=? WHERE memberID=? AND deleted=0''',
-                             (firstname, lastname, email, memberID,))
-        con.commit()
-        con.close()
+        member = self.session.query(Member).filter_by(
+            member_id=memberID, is_deleted=False).first()
+        member.firstname = firstname
+        member.lastname = lastname
+        member.mail = email
+        member.last_modified = datetime.utcnow()
+        self.session.commit()
+
         return
 
-    # TODO
     def removeWorkHours(self, requestID: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE worktime SET deleted=1 WHERE ROWID=?''',
-                             (requestID, ))
-        con.commit()
-        con.close()
+        self.session.query(Worktime).get(requestID).is_deleted = True
+        self.session.commit()
+
         return
 
-    # TODO
     def createSport(self, name: str):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO sport values (?, 0, 0);", (name,))
-        con.commit()
-        con.close()
+        self.session.add(Sport(name=name))
+        self.session.commit()
+
         return
 
-    # TODO
     def changeExtraHours(self, sportID: int, amount: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute(
-            "UPDATE sport SET extraHours=? WHERE ROWID=? AND deleted=0;", (amount, sportID,))
-        con.commit()
-        con.close()
+        self.session.query(Sport).filter_by(
+            id=sportID, is_deleted=False).first().extra_hours = amount
+        self.session.commit()
+
         return
 
-    # TODO
     def getSports(self):
         '''
         {id:x, name:x, extraHours:x}
         '''
-        con = sqlite3.connect(self.db_name)
+        sports = self.session.query(Sport).filter_by(is_deleted=False)
         output = []
-        for link in con.cursor().execute("SELECT ROWID, name, extraHours FROM sport WHERE deleted=0"):
+        for s in sports:
             output.append(
-                {"id": link[0], "name": link[1], "extraHours": link[2]})
-        con.close()
+                {"id": s.id, "name": s.name, "extraHours": s.extra_hours})
 
         return output
 
-    # TODO
     def getSportName(self, id):
         '''
         returns name
         '''
-        con = sqlite3.connect(self.db_name)
-        output = None
-        for link in con.cursor().execute("SELECT name FROM sport WHERE deleted=0 AND ROWID=?", (id,)):
-            output = link[0]
-        con.close()
 
-        return output
+        return self.session.query(Sport).filter_by(id=id, is_deleted=False).first().name
 
     # TODO
     def removeSport(self, sportID):
