@@ -86,11 +86,10 @@ class Queries:
         sports = self.session.query(Member).filter_by(
             id=memberID).first().sport
 
-        sports = self.getSports()
         output = []
         for s in sports:
-            if self.isMemberof(memberID, s['id']):
-                output.append(s)
+            output.append({"id": s.id, "name": s.name,
+                           "extraHours": s.extra_hours})
         return output
 
     # TODO
