@@ -130,10 +130,10 @@ class Queries:
 
     # TODO
     def getStandardWorkTime(self, memberID=None):
-        con = sqlite3.connect(self.db_name)
-        for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
-            standardTime = link[0]
-        con.close()
+
+        standardTime = self.session.query(Settings).filter_by(
+            key="standardworktime").first().value
+
         extraHoursOfUser = self.getExtraHoursOfUser(memberID)
         if memberID is not None:
             return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
