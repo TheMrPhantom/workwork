@@ -191,7 +191,6 @@ class Queries:
             id=requestID, is_deleted=False).first().pending = False
         self.session.commit()
 
-    # TODO
     def denyWorkRequest(self, requestID: int):
         self.removeWorkHours(requestID)
         return
