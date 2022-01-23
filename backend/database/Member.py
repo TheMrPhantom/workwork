@@ -10,8 +10,12 @@ class Member(db.Model):
     lastname = sql.Column(sql.String(100), nullable=False)
     mail = sql.Column(sql.String(100), nullable=False)
     role = sql.Column(sql.Integer, nullable=False)
-    deleted = sql.Column(sql.Boolean, nullable=False)
+    deleted = sql.Column(sql.Boolean, default=False, nullable=False)
     salt = sql.Column(sql.String(32), nullable=False)
     extra_hours = sql.Column(sql.Integer, nullable=False)
     last_modified = sql.Column(sql.DateTime, default=datetime.utcnow)
-    worktime = relationship('Worktime', backref='member', lazy=True)
+    worktime = relationship('database.Worktime.Worktime', lazy=True)
+    sport = relationship('database.SportMember.SportMember', lazy=True)
+
+    def __repr__(self):
+        return f"Member(id:{self.id},firstname:{self.firstname})"
