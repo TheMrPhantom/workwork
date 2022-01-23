@@ -1,98 +1,32 @@
-import sqlite3
-import os
 from authenticator import TokenManager
 import util
 from datetime import datetime
+import os
+from flask_sqlalchemy import SQLAlchemy
+from database.ModelImports import *
 
 
-class SQLiteWrapper:
-    def __init__(self, fillTestData=False, dbName=None):
+class Queries:
+    # TODO
+    def __init__(self, app, fillTestData=False, dbName=None):
         if os.environ.get("db_name"):
-            self.db_name = os.environ.get("db_name")
+            # = os.environ.get("db_name")
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
         elif dbName:
-            self.db_name = dbName
+            # = dbName
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
         else:
-            self.db_name = "database.db"
-        self.standardSportName = os.environ.get(
-            "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
-        self.__create_tables()
-        self.__initialize_database()
+            # = "database.db"
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+        self.db: SQLAlchemy = SQLAlchemy(app)
+        self.session = self.db.session
+        # self.standardSportName = os.environ.get(
+        #    "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
 
-        if fillTestData:
-            self.__fillTestData()
+        # if fillTestData:
+        #    self.__fillTestData()
 
-    def __initialize_database(self):
-        con = sqlite3.connect(self.db_name)
-        isinitialized = False
-
-        for link in con.cursor().execute('''SELECT * FROM member'''):
-            isinitialized = True
-
-        if not isinitialized:
-            hashedPassword, salt = TokenManager.hashPassword(util.admin_pw)
-            con.cursor().execute(
-                "INSERT INTO member values ('admin', 'admin', 'admin@localhost', ?, 1, 0, ?, 0);", (hashedPassword, salt,))
-            con.cursor().execute(
-                "INSERT INTO sport values (?, 0, 0);", (self.standardSportName,))
-            con.cursor().execute("INSERT INTO standardworktime values (720);")
-            con.commit()
-        con.close()
-
-    def __create_tables(self):
-        try:
-            con = sqlite3.connect(self.db_name)
-            con.cursor().execute(
-                '''CREATE TABLE member
-                (firstname TEXT, lastname TEXT, mail TEXT, password TEXT, rolle TEXT, deleted INTEGER, salt TEXT, extraHours INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE worktime
-                (memberID INTEGER, sportID INTEGER, description TEXT, minutes INTEGER, pending INTEGER, deleted INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE sportMember
-                (memberID INTEGER, sportID INTEGER, isTrainer INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE sport
-                (name TEXT, extraHours INTEGER, deleted INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE standardworktime
-                (time INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE event
-                (name TEXT, sportID INTEGER, date TEXT, deleted INTEGER)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE timeslot
-                (eventID INTEGER, name TEXT, helper INTEGER, start TEXT, end TEXT)'''
-            )
-            con.commit()
-
-            con.cursor().execute(
-                '''CREATE TABLE eventParticipant
-                (memberID INTEGER, timeslotID INTEGER)'''
-            )
-            con.commit()
-
-            con.close()
-        except sqlite3.OperationalError as e:
-            print(e)
-
+    # TODO
     def getCurrentWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         work = {}
@@ -141,12 +75,9 @@ class SQLiteWrapper:
         return output
 
     def getExtraHoursOfUser(self, memberID):
-        con = sqlite3.connect(self.db_name)
-        output = 0
-        for link in con.cursor().execute('''SELECT extraHours FROM member WHERE ROWID=?''', (memberID,)):
-            output = link[0]
-        return output
+        return self.session.query(Member).filter_by(id=memberID).first().extra_hours
 
+    # TODO
     def getSportsOfMember(self, memberID):
         '''
         [{id:x, name:x, extraHours:x}]
@@ -158,6 +89,7 @@ class SQLiteWrapper:
                 output.append(s)
         return output
 
+    # TODO
     def getNeededWorkMinutes(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         sportIDs = []
@@ -193,6 +125,7 @@ class SQLiteWrapper:
 
         return neededWorkNames
 
+    # TODO
     def getStandardWorkTime(self, memberID=None):
         con = sqlite3.connect(self.db_name)
         for link in con.cursor().execute('''SELECT * FROM standardworktime'''):
@@ -204,6 +137,7 @@ class SQLiteWrapper:
         else:
             return standardTime
 
+    # TODO
     def setStandardWorkTime(self, worktime):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE standardworktime SET time=?''',
@@ -211,38 +145,41 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def getPendingWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sport.name, worktime.description, worktime.minutes,worktime.ROWID
-            FROM sport, worktime
-            WHERE sport.ROWID=worktime.sportID
-            AND worktime.memberID=?
-            AND worktime.pending=1
-            AND sport.deleted=0
-            AND worktime.deleted=0
-        ''', (memberID,)):
+                SELECT sport.name, worktime.description, worktime.minutes,worktime.ROWID
+                FROM sport, worktime
+                WHERE sport.ROWID=worktime.sportID
+                AND worktime.memberID=?
+                AND worktime.pending=1
+                AND sport.deleted=0
+                AND worktime.deleted=0
+            ''', (memberID,)):
             requests.append(link)
         con.close()
         return requests
 
+    # TODO
     def getAcceptedWorkRequests(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sport.name, worktime.description, worktime.minutes, worktime.ROWID
-            FROM sport, worktime
-            WHERE sport.ROWID=worktime.sportID
-            AND worktime.memberID=?
-            AND worktime.pending=0
-            AND worktime.deleted=0
-            AND sport.deleted=0
-        ''', (memberID,)):
+                SELECT sport.name, worktime.description, worktime.minutes, worktime.ROWID
+                FROM sport, worktime
+                WHERE sport.ROWID=worktime.sportID
+                AND worktime.memberID=?
+                AND worktime.pending=0
+                AND worktime.deleted=0
+                AND sport.deleted=0
+            ''', (memberID,)):
             requests.append(link)
         con.close()
         return requests
 
+    # TODO
     def createWorkRequest(self, memberID: int, sportID: int, reason: str, time: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''INSERT INTO worktime values (?, ?, ?, ?, ?, ?)''',
@@ -250,6 +187,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def isTrainerof(self, memberID: int, sportID: int):
         con = sqlite3.connect(self.db_name)
         isTrainer = False
@@ -259,6 +197,7 @@ class SQLiteWrapper:
         con.close()
         return isTrainer
 
+    # TODO
     def isMemberof(self, memberID: int, sportID: int):
         con = sqlite3.connect(self.db_name)
         isMember = False
@@ -267,6 +206,7 @@ class SQLiteWrapper:
         con.close()
         return isMember
 
+    # TODO
     def isTrainer(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         isTrainer = False
@@ -276,6 +216,7 @@ class SQLiteWrapper:
         con.close()
         return isTrainer
 
+    # TODO
     def acceptWorkRequest(self, requestID: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE worktime SET pending=0 WHERE ROWID=? AND deleted=0''',
@@ -284,10 +225,12 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def denyWorkRequest(self, requestID: int):
         self.removeWorkHours(requestID)
         return
 
+    # TODO
     def makeSportParticipant(self, memberID: int, sportID: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO sportMember values (?, ?, 0);", (memberID, sportID,))
@@ -295,6 +238,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def setSportTrainer(self, memberID: int, sportID: int, isTrainer: bool):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE sportMember SET isTrainer=? WHERE memberID=? AND sportID=?''',
@@ -303,6 +247,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def updateMemberInfo(self, memberID: int, firstname: str, lastname: str, email: str):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE member SET firstname=?, lastname=?, email=? WHERE memberID=? AND deleted=0''',
@@ -311,6 +256,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def removeWorkHours(self, requestID: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE worktime SET deleted=1 WHERE ROWID=?''',
@@ -319,6 +265,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def createSport(self, name: str):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO sport values (?, 0, 0);", (name,))
@@ -326,6 +273,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def changeExtraHours(self, sportID: int, amount: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute(
@@ -334,6 +282,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def getSports(self):
         '''
         {id:x, name:x, extraHours:x}
@@ -347,6 +296,7 @@ class SQLiteWrapper:
 
         return output
 
+    # TODO
     def getSportName(self, id):
         '''
         returns name
@@ -359,18 +309,21 @@ class SQLiteWrapper:
 
         return output
 
+    # TODO
     def removeSport(self, sportID):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE sport SET deleted=1 WHERE ROWID=?;", (sportID,))
         con.commit()
         con.close()
 
+    # TODO
     def addSport(self, name, extraHours):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO sport values (?, ?, 0);", (name, extraHours))
         con.commit()
         con.close()
 
+    # TODO
     def getMembers(self):
         con = sqlite3.connect(self.db_name)
         output = []
@@ -382,24 +335,26 @@ class SQLiteWrapper:
 
         return output
 
+    # TODO
     def getPendingWorkRequestsBySport(self, sportID):
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes, worktime.ROWID
-            FROM sport, worktime, member
-            WHERE sport.ROWID=worktime.sportID
-            AND member.ROWID=worktime.memberID
-            AND sport.ROWID=?
-            AND worktime.pending=1
-            AND sport.deleted=0
-            AND worktime.deleted=0
-            AND member.deleted=0
-        ''', (sportID,)):
+                SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes, worktime.ROWID
+                FROM sport, worktime, member
+                WHERE sport.ROWID=worktime.sportID
+                AND member.ROWID=worktime.memberID
+                AND sport.ROWID=?
+                AND worktime.pending=1
+                AND sport.deleted=0
+                AND worktime.deleted=0
+                AND member.deleted=0
+            ''', (sportID,)):
             requests.append(link)
         con.close()
         return requests
 
+    # TODO
     def getMembersOfSport(self, sportID):
         """
         [[memberID,firstname,lastname,isTrainer,memberID,mail],...]
@@ -407,18 +362,19 @@ class SQLiteWrapper:
         con = sqlite3.connect(self.db_name)
         requests = []
         for link in con.cursor().execute('''
-            SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID, member.mail
-            FROM sportMember, member
-            WHERE sportMember.sportid=?
-            AND sportMember.memberID=member.ROWID
-            AND member.deleted=0
-        ''', (sportID,)):
+                SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID, member.mail
+                FROM sportMember, member
+                WHERE sportMember.sportid=?
+                AND sportMember.memberID=member.ROWID
+                AND member.deleted=0
+            ''', (sportID,)):
             if link[4] == 1:  # skip admin user
                 continue
             requests.append(link)
         con.close()
         return requests
 
+    # TODO
     def getMemberInfo(self, memberID):
         """
         {firstname,lastname,mail,id}
@@ -432,6 +388,7 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    # TODO
     def participantIn(self, memberID):
         sports = self.getSports()
         for s in sports:
@@ -439,6 +396,7 @@ class SQLiteWrapper:
 
         return sports
 
+    # TODO
     def trainerIn(self, memberID):
         sports = self.getSports()
         for s in sports:
@@ -446,6 +404,7 @@ class SQLiteWrapper:
 
         return sports
 
+    # TODO
     def checkPassword(self, username, password):
         con = sqlite3.connect(self.db_name)
         output = None
@@ -462,6 +421,7 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    # TODO
     def isExecutive(self, memberID):
         con = sqlite3.connect(self.db_name)
         output = 0
@@ -471,6 +431,7 @@ class SQLiteWrapper:
         con.close()
         return int(output)
 
+    # TODO
     def changeParticipation(self, memberID, sportID, isParticipating):
         isAlreadyParticipant = self.isMemberof(memberID, sportID)
         if isAlreadyParticipant == isParticipating:
@@ -486,6 +447,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def changeTrainer(self, memberID, sportID, isTrainer):
         isAlreadyTrainer = self.isTrainerof(memberID, sportID)
         isMember = self.isMemberof(memberID, sportID)
@@ -518,6 +480,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def changePassword(self, memberID, password):
         con = sqlite3.connect(self.db_name)
         usedPW, usedSalt = TokenManager.hashPassword(password)
@@ -526,30 +489,35 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def changeFirstname(self, memberID, name):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET firstname=? WHERE ROWID=?;", (name, memberID,))
         con.commit()
         con.close()
 
+    # TODO
     def changeLastname(self, memberID, name):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET lastname=? WHERE ROWID=?;", (name, memberID,))
         con.commit()
         con.close()
 
+    # TODO
     def changeMail(self, memberID, email):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET mail=? WHERE ROWID=?;", (email, memberID,))
         con.commit()
         con.close()
 
+    # TODO
     def changeMemberWorkHours(self, memberID, minutes):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET extraHours=? WHERE ROWID=?;", (minutes, memberID,))
         con.commit()
         con.close()
 
+    # TODO
     def addWorkRequest(self, memberID, sportID, description, minutes):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (?, ?, ?, ?, 1, 0);",
@@ -557,6 +525,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def addMember(self, firstName, lastname, email, password):
         if firstName == "admin":  # cant spawn admin user
             return
@@ -580,6 +549,7 @@ class SQLiteWrapper:
         if not password:
             return memberID, usedPW
 
+    # TODO
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable
             return
@@ -588,6 +558,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def setExecutive(self, memberID, isExecutive):
         if memberID == 1:  # make admin unchangable
             return
@@ -597,6 +568,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def checkMailExists(self, mail):
         con = sqlite3.connect(self.db_name)
         mail_exists = False
@@ -605,6 +577,7 @@ class SQLiteWrapper:
         con.close()
         return mail_exists
 
+    # TODO
     def addEvent(self, name, sportID, date):
         if(self.getEvent(name) is not None):
             return None
@@ -616,6 +589,7 @@ class SQLiteWrapper:
 
         return self.getEvent(name)
 
+    # TODO
     def getEvent(self, name):
         con = sqlite3.connect(self.db_name)
         output = None
@@ -624,6 +598,7 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    # TODO
     def getEvents(self):
         con = sqlite3.connect(self.db_name)
         output = []
@@ -632,6 +607,7 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    # TODO
     def addTimeslot(self, eventID, name, helper, start, end):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO timeslot values (?, ?, ?, ?, ?);",
@@ -639,6 +615,7 @@ class SQLiteWrapper:
         con.commit()
         con.close()
 
+    # TODO
     def getTimeslots(self, eventID):
         con = sqlite3.connect(self.db_name)
         output = []
@@ -648,6 +625,7 @@ class SQLiteWrapper:
         con.close()
         return output
 
+    # TODO
     def addTimeslotParticipant(self, memberID, timeslotID):
         if not self.isTimeslotParticipant(memberID, timeslotID):
             con = sqlite3.connect(self.db_name)
@@ -656,6 +634,7 @@ class SQLiteWrapper:
             con.commit()
             con.close()
 
+    # TODO
     def removeTimeslotParticipant(self, memberID, timeslotID):
         if self.isTimeslotParticipant(memberID, timeslotID):
             con = sqlite3.connect(self.db_name)
@@ -664,6 +643,7 @@ class SQLiteWrapper:
             con.commit()
             con.close()
 
+    # TODO
     def isTimeslotParticipant(self, memberID, timeslotID):
         con = sqlite3.connect(self.db_name)
         output = False
@@ -673,6 +653,7 @@ class SQLiteWrapper:
 
         return output
 
+    # TODO
     def deleteEvent(self, eventID: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE event SET deleted=1 WHERE ROWID=?''',
@@ -681,6 +662,7 @@ class SQLiteWrapper:
         con.close()
         return
 
+    # TODO
     def getTimeslotParticipants(self, timeslotID):
         con = sqlite3.connect(self.db_name)
         output = []
@@ -690,6 +672,7 @@ class SQLiteWrapper:
 
         return output
 
+    # TODO
     def getTimeslot(self, timeslotID):
         con = sqlite3.connect(self.db_name)
         output = None
@@ -700,6 +683,7 @@ class SQLiteWrapper:
         print(output)
         return output
 
+    # TODO
     def createRequestsFromEvents(self):
         expEvents = self.getExpiredEvents()
 
@@ -724,6 +708,7 @@ class SQLiteWrapper:
         for event in expEvents:
             self.deleteEvent(event[0])
 
+    # TODO
     def getExpiredEvents(self):
         output = []
         events = self.getEvents()
@@ -736,16 +721,18 @@ class SQLiteWrapper:
                 output.append(e)
         return output
 
-    def getMembersList(self,members):
+    # TODO
+    def getMembersList(self, members):
         output = []
         for m in members:
             currentWork = self.getCurrentWorkMinutes(m[0])
             maxWork = self.getNeededWorkMinutes(m[0])
             isTrainer = self.isTrainer(m[0])
             output.append({"id": m[0], "firstname": m[1],
-                        "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
+                           "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
         return output
 
+    # TODO
     def __fillTestData(self):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")
