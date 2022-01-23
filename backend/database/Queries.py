@@ -138,29 +138,17 @@ class Queries:
         else:
             return standardTime
 
-    # TODO
     def setStandardWorkTime(self, worktime):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE standardworktime SET time=?''',
-                             (worktime, ))
-        con.commit()
-        con.close()
+        self.session.query(Settings).filter_by(
+            key="standardworktime").first().value = worktime
+        self.session.commit()
 
-    # TODO
     def getPendingWorkRequests(self, memberID: int):
-        con = sqlite3.connect(self.db_name)
         requests = []
-        for link in con.cursor().execute('''
-                SELECT sport.name, worktime.description, worktime.minutes,worktime.ROWID
-                FROM sport, worktime
-                WHERE sport.ROWID=worktime.sportID
-                AND worktime.memberID=?
-                AND worktime.pending=1
-                AND sport.deleted=0
-                AND worktime.deleted=0
-            ''', (memberID,)):
-            requests.append(link)
-        con.close()
+        req = self.session.query(Worktime).filter_by(member_id=memberID).all()
+        for r in req:
+            requests.append((r.sport.name, r.description, r.minutes, r.id))
+
         return requests
 
     # TODO
