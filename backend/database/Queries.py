@@ -172,17 +172,11 @@ class Queries:
     def isTrainerof(self, memberID: int, sportID: int):
         return self.session.query(SportMember).with_entities(SportMember.is_trainer).filter_by(member_id=memberID, sport_id=sportID)
 
-    # TODO
-
     def isMemberof(self, memberID: int, sportID: int):
-        con = sqlite3.connect(self.db_name)
-        isMember = False
-        for link in con.cursor().execute(''' SELECT isTrainer FROM sportMember WHERE memberID=? AND sportID=?''', (memberID, sportID,)):
-            isMember = True
-        con.close()
-        return isMember
+        return self.session.query(SportMember).filter_by(member_id=memberID, sport_id=sportID) != None
 
     # TODO
+
     def isTrainer(self, memberID: int):
         con = sqlite3.connect(self.db_name)
         isTrainer = False
