@@ -154,24 +154,17 @@ class Queries:
 
         return requests
 
-    # TODO
     def getAcceptedWorkRequests(self, memberID: int):
-        con = sqlite3.connect(self.db_name)
         requests = []
-        for link in con.cursor().execute('''
-                SELECT sport.name, worktime.description, worktime.minutes, worktime.ROWID
-                FROM sport, worktime
-                WHERE sport.ROWID=worktime.sportID
-                AND worktime.memberID=?
-                AND worktime.pending=0
-                AND worktime.deleted=0
-                AND sport.deleted=0
-            ''', (memberID,)):
-            requests.append(link)
-        con.close()
+        req = self.session.query(Worktime).filter(
+            Worktime.member_id == memberID, not Worktime.pending, not Worktime.is_deleted, not Sport.is_deleted).all()
+        for r in req:
+            requests.append((r.sport.name, r.description, r.minutes, r.id))
+
         return requests
 
     # TODO
+
     def createWorkRequest(self, memberID: int, sportID: int, reason: str, time: int):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''INSERT INTO worktime values (?, ?, ?, ?, ?, ?)''',
