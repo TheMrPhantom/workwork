@@ -1,7 +1,6 @@
 from datetime import datetime
 import sqlalchemy as sql
 from test import db
-from flask_sqlalchemy import SQLAlchemy
 
 
 class Settings(db.Model):

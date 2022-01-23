@@ -1,8 +1,6 @@
 from datetime import datetime
-from unicodedata import name
 import sqlalchemy as sql
 from test import db
-from flask_sqlalchemy import SQLAlchemy
 
 
 class Sport(db.Model):
