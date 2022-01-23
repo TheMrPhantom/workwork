@@ -1,3 +1,4 @@
+from sqlalchemy import delete
 from authenticator import TokenManager
 import util
 from datetime import datetime
@@ -143,9 +144,11 @@ class Queries:
             key="standardworktime").first().value = worktime
         self.session.commit()
 
+    # TODO
     def getPendingWorkRequests(self, memberID: int):
         requests = []
-        req = self.session.query(Worktime).filter_by(member_id=memberID).all()
+        req = self.session.query(Worktime).filter(
+            Worktime.member_id == memberID, Worktime.pending, not Worktime.is_deleted, not Sport.is_deleted).all()
         for r in req:
             requests.append((r.sport.name, r.description, r.minutes, r.id))
 

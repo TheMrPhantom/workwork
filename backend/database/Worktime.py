@@ -13,4 +13,4 @@ class Worktime(db.Model):
     description = sql.Column(sql.Text, nullable=False)
     minutes = sql.Column(sql.Integer, nullable=False)
     pending = sql.Column(sql.Boolean, default=True, nullable=False)
-    deleted = sql.Column(sql.Boolean, default=False, nullable=False)
+    is_deleted = sql.Column(sql.Boolean, default=False, nullable=False)
