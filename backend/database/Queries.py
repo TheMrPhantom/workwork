@@ -195,15 +195,12 @@ class Queries:
         self.removeWorkHours(requestID)
         return
 
-    # TODO
     def makeSportParticipant(self, memberID: int, sportID: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO sportMember values (?, ?, 0);", (memberID, sportID,))
-        con.commit()
-        con.close()
-        return
+        self.session.add(SportMember(member_id=memberID, sport_id=sportID))
+        self.session.commit()
 
     # TODO
+
     def setSportTrainer(self, memberID: int, sportID: int, isTrainer: bool):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute('''UPDATE sportMember SET isTrainer=? WHERE memberID=? AND sportID=?''',
