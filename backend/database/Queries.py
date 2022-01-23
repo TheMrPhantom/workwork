@@ -163,16 +163,14 @@ class Queries:
 
         return requests
 
-    # TODO
-
     def createWorkRequest(self, memberID: int, sportID: int, reason: str, time: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''INSERT INTO worktime values (?, ?, ?, ?, ?, ?)''',
-                             (memberID, sportID, reason, time, 1, 0,))
-        con.commit()
-        con.close()
+        wr = Worktime(member_id=memberID, sport_id=sportID,
+                      description=reason, minutes=time)
+        self.session.add(wr)
+        self.session.commit()
 
     # TODO
+
     def isTrainerof(self, memberID: int, sportID: int):
         con = sqlite3.connect(self.db_name)
         isTrainer = False
