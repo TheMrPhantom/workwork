@@ -169,18 +169,11 @@ class Queries:
         self.session.add(wr)
         self.session.commit()
 
-    # TODO
-
     def isTrainerof(self, memberID: int, sportID: int):
-        con = sqlite3.connect(self.db_name)
-        isTrainer = False
-        for link in con.cursor().execute(''' SELECT isTrainer FROM sportMember WHERE memberID=? AND sportID=?''', (memberID, sportID,)):
-            isTrainer = link[0] == 1
-
-        con.close()
-        return isTrainer
+        return self.session.query(SportMember).with_entities(SportMember.is_trainer).filter_by(member_id=memberID, sport_id=sportID)
 
     # TODO
+
     def isMemberof(self, memberID: int, sportID: int):
         con = sqlite3.connect(self.db_name)
         isMember = False
