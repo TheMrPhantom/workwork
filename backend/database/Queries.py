@@ -186,14 +186,10 @@ class Queries:
 
         return isTrainer
 
-    # TODO
     def acceptWorkRequest(self, requestID: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE worktime SET pending=0 WHERE ROWID=? AND deleted=0''',
-                             (requestID, ))
-        con.commit()
-        con.close()
-        return
+        self.session.query(Worktime).filter_by(
+            id=requestID, is_deleted=False).first().pending = False
+        self.session.commit()
 
     # TODO
     def denyWorkRequest(self, requestID: int):
