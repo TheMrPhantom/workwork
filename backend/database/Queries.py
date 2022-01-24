@@ -19,13 +19,26 @@ class Queries:
         # else:
         #     # = "database.db"
         #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        self.db: sqlalchemy = db
+        self.db: SQLAlchemy = db
         self.session = self.db.session
-        # self.standardSportName = os.environ.get(
-        #    "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
-
+        self.standardSportName = os.environ.get(
+            "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
+        self.__initialize_database()
         # if fillTestData:
         #    self.__fillTestData()
+
+    def __initialize_database(self):
+        is_initialized = self.session.query(Member).first() is not None
+        if not is_initialized:
+            hashedPassword, salt = TokenManager.hashPassword(util.admin_pw)
+            admin_user = Member(firstname='admin', lastname='admin',
+                                mail='admin@localhost', password=hashedPassword, role=1, salt=salt)
+            standard_sport = Sport(name=self.standardSportName)
+            standard_worktime = Settings(key='standardworktime', value='720')
+            self.session.add(admin_user)
+            self.session.add(standard_sport)
+            self.session.add(standard_worktime)
+            self.session.commit()
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
@@ -325,7 +338,8 @@ class Queries:
 
         member = self.session.query(Member).filter_by(
             mail=username, is_deleted=False).first()
-
+        if member is None:
+            return None
         hashedPassword = TokenManager.hashPassword(password, member.salt)
 
         if member.password == hashedPassword:

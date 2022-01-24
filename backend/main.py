@@ -20,6 +20,8 @@ token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
 
+sql_database.create_all()
+
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_Daily_Task(db.createRequestsFromEvents)
 taskScheduler.start()
