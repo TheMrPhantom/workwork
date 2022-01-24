@@ -90,7 +90,6 @@ class Queries:
         return output
 
     def getExtraHoursOfUser(self, memberID):
-        print("luuu", memberID)
         return self.session.query(Member).filter_by(id=memberID).first().extra_hours
 
     def getSportsOfMember(self, memberID):
@@ -102,7 +101,6 @@ class Queries:
 
         output = []
         for s in sports:
-            print(s)
             output.append({"id": s.id, "name": s.sport.name,
                            "extraHours": s.sport.extra_hours})
         return output
