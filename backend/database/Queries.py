@@ -100,7 +100,8 @@ class Queries:
         sportIDs = []
         standardTime = self.getStandardWorkTime(memberID)
         noHoursOutput = [{'name': 'Standard', 'hours': 0}]
-        if self.isExecutive(memberID) == 1:
+        is_executive = self.isExecutive(memberID)
+        if is_executive is None or is_executive == 1:
             return noHoursOutput
 
         query = self.session.query(SportMember).filter_by(
