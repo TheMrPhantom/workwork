@@ -7,6 +7,7 @@ class Worktime(db.Model):
     id = sql.Column(sql.Integer, primary_key=True)
     member_id = sql.Column(sql.Integer, sql.ForeignKey(
         'member.id'), nullable=False)
+    member = relationship('database.Member.Member', lazy="joined")
     sport_id = sql.Column(
         sql.Integer, sql.ForeignKey('sport.id'), nullable=False)
     sport = relationship('database.Sport.Sport', lazy="joined")
