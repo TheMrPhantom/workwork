@@ -1,3 +1,4 @@
+from xmlrpc.client import FastMarshaller
 import sqlalchemy
 from authenticator import TokenManager
 import util
@@ -43,7 +44,7 @@ class Queries:
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
-            member_id=memberID, pending=True, is_deleted=False).group_by(Worktime.sport_id).all()
+            member_id=memberID, pending=False, is_deleted=False).group_by(Worktime.sport_id).all()
         work = {}
         for q in query:
             work[q.sport_id] = {'minutes': q.minutes, 'sportID': q.sport_id}
@@ -101,8 +102,9 @@ class Queries:
 
         output = []
         for s in sports:
-            output.append({"id": s.id, "name": s.name,
-                           "extraHours": s.extra_hours})
+            print(s)
+            output.append({"id": s.id, "name": s.sport.name,
+                           "extraHours": s.sport.extra_hours})
         return output
 
     def getNeededWorkMinutes(self, memberID: int):
@@ -124,10 +126,10 @@ class Queries:
         neededWorkIDs = {}
         for sID in sportIDs:
             extra_hours = self.session.query(Sport).with_entities(
-                Sport.extra_hours).filter_by(id=sID, is_deleted=False)
+                Sport.extra_hours).filter_by(id=sID, is_deleted=False).all()
             for hours in extra_hours:
-                if hours > 0:
-                    neededWorkIDs[sID] = hours
+                if hours[0] > 0:
+                    neededWorkIDs[sID] = hours[0]
         neededWorkNames = []
 
         neededWorkNames.append(
@@ -162,7 +164,7 @@ class Queries:
     def getPendingWorkRequests(self, memberID: int):
         requests = []
         req = self.session.query(Worktime).filter(
-            Worktime.member_id == memberID, Worktime.pending, not Worktime.is_deleted, not Sport.is_deleted).all()
+            Worktime.member_id == memberID, Worktime.pending == True, Worktime.is_deleted == False, Sport.is_deleted == False).all()
         for r in req:
             requests.append((r.sport.name, r.description, r.minutes, r.id))
 
@@ -171,7 +173,7 @@ class Queries:
     def getAcceptedWorkRequests(self, memberID: int):
         requests = []
         req = self.session.query(Worktime).filter(
-            Worktime.member_id == memberID, not Worktime.pending, not Worktime.is_deleted, not Sport.is_deleted).all()
+            Worktime.member_id == memberID, Worktime.pending == False, Worktime.is_deleted == False, Sport.is_deleted == False).all()
         for r in req:
             requests.append((r.sport.name, r.description, r.minutes, r.id))
 
@@ -184,19 +186,21 @@ class Queries:
         self.session.commit()
 
     def isTrainerof(self, memberID: int, sportID: int):
-        return self.session.query(SportMember).with_entities(SportMember.is_trainer).filter_by(member_id=memberID, sport_id=sportID)
+        result = self.session.query(SportMember).with_entities(
+            SportMember.is_trainer).filter_by(member_id=memberID, sport_id=sportID).first()
+        return False if result is None else result[0]
 
     def isMemberof(self, memberID: int, sportID: int):
-        return self.session.query(SportMember).filter_by(member_id=memberID, sport_id=sportID) != None
+        return self.session.query(SportMember).filter_by(member_id=memberID, sport_id=sportID).first() is not None
 
     def isTrainer(self, memberID: int):
 
         isTrainer = False
 
         isTrainerOfSport = self.session.query(SportMember).with_entities(
-            SportMember.is_trainer).filter_by(member_id=memberID)
+            SportMember.is_trainer).filter_by(member_id=memberID).all()
         for t in isTrainerOfSport:
-            isTrainer |= t
+            isTrainer |= t[0]
 
         return isTrainer
 
@@ -254,7 +258,7 @@ class Queries:
         '''
         {id:x, name:x, extraHours:x}
         '''
-        sports = self.session.query(Sport).filter_by(is_deleted=False)
+        sports = self.session.query(Sport).filter_by(is_deleted=False).all()
         output = []
         for s in sports:
             output.append(
@@ -285,14 +289,13 @@ class Queries:
         return output
 
     def getPendingWorkRequestsBySport(self, sportID):
-        query = self.session.query(Member).filter(Sport.id == sportID, Worktime.pending,
-                                                  not Sport.is_deleted, not Worktime.is_deleted, not Member.is_deleted).all()
+        query = self.session.query(Worktime).filter_by(
+            sport_id=sportID, pending=True, is_deleted=False).all()
 
         requests = []
-
         for q in query:
-            requests.append((q.firstname, q.lastname, q.sport.name,
-                             q.worktime.description, q.worktime.minutes, q.worktime.id))
+            requests.append((q.member.firstname, q.member.lastname, q.sport_id,
+                             q.description, q.minutes, q.id))
 
         return requests
 
@@ -358,7 +361,7 @@ class Queries:
             return
 
         if isParticipating:
-            self.session.add(SportMember(id=memberID, sport_id=sportID))
+            self.session.add(SportMember(member_id=memberID, sport_id=sportID))
 
         else:
             to_delete = self.session.query(SportMember).filter_by(
@@ -524,7 +527,7 @@ class Queries:
 
         output = []
         for p in participants:
-            output.append(self.getMemberInfo(p.member_id))
+            output.append(self.getMemberInfo(p[0]))
 
         return output
 
