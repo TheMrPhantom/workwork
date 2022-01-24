@@ -9,7 +9,7 @@ class Worktime(db.Model):
         'member.id'), nullable=False)
     sport_id = sql.Column(
         sql.Integer, sql.ForeignKey('sport.id'), nullable=False)
-    sport = relationship('database.Sport.Sport', lazy=True)
+    sport = relationship('database.Sport.Sport', lazy="joined")
     description = sql.Column(sql.Text, nullable=False)
     minutes = sql.Column(sql.Integer, nullable=False)
     pending = sql.Column(sql.Boolean, default=True, nullable=False)
