@@ -1,16 +1,14 @@
-from tkinter import E
-from sqlalchemy import delete, false, null
 from authenticator import TokenManager
 import util
 from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from backend.database.Models import *
 
 
 class Queries:
-    # TODO
-    def __init__(self, app, fillTestData=False, dbName=None):
+    def __init__(self, app, dbName=None):
         if os.environ.get("db_name"):
             # = os.environ.get("db_name")
             app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -21,7 +19,6 @@ class Queries:
             # = "database.db"
             app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
         self.db: SQLAlchemy = SQLAlchemy(app)
-        import database.Models as Models
         self.session = self.db.session
         # self.standardSportName = os.environ.get(
         #    "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
@@ -29,13 +26,12 @@ class Queries:
         # if fillTestData:
         #    self.__fillTestData()
 
-    # TODO
     def getCurrentWorkMinutes(self, memberID: int):
-        con = sqlite3.connect(self.db_name)
+        query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
+            member_id=memberID, pending=True, is_deleted=False).group_by(Worktime.sport_id)
         work = {}
-        for link in con.cursor().execute('''SELECT SUM(minutes), sportID FROM worktime WHERE memberID=? AND pending=0 AND deleted=0 GROUP BY sportID''', (memberID,)):
-            work[link[1]] = {'minutes': link[0], 'sportID': link[1]}
-        con.close()
+        for q in query:
+            work[q.sport_id] = {'minutes': q.minutes, 'sportID': q.sport_id}
 
         sports = self.getSportsOfMember(memberID)
         sportDict = {}
@@ -93,26 +89,29 @@ class Queries:
                            "extraHours": s.extra_hours})
         return output
 
-    # TODO
     def getNeededWorkMinutes(self, memberID: int):
-        con = sqlite3.connect(self.db_name)
+
         sportIDs = []
         standardTime = self.getStandardWorkTime(memberID)
         noHoursOutput = [{'name': 'Standard', 'hours': 0}]
         if self.isExecutive(memberID) == 1:
             return noHoursOutput
 
-        for link in con.cursor().execute('''SELECT sportID, isTrainer  FROM sportMember WHERE memberID=?''', (memberID,)):
-            if link[1] > 0:
-                con.close()
+        query = self.session.query(SportMember).filter_by(
+            member_id=memberID).all()
+
+        for q in query:
+            if q.is_trainer > 0:
                 return noHoursOutput
-            sportIDs.append(link[0])
+            sportIDs.append(q.sport_id)
 
         neededWorkIDs = {}
         for sID in sportIDs:
-            for link in con.cursor().execute('''SELECT extraHours FROM sport WHERE ROWID=? AND deleted=0''', (sID,)):
-                if link[0] > 0:
-                    neededWorkIDs[sID] = link[0]
+            extra_hours = self.session.query(Sport).with_entities(
+                Sport.extra_hours).filter_by(id=sID, is_deleted=False)
+            for hours in extra_hours:
+                if hours > 0:
+                    neededWorkIDs[sID] = hours
         neededWorkNames = []
 
         neededWorkNames.append(
@@ -125,7 +124,6 @@ class Queries:
                 if s["id"] == id:
                     neededWorkNames.append(
                         {'name': s["name"], 'hours': round(neededWorkIDs[nwID]/60, 2)})
-        con.close()
 
         return neededWorkNames
 
@@ -270,43 +268,30 @@ class Queries:
 
         return output
 
-    # TODO
     def getPendingWorkRequestsBySport(self, sportID):
-        con = sqlite3.connect(self.db_name)
+        query = self.session.query(Member).filter(Sport.id == sportID, Worktime.pending,
+                                                  not Sport.is_deleted, not Worktime.is_deleted, not Member.is_deleted).all()
+
         requests = []
-        for link in con.cursor().execute('''
-                SELECT member.firstname, member.lastname, sport.name, worktime.description, worktime.minutes, worktime.ROWID
-                FROM sport, worktime, member
-                WHERE sport.ROWID=worktime.sportID
-                AND member.ROWID=worktime.memberID
-                AND sport.ROWID=?
-                AND worktime.pending=1
-                AND sport.deleted=0
-                AND worktime.deleted=0
-                AND member.deleted=0
-            ''', (sportID,)):
-            requests.append(link)
-        con.close()
+
+        for q in query:
+            requests.append((q.firstname, q.lastname, q.sport.name,
+                             q.worktime.description, q.worktime.minutes, q.worktime.id))
+
         return requests
 
-    # TODO
     def getMembersOfSport(self, sportID):
         """
-        [[memberID,firstname,lastname,isTrainer,memberID,mail],...]
+        [[memberID,firstname,lastname,mail,isTrainer],...]
         """
-        con = sqlite3.connect(self.db_name)
         requests = []
-        for link in con.cursor().execute('''
-                SELECT sportMember.memberID,member.firstname, member.lastname, sportMember.isTrainer , member.ROWID, member.mail
-                FROM sportMember, member
-                WHERE sportMember.sportid=?
-                AND sportMember.memberID=member.ROWID
-                AND member.deleted=0
-            ''', (sportID,)):
-            if link[4] == 1:  # skip admin user
+        query = self.session.query(Member).filter(
+            SportMember.sport_id == sportID, not Member.is_deleted)
+        for q in query:
+            if q.id == 1:
                 continue
-            requests.append(link)
-        con.close()
+            requests.append((q.id, q.firstname, q.lastname,
+                             q.mail, q.sport.is_trainer))
         return requests
 
     def getMemberInfo(self, memberID):
@@ -350,24 +335,21 @@ class Queries:
     def isExecutive(self, memberID):
         return self.session.query(Member).filter_by(member_id=memberID, is_deleted=False).first().role
 
-    # TODO
-
     def changeParticipation(self, memberID, sportID, isParticipating):
         isAlreadyParticipant = self.isMemberof(memberID, sportID)
         if isAlreadyParticipant == isParticipating:
             return
-        con = sqlite3.connect(self.db_name)
 
         if isParticipating:
-            con.cursor().execute("INSERT INTO sportMember values (?, ?, 0);", (memberID, sportID,))
+            self.session.add(SportMember(member_id=memberID, sport_id=sportID))
+
         else:
-            con.cursor().execute(
-                "DELETE FROM sportMember WHERE memberID=? AND sportID=?;", (memberID, sportID))
+            to_delete = self.session.query(SportMember).filter_by(
+                member_id=memberID, sport_id=sportID).first()
+            self.session.delete(to_delete)
 
-        con.commit()
-        con.close()
+        self.session.commit()
 
-    # TODO
     def changeTrainer(self, memberID, sportID, isTrainer):
         isAlreadyTrainer = self.isTrainerof(memberID, sportID)
         isMember = self.isMemberof(memberID, sportID)
@@ -378,27 +360,18 @@ class Queries:
         # Make not member not trainer -> trainer has to be member -> start state not possible
         assert not (not isTrainer and not isMember)
 
-        con = sqlite3.connect(self.db_name)
-
         if isMember:
-            if isTrainer:
-                # Make Trainer
-                con.cursor().execute(
-                    "UPDATE sportMember SET isTrainer=1 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
-            else:
-                # Remove Trainer
-                con.cursor().execute(
-                    "UPDATE sportMember SET isTrainer=0 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
+            self.session.query(SportMember).filter_by(
+                member_id=memberID, sport_id=sportID).first().is_trainer = isTrainer
         else:
             if isTrainer:
                 # Make Trainer
                 # Make Member
                 self.makeSportParticipant(memberID, sportID)
-                con.cursor().execute(
-                    "UPDATE sportMember SET isTrainer=1 WHERE memberID=? AND sportID =?;", (memberID, sportID,))
+                self.session.query(SportMember).filter_by(
+                    member_id=memberID, sport_id=sportID).first().is_trainer = True
 
-        con.commit()
-        con.close()
+        self.session.commit()
 
     def changePassword(self, memberID, password):
         member = self.session.query(Member).filter_by(
@@ -439,30 +412,23 @@ class Queries:
                                   description=description, minutes=minutes))
         self.session.commit()
 
-    # TODO
-
-    def addMember(self, firstName, lastname, email, password):
-        if firstName == "admin":  # cant spawn admin user
+    def addMember(self, firstname, lastname, email, password):
+        if firstname == "admin":  # cant spawn admin user
             return
-        con = sqlite3.connect(self.db_name)
         usedPW = password
         if not password:
             usedPW = TokenManager.getPassword()
 
         hashedPassword, salt = TokenManager.hashPassword(usedPW)
+        self.session.add(Member(firstname=firstname, lastname=lastname,
+                                mail=email, password=hashedPassword, salt=salt))
 
-        con.cursor().execute(
-            "INSERT INTO member values (?, ?, ?, ?, 0, 0, ?, 0);", (firstName, lastname, email, hashedPassword, salt))
-        con.commit()
+        self.session.commit()
 
         memberID = -1
 
-        for link in con.cursor().execute(''' SELECT ROWID FROM member WHERE mail=? AND deleted=0''', (email,)):
-            memberID = link[0]
-
-        con.close()
         if not password:
-            return memberID, usedPW
+            return self.session.query(Member).filter_by(mail=email, is_deleted=False).first().id, usedPW
 
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable
@@ -550,7 +516,6 @@ class Queries:
 
         return self.session.query(Timeslot).filter_by(id=timeslotID).first()
 
-    # TODO
     def createRequestsFromEvents(self):
         expEvents = self.getExpiredEvents()
 
