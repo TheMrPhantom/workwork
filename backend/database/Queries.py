@@ -1,3 +1,4 @@
+from tkinter import E
 from sqlalchemy import delete, false
 from authenticator import TokenManager
 import util
@@ -144,7 +145,6 @@ class Queries:
             key="standardworktime").first().value = worktime
         self.session.commit()
 
-    # TODO
     def getPendingWorkRequests(self, memberID: int):
         requests = []
         req = self.session.query(Worktime).filter(
@@ -222,11 +222,12 @@ class Queries:
 
         return
 
-    def createSport(self, name: str):
-        self.session.add(Sport(name=name))
+    def addSport(self, name, extraHours=-1):
+        if extraHours != -1:
+            self.session.add(Sport(name=name, extra_hours=extraHours))
+        else:
+            self.session.add(Sport(name=name))
         self.session.commit()
-
-        return
 
     def changeExtraHours(self, sportID: int, amount: int):
         self.session.query(Sport).filter_by(
@@ -254,29 +255,18 @@ class Queries:
 
         return self.session.query(Sport).filter_by(id=id, is_deleted=False).first().name
 
-    # TODO
     def removeSport(self, sportID):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE sport SET deleted=1 WHERE ROWID=?;", (sportID,))
-        con.commit()
-        con.close()
+        self.session.query(Sport).filter_by(
+            id=sportID, is_deleted=False).first().is_deleted = True
+        self.session.commit()
 
-    # TODO
-    def addSport(self, name, extraHours):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO sport values (?, ?, 0);", (name, extraHours))
-        con.commit()
-        con.close()
-
-    # TODO
     def getMembers(self):
-        con = sqlite3.connect(self.db_name)
+        members = self.session.query(Member).filter_by(is_deleted=False).all()
         output = []
-        for link in con.cursor().execute("SELECT ROWID, * FROM member WHERE deleted=0"):
-            if link[0] == 1:  # skip admin user
-                continue
-            output.append(link)
-        con.close()
+        for m in members[1:]:
+            # Skipping admin user
+            output.append((m.id, m.firstname, m.lastname,
+                           m.mail, m.role, m.extra_hours))
 
         return output
 
@@ -319,21 +309,18 @@ class Queries:
         con.close()
         return requests
 
-    # TODO
     def getMemberInfo(self, memberID):
         """
         {firstname,lastname,mail,id}
         """
-        con = sqlite3.connect(self.db_name)
-        output = None
-        for link in con.cursor().execute(''' SELECT * FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):
-            output = {"firstname": link[0],
-                      "lastname": link[1], "mail": link[2], "memberID": memberID}
+        member = self.session.query(Member).filter_by(
+            member_id=memberID, is_deleted=False).first()
 
-        con.close()
+        output = {"firstname": member.firstname,
+                  "lastname": member.lastname, "mail": member.mail, "memberID": member.id}
+
         return output
 
-    # TODO
     def participantIn(self, memberID):
         sports = self.getSports()
         for s in sports:
@@ -341,7 +328,6 @@ class Queries:
 
         return sports
 
-    # TODO
     def trainerIn(self, memberID):
         sports = self.getSports()
         for s in sports:
@@ -349,34 +335,23 @@ class Queries:
 
         return sports
 
-    # TODO
     def checkPassword(self, username, password):
-        con = sqlite3.connect(self.db_name)
-        output = None
-        salt = ""
 
-        for link in con.cursor().execute(''' SELECT salt FROM member WHERE mail=? AND deleted=0''', (username,)):
-            salt = link[0]
+        member = self.session.query(Member).filter_by(
+            mail=username, is_deleted=False).first()
 
-        hashedPassword = TokenManager.hashPassword(password, salt)
+        hashedPassword = TokenManager.hashPassword(password, member.salt)
 
-        for link in con.cursor().execute(''' SELECT ROWID,rolle FROM member WHERE mail=? AND password=? AND deleted=0''', (username, hashedPassword,)):
-            output = {"memberID": link[0], "rights": link[1], }
+        if member.password == hashedPassword:
+            return {"memberID": member.id, "rights": member.role}
+        else:
+            return None
 
-        con.close()
-        return output
-
-    # TODO
     def isExecutive(self, memberID):
-        con = sqlite3.connect(self.db_name)
-        output = 0
-        for link in con.cursor().execute(''' SELECT rolle FROM member WHERE ROWID=? AND deleted=0''', (memberID,)):
-            output = link[0]
-
-        con.close()
-        return int(output)
+        return self.session.query(Member).filter_by(member_id=memberID, is_deleted=False).first().role
 
     # TODO
+
     def changeParticipation(self, memberID, sportID, isParticipating):
         isAlreadyParticipant = self.isMemberof(memberID, sportID)
         if isAlreadyParticipant == isParticipating:
@@ -425,16 +400,16 @@ class Queries:
         con.commit()
         con.close()
 
-    # TODO
     def changePassword(self, memberID, password):
-        con = sqlite3.connect(self.db_name)
+        member = self.session.query(Member).filter_by(
+            member_id=memberID).first()
         usedPW, usedSalt = TokenManager.hashPassword(password)
-        con.cursor().execute("UPDATE member SET password=?,salt=? WHERE ROWID=?;",
-                             (usedPW, usedSalt, memberID,))
-        con.commit()
-        con.close()
+        member.password = usedPW
+        member.salt = usedSalt
+        self.session.commit()
 
     # TODO
+
     def changeFirstname(self, memberID, name):
         con = sqlite3.connect(self.db_name)
         con.cursor().execute("UPDATE member SET firstname=? WHERE ROWID=?;", (name, memberID,))
@@ -676,39 +651,3 @@ class Queries:
             output.append({"id": m[0], "firstname": m[1],
                            "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
         return output
-
-    # TODO
-    def __fillTestData(self):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Rasen mähen', 45, 0, 0);")
-        con.cursor().execute("INSERT INTO worktime values (1, 1, 'Blumen gießen', 30, 1, 0);")
-        con.cursor().execute("INSERT INTO worktime values (1, 2, 'Leiter streichen', 60, 0, 0);")
-        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Putzen', 120, 1, 0);")
-        con.cursor().execute("INSERT INTO worktime values (2, 1, 'Kochen', 15, 0, 0);")
-        con.cursor().execute("INSERT INTO worktime values (2, 3, 'Ausschank', 15, 0, 0);")
-        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Zeitstopper', 30, 1, 0);")
-        con.cursor().execute("INSERT INTO worktime values (3, 3, 'Hundesitter', 45, 0, 0);")
-
-        con.cursor().execute(
-            "INSERT INTO member values ('Bob', 'Baumeister', 'bob@baumeister.de', 'lala', 0, 0);")
-        con.cursor().execute(
-            "INSERT INTO member values ('alice', 'wunderland', 'alice@wunderland.de', 'lulu', 0, 0);")
-        con.cursor().execute(
-            "INSERT INTO member values ('eve', 'evil', 'eve@evil.de', 'uu', 1, 0);")
-        con.cursor().execute(
-            "INSERT INTO member values ('charly', 'schokolade', 'charly@schokolade.de', 'ii', 0, 0);")
-        con.cursor().execute("INSERT INTO sport values ('agility', 120, 0);")
-        con.cursor().execute("INSERT INTO sport values ('rettungshunde', 0, 0);")
-        con.cursor().execute("INSERT INTO sport values ('Turnierhunde', 60, 0);")
-
-        con.cursor().execute("INSERT INTO sportMember values (1, 1, 1);")
-        con.cursor().execute("INSERT INTO sportMember values (1, 2, 0);")
-        con.cursor().execute("INSERT INTO sportMember values (2, 2, 0);")
-        con.cursor().execute("INSERT INTO sportMember values (3, 1, 0);")
-        con.cursor().execute("INSERT INTO sportMember values (3, 3, 0);")
-        con.cursor().execute("INSERT INTO sportMember values (4, 3, 0);")
-
-        con.cursor().execute("INSERT INTO standardworktime values (720);")
-
-        con.commit()
-        con.close()
