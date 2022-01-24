@@ -1,6 +1,7 @@
 import os
 import Latex.tex as latex
 import TaskScheduler
+from database.Event import Event
 import mail_templates
 import mail
 from flask_sqlalchemy import SQLAlchemy
@@ -265,8 +266,8 @@ def getSportsMembers(sportID):
         maxWork = db.getNeededWorkMinutes(r[0])
         isTrainer = db.isTrainer(r[0])
         isExecutive = db.isExecutive(r[0])
-        output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[3],
-                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": isExecutive, "id": r[4]})
+        output.append({"firstname": r[1], "lastname": r[2], "isTrainerOfSport": r[4],
+                       "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": isExecutive, "id": r[0]})
     return util.build_response(output)
 
 
@@ -541,7 +542,7 @@ def sendSportMail(sportID):
     sportName = db.getSportName(sportID)
     mails = []
     for m in members:
-        mails.append(m[5])
+        mails.append(m[3])
     subject = request.json['subject']
     body = request.json['body']
     if subject == "" or body == "":
@@ -561,7 +562,7 @@ def addEvent():
     sportID = request.json["sportID"]
     date = request.json["date"]
     timeslots = request.json["timeslots"]
-    eventID = db.addEvent(eventName, sportID, date)
+    eventID = db.addEvent(eventName, sportID, date).id
     if eventID is None:
         return util.build_response("Event already Exists", code=409)
 
@@ -578,10 +579,11 @@ def getEvents():
     events = db.getEvents()
     output = []
     for e in events:
-        eventID = e[0]
+        event: Event = e
+        eventID = event.id
         timeslots = db.getTimeslots(eventID)
         output.append(
-            {"eventID": e[0], "name": e[1], "sportID": e[2], "date": e[3], "timeslots": timeslots})
+            {"eventID": event.id, "name": event.name, "sportID": event.sport_id, "date": event.date, "timeslots": timeslots})
 
     return util.build_response(output)
 
@@ -615,7 +617,7 @@ def setTimeslotParticipant(memberID, timeslotID):
     isSet = request.json
 
     if isSet:
-        maxhelper = db.getTimeslot(timeslotID)[3]
+        maxhelper = db.getTimeslot(timeslotID).helper
         participants = db.getTimeslotParticipants(timeslotID)
         currentHelper = len(participants) if participants else 0
 
