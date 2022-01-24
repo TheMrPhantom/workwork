@@ -38,8 +38,10 @@
 * extraHours INTEGER
 * deleted INTEGER
 
-### standardworktime
-* time INTEGER
+### Settings
+* key TEXT
+* value TEXT
+* last_modified DATE
 
 ### event
 * name TEXT

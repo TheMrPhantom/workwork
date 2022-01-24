@@ -1,6 +1,6 @@
 from datetime import datetime
 import sqlalchemy as sql
-from test import db
+from web import sql_database as db
 from sqlalchemy.orm import relationship
 
 

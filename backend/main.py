@@ -1,3 +1,9 @@
+import os
+import Latex.tex as latex
+import TaskScheduler
+import mail_templates
+import mail
+from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, helpers, redirect
 from flask import request
 from flask.wrappers import Request
@@ -5,18 +11,14 @@ from flask_cors import CORS
 from functools import wraps
 import authenticator
 import util
-import database
-import mail
-import mail_templates
-import TaskScheduler
-import Latex.tex as latex
-import os
+from web import *
 
-app = Flask(__name__)
-CORS(app, supports_credentials=True)
+from database import Queries
+
 
 token_manager = authenticator.TokenManager()
-db = database.SQLiteWrapper()
+
+db = Queries.Queries(sql_database)
 
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_Daily_Task(db.createRequestsFromEvents)
