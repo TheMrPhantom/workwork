@@ -1,6 +1,7 @@
 import sqlalchemy as sql
-from test import db
+from web import sql_database as db
 from sqlalchemy.orm import relationship
+
 
 class SportMember(db.Model):
     id = sql.Column(sql.Integer, primary_key=True)

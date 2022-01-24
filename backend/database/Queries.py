@@ -1,24 +1,25 @@
+import sqlalchemy
 from authenticator import TokenManager
 import util
 from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-from backend.database.Models import *
+from database.Models import *
 
 
 class Queries:
-    def __init__(self, app, dbName=None):
-        if os.environ.get("db_name"):
-            # = os.environ.get("db_name")
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        elif dbName:
-            # = dbName
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        else:
-            # = "database.db"
-            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        self.db: SQLAlchemy = SQLAlchemy(app)
+    def __init__(self, db):
+        # if os.environ.get("db_name"):
+        #     # = os.environ.get("db_name")
+        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+        # elif dbName:
+        #     # = dbName
+        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+        # else:
+        #     # = "database.db"
+        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+        self.db: sqlalchemy = db
         self.session = self.db.session
         # self.standardSportName = os.environ.get(
         #    "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"

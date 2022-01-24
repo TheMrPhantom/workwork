@@ -1,5 +1,5 @@
 import sqlalchemy as sql
-from test import db
+from web import sql_database as db
 
 
 class EventParticipant(db.Model):
