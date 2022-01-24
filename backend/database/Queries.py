@@ -11,15 +11,7 @@ from database.Models import *
 
 class Queries:
     def __init__(self, db):
-        # if os.environ.get("db_name"):
-        #     # = os.environ.get("db_name")
-        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        # elif dbName:
-        #     # = dbName
-        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
-        # else:
-        #     # = "database.db"
-        #     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+
         self.db: SQLAlchemy = db
         self.session = self.db.session
         self.standardSportName = os.environ.get(
