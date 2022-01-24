@@ -1,5 +1,5 @@
 from tkinter import E
-from sqlalchemy import delete, false
+from sqlalchemy import delete, false, null
 from authenticator import TokenManager
 import util
 from datetime import datetime
@@ -408,44 +408,39 @@ class Queries:
         member.salt = usedSalt
         self.session.commit()
 
-    # TODO
-
     def changeFirstname(self, memberID, name):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET firstname=? WHERE ROWID=?;", (name, memberID,))
-        con.commit()
-        con.close()
+        member = self.session.query(Member).filter_by(
+            member_id=memberID, is_deleted=False).first()
+        member.firstname = name
+        member.last_modified = datetime.utcnow()
+        self.session.commit()
 
-    # TODO
     def changeLastname(self, memberID, name):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET lastname=? WHERE ROWID=?;", (name, memberID,))
-        con.commit()
-        con.close()
+        member = self.session.query(Member).filter_by(
+            member_id=memberID, is_deleted=False).first()
+        member.lastname = name
+        member.last_modified = datetime.utcnow()
+        self.session.commit()
 
-    # TODO
     def changeMail(self, memberID, email):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET mail=? WHERE ROWID=?;", (email, memberID,))
-        con.commit()
-        con.close()
+        member = self.session.query(Member).filter_by(
+            member_id=memberID, is_deleted=False).first()
+        member.mail = email
+        member.last_modified = datetime.utcnow()
+        self.session.commit()
 
-    # TODO
     def changeMemberWorkHours(self, memberID, minutes):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET extraHours=? WHERE ROWID=?;", (minutes, memberID,))
-        con.commit()
-        con.close()
+        self.session.query(Member).filter_by(
+            id=memberID, is_deleted=False).first().extra_hours = minutes
+        self.session.commit()
 
-    # TODO
     def addWorkRequest(self, memberID, sportID, description, minutes):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO worktime values (?, ?, ?, ?, 1, 0);",
-                             (memberID, sportID, description, minutes,))
-        con.commit()
-        con.close()
+        self.session.add(Worktime(member_id=memberID, sport_id=sportID,
+                                  description=description, minutes=minutes))
+        self.session.commit()
 
     # TODO
+
     def addMember(self, firstName, lastname, email, password):
         if firstName == "admin":  # cant spawn admin user
             return
@@ -469,139 +464,91 @@ class Queries:
         if not password:
             return memberID, usedPW
 
-    # TODO
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable
             return
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("UPDATE member SET deleted=1 WHERE ROWID=?;", (memberID,))
-        con.commit()
-        con.close()
 
-    # TODO
+        self.session.query(Member).filter_by(
+            id=memberID, id_deleted=False).first().deleted = True
+
     def setExecutive(self, memberID, isExecutive):
         if memberID == 1:  # make admin unchangable
             return
-        con = sqlite3.connect(self.db_name)
+
         toBeSet = 1 if isExecutive else 0
-        con.cursor().execute("UPDATE member SET rolle=? WHERE ROWID=?;", (toBeSet, memberID,))
-        con.commit()
-        con.close()
 
-    # TODO
+        self.session.query(Member).filter_by(
+            id=memberID, is_deleted=False).first().role = toBeSet
+        self.session.commit()
+
     def checkMailExists(self, mail):
-        con = sqlite3.connect(self.db_name)
-        mail_exists = False
-        for link in con.cursor().execute(''' SELECT mail FROM member WHERE mail=? AND deleted=0''', (mail,)):
-            mail_exists = True
-        con.close()
-        return mail_exists
 
-    # TODO
+        return self.session.query(Member).filter_by(mail=mail, is_deleted=False) != None
+
     def addEvent(self, name, sportID, date):
         if(self.getEvent(name) is not None):
             return None
 
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO event values (?, ?, ?, 0);", (name, sportID, date))
-        con.commit()
-        con.close()
+        self.session.add(Event(name=name, sport_id=sportID, date=date))
+        self.session.commit()
 
         return self.getEvent(name)
 
-    # TODO
     def getEvent(self, name):
-        con = sqlite3.connect(self.db_name)
-        output = None
-        for link in con.cursor().execute(''' SELECT ROWID, name FROM event WHERE name=? AND deleted=0''', (name,)):
-            output = link
-        con.close()
-        return output
 
-    # TODO
+        return self.session.query(Event).filter_by(name=name, is_deleted=False).first()
+
     def getEvents(self):
-        con = sqlite3.connect(self.db_name)
-        output = []
-        for link in con.cursor().execute(''' SELECT ROWID, * FROM event WHERE deleted=0'''):
-            output.append(link)
-        con.close()
-        return output
 
-    # TODO
+        return self.session.query(Event).filter_by(is_deleted=False).first()
+
     def addTimeslot(self, eventID, name, helper, start, end):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute("INSERT INTO timeslot values (?, ?, ?, ?, ?);",
-                             (eventID, name, helper, start, end))
-        con.commit()
-        con.close()
+        self.session.add(Timeslot(event_id=eventID, name=name,
+                                  helper=helper, start=start, end=end))
+        self.session.commit()
 
-    # TODO
     def getTimeslots(self, eventID):
-        con = sqlite3.connect(self.db_name)
         output = []
-        for link in con.cursor().execute(''' SELECT ROWID,* FROM timeslot WHERE eventID=?''', (eventID,)):
-            output.append({"timeslotID": link[0], "eventID": link[1],
-                           "name": link[2], "helper": link[3], "start": link[4], "end": link[5]})
-        con.close()
+        slots = self.session.query(Timeslot).filter_by(event_id=eventID)
+        for s in slots:
+            output.append({"timeslotID": s.id, "eventID": s.event_id,
+                           "name": s.name, "helper": s.helper, "start": s.start, "end": s.end})
         return output
 
-    # TODO
     def addTimeslotParticipant(self, memberID, timeslotID):
         if not self.isTimeslotParticipant(memberID, timeslotID):
-            con = sqlite3.connect(self.db_name)
-            con.cursor().execute('''INSERT INTO eventParticipant values (?, ?)''',
-                                 (memberID, timeslotID,))
-            con.commit()
-            con.close()
+            self.session.add(EventParticipant(
+                member_id=memberID, timeslot_id=timeslotID))
+            self.session.commit()
 
-    # TODO
     def removeTimeslotParticipant(self, memberID, timeslotID):
         if self.isTimeslotParticipant(memberID, timeslotID):
-            con = sqlite3.connect(self.db_name)
-            con.cursor().execute('''DELETE FROM eventParticipant WHERE memberID=? AND timeslotID=?;''',
-                                 (memberID, timeslotID,))
-            con.commit()
-            con.close()
+            slot = self.session.query(EventParticipant).filter_by(
+                member_id=memberID, timeslot_id=timeslotID).first()
+            self.session.delete(slot)
+            self.session.commit()
 
-    # TODO
     def isTimeslotParticipant(self, memberID, timeslotID):
-        con = sqlite3.connect(self.db_name)
-        output = False
-        for link in con.cursor().execute(''' SELECT ROWID FROM eventParticipant WHERE memberID=? AND timeslotID=?''', (memberID, timeslotID,)):
-            output = True
-        con.close()
+        return self.session.query(EventParticipant).filter_by(member_id=memberID, timeslot_id=timeslotID).first() != None
 
-        return output
-
-    # TODO
     def deleteEvent(self, eventID: int):
-        con = sqlite3.connect(self.db_name)
-        con.cursor().execute('''UPDATE event SET deleted=1 WHERE ROWID=?''',
-                             (eventID, ))
-        con.commit()
-        con.close()
-        return
+        self.session.query(Event).filter_by(
+            id=eventID).first().is_deleted = True
+        self.session.commit()
 
-    # TODO
     def getTimeslotParticipants(self, timeslotID):
-        con = sqlite3.connect(self.db_name)
+        participants: EventParticipant = self.session.query(EventParticipant).with_entities(
+            EventParticipant.member_id).filter_by(timeslot_id=timeslotID).all()
+
         output = []
-        for link in con.cursor().execute(''' SELECT memberID FROM eventParticipant WHERE timeslotID=?''', (timeslotID,)):
-            output.append(self.getMemberInfo(link[0]))
-        con.close()
+        for p in participants:
+            output.append(self.getMemberInfo(p.member_id))
 
         return output
 
-    # TODO
     def getTimeslot(self, timeslotID):
-        con = sqlite3.connect(self.db_name)
-        output = None
-        for link in con.cursor().execute(''' SELECT ROWID, * FROM timeslot WHERE ROWID=?''', (timeslotID,)):
-            output = link
 
-        con.close()
-        print(output)
-        return output
+        return self.session.query(Timeslot).filter_by(id=timeslotID).first()
 
     # TODO
     def createRequestsFromEvents(self):
@@ -628,7 +575,6 @@ class Queries:
         for event in expEvents:
             self.deleteEvent(event[0])
 
-    # TODO
     def getExpiredEvents(self):
         output = []
         events = self.getEvents()
@@ -641,7 +587,6 @@ class Queries:
                 output.append(e)
         return output
 
-    # TODO
     def getMembersList(self, members):
         output = []
         for m in members:

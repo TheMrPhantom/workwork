@@ -11,7 +11,7 @@ class Member(db.Model):
     mail = sql.Column(sql.String(100), nullable=False)
     password = sql.Column(sql.String(128), nullable=False)
     role = sql.Column(sql.Integer, nullable=False)
-    deleted = sql.Column(sql.Boolean, default=False, nullable=False)
+    is_deleted = sql.Column(sql.Boolean, default=False, nullable=False)
     salt = sql.Column(sql.String(32), nullable=False)
     extra_hours = sql.Column(sql.Integer, nullable=False)
     last_modified = sql.Column(sql.DateTime, default=datetime.utcnow)
