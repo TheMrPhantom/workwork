@@ -269,8 +269,10 @@ class Queries:
     def getMembers(self):
         members = self.session.query(Member).filter_by(is_deleted=False).all()
         output = []
-        for m in members[1:]:
-            # Skipping admin user
+        for m in members:
+            if m.id == 1:
+                # Skipping admin user
+                continue
             output.append((m.id, m.firstname, m.lastname,
                            m.mail, m.role, m.extra_hours))
 
