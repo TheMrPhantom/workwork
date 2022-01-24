@@ -498,7 +498,7 @@ class Queries:
         slots = self.session.query(Timeslot).filter_by(event_id=eventID).all()
         for s in slots:
             output.append({"timeslotID": s.id, "eventID": s.event_id,
-                           "name": s.name, "helper": s.helper, "start": s.start, "end": s.end})
+                           "name": s.name, "helper": s.helper, "start": s.start.strftime('%H:%M'), "end": s.end.strftime('%H:%M')})
         return output
 
     def addTimeslotParticipant(self, memberID, timeslotID):
@@ -548,10 +548,8 @@ class Queries:
 
                 start = timeslot["start"]
                 end = timeslot["end"]
-                startFormated = datetime.strptime(start, '%H:%M')
-                endFormated = datetime.strptime(end, '%H:%M')
 
-                minutes = int((endFormated-startFormated).total_seconds()/60)
+                minutes = int((end-start).total_seconds()/60)
 
                 for participant in participants:
                     memberID = participant["memberID"]

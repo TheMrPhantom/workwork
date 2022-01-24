@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import Latex.tex as latex
 import TaskScheduler
@@ -561,14 +562,17 @@ def addEvent():
     eventName = request.json["name"]
     sportID = request.json["sportID"]
     date = request.json["date"]
+    python_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
     timeslots = request.json["timeslots"]
-    eventID = db.addEvent(eventName, sportID, date).id
-    if eventID is None:
+    event = db.addEvent(eventName, sportID, python_date)
+    if event is None:
         return util.build_response("Event already Exists", code=409)
 
     for t in timeslots:
-        db.addTimeslot(eventID[0], t["name"],
-                       t["helper"], t["start"], t["end"])
+        python_date_start = datetime.strptime(t["start"], "%H:%M")
+        python_date_end = datetime.strptime(t["end"], "%H:%M")
+        db.addTimeslot(event.id, t["name"],
+                       t["helper"], python_date_start, python_date_end)
 
     return util.build_response("OK")
 
@@ -583,7 +587,7 @@ def getEvents():
         eventID = event.id
         timeslots = db.getTimeslots(eventID)
         output.append(
-            {"eventID": event.id, "name": event.name, "sportID": event.sport_id, "date": event.date, "timeslots": timeslots})
+            {"eventID": event.id, "name": event.name, "sportID": event.sport_id, "date": event.date.strftime('%Y-%m-%dT%H:%M:%SZ'), "timeslots": timeslots})
 
     return util.build_response(output)
 
