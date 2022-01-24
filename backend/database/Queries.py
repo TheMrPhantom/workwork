@@ -304,13 +304,14 @@ class Queries:
         [[memberID,firstname,lastname,mail,isTrainer],...]
         """
         requests = []
-        query = self.session.query(Member).filter(
-            SportMember.sport_id == sportID, not Member.is_deleted).all()
+        query = self.session.query(SportMember).filter(
+            SportMember.sport_id == sportID, Member.is_deleted == False).all()
+
         for q in query:
             if q.id == 1:
                 continue
-            requests.append((q.id, q.firstname, q.lastname,
-                             q.mail, q.sport.is_trainer))
+            requests.append((q.member.id, q.member.firstname, q.member.lastname,
+                             q.member.mail, q.is_trainer))
         return requests
 
     def getMemberInfo(self, memberID):
@@ -494,7 +495,7 @@ class Queries:
 
     def getTimeslots(self, eventID):
         output = []
-        slots = self.session.query(Timeslot).filter_by(event_id=eventID)
+        slots = self.session.query(Timeslot).filter_by(event_id=eventID).all()
         for s in slots:
             output.append({"timeslotID": s.id, "eventID": s.event_id,
                            "name": s.name, "helper": s.helper, "start": s.start, "end": s.end})
@@ -514,7 +515,7 @@ class Queries:
             self.session.commit()
 
     def isTimeslotParticipant(self, memberID, timeslotID):
-        return self.session.query(EventParticipant).filter_by(member_id=memberID, timeslot_id=timeslotID).first() != None
+        return self.session.query(EventParticipant).filter_by(member_id=memberID, timeslot_id=timeslotID).first() is not None
 
     def deleteEvent(self, eventID: int):
         self.session.query(Event).filter_by(
@@ -539,7 +540,8 @@ class Queries:
         expEvents = self.getExpiredEvents()
 
         for event in expEvents:
-            timeslots = self.getTimeslots(event[0])
+            casted_event: Event = event
+            timeslots = self.getTimeslots(casted_event.id)
             for timeslot in timeslots:
                 timeslotID = timeslot["timeslotID"]
                 participants = self.getTimeslotParticipants(timeslotID)
@@ -554,16 +556,19 @@ class Queries:
                 for participant in participants:
                     memberID = participant["memberID"]
                     self.createWorkRequest(
-                        memberID, event[2], f"{event[1]} ({timeslot['name']})", minutes)
+                        memberID, casted_event.sport_id, f"{casted_event.name} ({timeslot['name']})", minutes)
 
         for event in expEvents:
-            self.deleteEvent(event[0])
+            casted_event: Event = event
+            self.deleteEvent(casted_event.id)
 
     def getExpiredEvents(self):
         output = []
         events = self.getEvents()
         for e in events:
-            timeString = e[3][:str(e[3]).find("T")]
+            event: Event = e
+
+            timeString = event.date[:str(event.date).find("T")]
             timeString += "T23:59:59"
             timeFormated = datetime.strptime(timeString, '%Y-%m-%dT%H:%M:%S')
             now = datetime.now()
