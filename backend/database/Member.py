@@ -15,8 +15,8 @@ class Member(db.Model):
     salt = sql.Column(sql.String(32), nullable=False)
     extra_hours = sql.Column(sql.Integer, default=0, nullable=False)
     last_modified = sql.Column(sql.DateTime, default=datetime.utcnow)
-    worktime = relationship('database.Worktime.Worktime', lazy=True)
-    sport = relationship('database.SportMember.SportMember', lazy=True)
+    worktime = relationship('database.Worktime.Worktime', lazy="joined")
+    sport = relationship('database.SportMember.SportMember', lazy="joined")
 
     def __repr__(self):
         return f"Member(id:{self.id},firstname:{self.firstname})"

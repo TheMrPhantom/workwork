@@ -23,6 +23,7 @@ class Queries:
         self.session = self.db.session
         self.standardSportName = os.environ.get(
             "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
+        self.db.create_all()
         self.__initialize_database()
         # if fillTestData:
         #    self.__fillTestData()
@@ -42,7 +43,7 @@ class Queries:
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
-            member_id=memberID, pending=True, is_deleted=False).group_by(Worktime.sport_id)
+            member_id=memberID, pending=True, is_deleted=False).group_by(Worktime.sport_id).all()
         work = {}
         for q in query:
             work[q.sport_id] = {'minutes': q.minutes, 'sportID': q.sport_id}
@@ -88,6 +89,7 @@ class Queries:
         return output
 
     def getExtraHoursOfUser(self, memberID):
+        print("luuu", memberID)
         return self.session.query(Member).filter_by(id=memberID).first().extra_hours
 
     def getSportsOfMember(self, memberID):
@@ -143,11 +145,11 @@ class Queries:
 
     def getStandardWorkTime(self, memberID=None):
 
-        standardTime = self.session.query(Settings).filter_by(
-            key="standardworktime").first().value
+        standardTime = int(self.session.query(Settings).filter_by(
+            key="standardworktime").first().value)
 
-        extraHoursOfUser = self.getExtraHoursOfUser(memberID)
         if memberID is not None:
+            extraHoursOfUser = self.getExtraHoursOfUser(memberID)
             return standardTime if extraHoursOfUser == 0 else extraHoursOfUser
         else:
             return standardTime
@@ -300,7 +302,7 @@ class Queries:
         """
         requests = []
         query = self.session.query(Member).filter(
-            SportMember.sport_id == sportID, not Member.is_deleted)
+            SportMember.sport_id == sportID, not Member.is_deleted).all()
         for q in query:
             if q.id == 1:
                 continue
@@ -448,9 +450,9 @@ class Queries:
     def deleteMember(self, memberID):
         if memberID == 1:  # make admin undeletable
             return
-
         self.session.query(Member).filter_by(
-            id=memberID, id_deleted=False).first().deleted = True
+            id=memberID, is_deleted=False).first().is_deleted = True
+        self.session.commit()
 
     def setExecutive(self, memberID, isExecutive):
         if memberID == 1:  # make admin unchangable
@@ -463,8 +465,7 @@ class Queries:
         self.session.commit()
 
     def checkMailExists(self, mail):
-
-        return self.session.query(Member).filter_by(mail=mail, is_deleted=False) != None
+        return self.session.query(Member).filter_by(mail=mail, is_deleted=False).first() is not None
 
     def addEvent(self, name, sportID, date):
         if(self.getEvent(name) is not None):
@@ -481,7 +482,7 @@ class Queries:
 
     def getEvents(self):
 
-        return self.session.query(Event).filter_by(is_deleted=False).first()
+        return self.session.query(Event).filter_by(is_deleted=False).all()
 
     def addTimeslot(self, eventID, name, helper, start, end):
         self.session.add(Timeslot(event_id=eventID, name=name,

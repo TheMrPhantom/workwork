@@ -9,5 +9,5 @@ class SportMember(db.Model):
         'member.id'), nullable=False)
     sport_id = sql.Column(
         sql.Integer, sql.ForeignKey('sport.id'), nullable=False)
-    sport = relationship('database.Sport.Sport', lazy=True)
+    sport = relationship('database.Sport.Sport', lazy="joined")
     is_trainer = sql.Column(sql.Boolean, default=False, nullable=False)

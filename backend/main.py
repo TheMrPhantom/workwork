@@ -20,8 +20,6 @@ token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
 
-sql_database.create_all()
-
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_Daily_Task(db.createRequestsFromEvents)
 taskScheduler.start()
@@ -443,8 +441,6 @@ def changeLastname(memberID):
 def changeEmail(memberID):
     if infosAboutSelfOrTrainer(request, memberID):
         return infosAboutSelfOrTrainer(request, memberID)
-    if db.checkMailExists(request.json):
-        return util.build_response("Mail Already Exists", code=409)
     db.changeMail(memberID, request.json)
     util.log("Email changed", f"Of {memberID}")
     return util.build_response("OK")
