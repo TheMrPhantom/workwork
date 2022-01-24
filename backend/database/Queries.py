@@ -26,8 +26,8 @@ class Queries:
             "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
         self.db.create_all()
         self.__initialize_database()
-        # if fillTestData:
-        #    self.__fillTestData()
+
+        # self.__fillTestData()
 
     def __initialize_database(self):
         is_initialized = self.session.query(Member).first() is not None
@@ -581,3 +581,47 @@ class Queries:
             output.append({"id": m[0], "firstname": m[1],
                            "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
         return output
+
+    def __fillTestData(self):
+        hashedPassword, salt = TokenManager.hashPassword("unsafe")
+        self.session.add(Member(firstname="Tom", lastname="Peter",
+                                mail="1", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Jacque", lastname="Lawrence",
+                                mail="2", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Amritpal", lastname="Velazquez",
+                                mail="3", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Kia", lastname="Blundell",
+                                mail="4", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Lorraine", lastname="Peter",
+                                mail="5", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Jemma", lastname="Christensen",
+                                mail="6", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Mikhail", lastname="Daugherty",
+                                mail="7", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Jayden", lastname="Cano",
+                                mail="8", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Yash", lastname="Laing",
+                                mail="9", password=hashedPassword, salt=salt))
+        self.session.add(Member(firstname="Eliza", lastname="Frye",
+                                mail="10", password=hashedPassword, salt=salt))
+
+        self.session.add(Sport(name="SportA"))
+        self.session.add(Sport(name="SportB"))
+        self.session.add(Sport(name="SportD"))
+        self.session.add(Sport(name="SportE"))
+
+        self.session.add(SportMember(member_id=2, sport_id=1))
+        self.session.add(SportMember(member_id=2, sport_id=2))
+        self.session.add(SportMember(member_id=3, sport_id=3))
+        self.session.add(SportMember(member_id=4, sport_id=4))
+        self.session.add(SportMember(member_id=5, sport_id=1))
+        self.session.add(SportMember(member_id=6, sport_id=2))
+        self.session.add(SportMember(member_id=7, sport_id=3))
+        self.session.add(SportMember(member_id=8, sport_id=4))
+        self.session.add(SportMember(member_id=9, sport_id=1))
+        self.session.add(SportMember(member_id=10, sport_id=2))
+        self.session.add(SportMember(member_id=3, sport_id=3))
+        self.session.add(SportMember(member_id=2, sport_id=4))
+        self.session.add(SportMember(member_id=5, sport_id=1))
+
+        self.session.commit()
