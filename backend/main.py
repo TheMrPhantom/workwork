@@ -5,11 +5,9 @@ import TaskScheduler
 from database.Event import Event
 import mail_templates
 import mail
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, helpers, redirect
+from flask import helpers
 from flask import request
 from flask.wrappers import Request
-from flask_cors import CORS
 from functools import wraps
 import authenticator
 import util
