@@ -206,7 +206,7 @@ class Queries:
 
     def updateMemberInfo(self, memberID: int, firstname: str, lastname: str, email: str):
         member = self.session.query(Member).filter_by(
-            member_id=memberID, is_deleted=False).first()
+            id=memberID, is_deleted=False).first()
         member.firstname = firstname
         member.lastname = lastname
         member.mail = email
@@ -300,7 +300,7 @@ class Queries:
         {firstname,lastname,mail,id}
         """
         member = self.session.query(Member).filter_by(
-            member_id=memberID, is_deleted=False).first()
+            id=memberID, is_deleted=False).first()
 
         output = {"firstname": member.firstname,
                   "lastname": member.lastname, "mail": member.mail, "memberID": member.id}
@@ -334,7 +334,7 @@ class Queries:
             return None
 
     def isExecutive(self, memberID):
-        return self.session.query(Member).filter_by(member_id=memberID, is_deleted=False).first().role
+        return self.session.query(Member).filter_by(id=memberID, is_deleted=False).first().role
 
     def changeParticipation(self, memberID, sportID, isParticipating):
         isAlreadyParticipant = self.isMemberof(memberID, sportID)
@@ -342,7 +342,7 @@ class Queries:
             return
 
         if isParticipating:
-            self.session.add(SportMember(member_id=memberID, sport_id=sportID))
+            self.session.add(SportMember(id=memberID, sport_id=sportID))
 
         else:
             to_delete = self.session.query(SportMember).filter_by(
@@ -376,7 +376,7 @@ class Queries:
 
     def changePassword(self, memberID, password):
         member = self.session.query(Member).filter_by(
-            member_id=memberID).first()
+            id=memberID).first()
         usedPW, usedSalt = TokenManager.hashPassword(password)
         member.password = usedPW
         member.salt = usedSalt
@@ -384,21 +384,21 @@ class Queries:
 
     def changeFirstname(self, memberID, name):
         member = self.session.query(Member).filter_by(
-            member_id=memberID, is_deleted=False).first()
+            id=memberID, is_deleted=False).first()
         member.firstname = name
         member.last_modified = datetime.utcnow()
         self.session.commit()
 
     def changeLastname(self, memberID, name):
         member = self.session.query(Member).filter_by(
-            member_id=memberID, is_deleted=False).first()
+            id=memberID, is_deleted=False).first()
         member.lastname = name
         member.last_modified = datetime.utcnow()
         self.session.commit()
 
     def changeMail(self, memberID, email):
         member = self.session.query(Member).filter_by(
-            member_id=memberID, is_deleted=False).first()
+            id=memberID, is_deleted=False).first()
         member.mail = email
         member.last_modified = datetime.utcnow()
         self.session.commit()
