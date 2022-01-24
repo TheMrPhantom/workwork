@@ -9,7 +9,7 @@ class Member(db.Model):
     firstname = sql.Column(sql.String(100), nullable=False)
     lastname = sql.Column(sql.String(100), nullable=False)
     mail = sql.Column(sql.String(100), nullable=False)
-    password = sql.Column(sql.String(128), nullable=False)
+    password = sql.Column(sql.LargeBinary(length=128), nullable=False)
     role = sql.Column(sql.Integer, default=0, nullable=False)
     is_deleted = sql.Column(sql.Boolean, default=False, nullable=False)
     salt = sql.Column(sql.String(32), nullable=False)
