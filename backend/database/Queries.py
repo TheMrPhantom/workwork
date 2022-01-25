@@ -153,7 +153,7 @@ class Queries:
     def getPendingWorkRequests(self, memberID: int):
         requests = []
         req = self.session.query(Worktime).filter(
-            Worktime.member_id == memberID, Worktime.pending == True, Worktime.is_deleted == False, Sport.is_deleted == False).all()
+            Worktime.member_id == memberID, Worktime.pending == True, Worktime.is_deleted == False, Worktime.sport.has(is_deleted=False)).all()
         for r in req:
             requests.append((r.sport.name, r.description, r.minutes, r.id))
 
@@ -162,7 +162,7 @@ class Queries:
     def getAcceptedWorkRequests(self, memberID: int):
         requests = []
         req = self.session.query(Worktime).filter(
-            Worktime.member_id == memberID, Worktime.pending == False, Worktime.is_deleted == False, Sport.is_deleted == False).all()
+            Worktime.member_id == memberID, Worktime.pending == False, Worktime.is_deleted == False, Worktime.sport.has(is_deleted=False)).all()
         for r in req:
             requests.append((r.sport.name, r.description, r.minutes, r.id))
 
@@ -296,7 +296,7 @@ class Queries:
         """
         requests = []
         query = self.session.query(SportMember).filter(
-            SportMember.sport_id == sportID, Member.is_deleted == False).all()
+            SportMember.sport_id == sportID, SportMember.member.has(is_deleted=False)).all()
 
         for q in query:
             if q.id == 1:
@@ -345,7 +345,11 @@ class Queries:
             return None
 
     def isExecutive(self, memberID):
-        return self.session.query(Member).filter_by(id=memberID, is_deleted=False).first().role
+        res = self.session.query(Member).filter_by(
+            id=memberID, is_deleted=False).first()
+        if res:
+            return res.role
+        return -1
 
     def changeParticipation(self, memberID, sportID, isParticipating):
         isAlreadyParticipant = self.isMemberof(memberID, sportID)
