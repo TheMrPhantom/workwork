@@ -68,8 +68,8 @@ export default function ClippedDrawer() {
         getAndStore("sports/names/trainerof", setsports)
         getAndStore("memberstate", setmemberState)
 
-        if (location.pathname === "/login") {
-            redirect("/overview")
+        if (location.pathname === "/login" || location.pathname === "/") {
+            redirect("/events")
         }
 
     }, [redirect, location.pathname])
