@@ -17,8 +17,6 @@ class Queries:
         self.db.create_all()
         self.__initialize_database()
 
-        # self.__fillTestData()
-
     def __initialize_database(self):
         is_initialized = self.session.query(Member).first() is not None
         if not is_initialized:
@@ -34,6 +32,10 @@ class Queries:
             self.session.add(standard_worktime)
             self.session.add(half_year)
             self.session.commit()
+            fill_test_data = os.environ("insert_dev_data") is not None and os.environ(
+                "insert_dev_data") == "true"
+            if fill_test_data:
+                self.__fillTestData()
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
@@ -626,10 +628,20 @@ class Queries:
         self.session.add(Member(firstname="Eliza", lastname="Frye",
                                 mail="10", password=hashedPassword, salt=salt))
 
-        self.session.add(Sport(name="SportA"))
-        self.session.add(Sport(name="SportB"))
-        self.session.add(Sport(name="SportD"))
-        self.session.add(Sport(name="SportE"))
+        hashedPassword, salt = TokenManager.hashPassword("passwort1")
+        self.session.add(Member(firstname="Alice", lastname="Wunderland",
+                                mail="alice@wunderland.de", password=hashedPassword, salt=salt))
+        hashedPassword, salt = TokenManager.hashPassword("passwort2")
+        self.session.add(Member(firstname="Eve", lastname="Evil",
+                                mail="eve@evil.de", password=hashedPassword, salt=salt))
+        hashedPassword, salt = TokenManager.hashPassword("passwort3")
+        self.session.add(Member(firstname="Der", lastname="Vorstand",
+                                mail="vorstand@hsf.de", password=hashedPassword, salt=salt))
+
+        self.session.add(Sport(name="Agility"))
+        self.session.add(Sport(name="Rettungshunde"))
+        self.session.add(Sport(name="Turnierhunde"))
+        self.session.add(Sport(name="Obedience"))
 
         self.session.add(SportMember(member_id=2, sport_id=1))
         self.session.add(SportMember(member_id=2, sport_id=2))

@@ -22,6 +22,8 @@ services:
       - mail_username=<mail_username>
       - mail_password=<mail_password>
       - server_mail=<server_mail>
+      - logging=true
+      - insert_dev_data=false
     volumes:
       - ./docker-volume:/usr/src/app/database
 
