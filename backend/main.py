@@ -274,14 +274,7 @@ def getSportsMembers(sportID):
 @authenticated
 def getMemberState():
     memberID = request.cookies.get('memberID')
-    output = 1
-    isTrainer = db.isTrainer(memberID)
-    isExecutive = db.isExecutive(memberID)
-    if isTrainer:
-        output += 2**1
-    if isExecutive:
-        output += 2**2
-    return util.build_response(output)
+    return util.build_response(db.getMemberstate(memberID))
 
 
 @app.route('/api/sports/<int:sportID>/delete', methods=["POST"])
@@ -745,7 +738,7 @@ def login():
     if rights:
         util.log("Login", f"{username} logged in")
         token = token_manager.create_token(rights["memberID"])
-        return util.build_response("OK", cookieToken=token, cookieMemberID=rights["memberID"])
+        return util.build_response({"memberstate": db.getMemberstate(rights["memberID"])}, cookieToken=token, cookieMemberID=rights["memberID"])
     return util.build_response("Unauthorized", code=403)
 
 

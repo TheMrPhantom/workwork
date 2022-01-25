@@ -579,6 +579,16 @@ class Queries:
                            "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
         return output
 
+    def getMemberstate(self, member_id):
+        output = 1
+        isTrainer = self.isTrainer(member_id)
+        isExecutive = self.isExecutive(member_id)
+        if isTrainer:
+            output += 2**1
+        if isExecutive:
+            output += 2**2
+        return output
+
     def __fillTestData(self):
         hashedPassword, salt = TokenManager.hashPassword("unsafe")
         self.session.add(Member(firstname="Tom", lastname="Peter",

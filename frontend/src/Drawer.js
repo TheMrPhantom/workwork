@@ -64,15 +64,29 @@ export default function ClippedDrawer() {
         }
     }, [history])
 
-    const loginLoad = useCallback(() => {
+    const loginLoad = useCallback((memberStateFromLogin = null) => {
         getAndStore("sports/names/trainerof", setsports)
-        getAndStore("memberstate", setmemberState)
-
-        if (location.pathname === "/login" || location.pathname === "/") {
-            redirect("/events")
+        if (memberStateFromLogin === null) {
+            getAndStore("memberstate", setmemberState)
+        } else {
+            setmemberState(memberStateFromLogin.memberstate)
         }
 
-    }, [redirect, location.pathname])
+        console.log(memberState)
+        if (location.pathname === "/login" || location.pathname === "/") {
+            if (memberState > 0 && memberState < 2) {
+                //Member
+                redirect(Config.MEMBER_LANDINGPAGE)
+            } else if (memberState < 3) {
+                //Trainer
+                redirect(Config.TRAINER_LANDINGPAGE)
+            } else {
+                //Executive
+                redirect(Config.EXECUTIVE_LANDINGPAGE)
+            }
+        }
+
+    }, [redirect, location.pathname, memberState])
 
     useEffect(() => {
         const checkLogin = async () => {

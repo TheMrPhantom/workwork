@@ -20,7 +20,7 @@ const Login = ({ redirect }) => {
                 setopen(true)
                 return
             }
-            redirect()
+            redirect(resp.content)
         } else {
             setopen(true)
         }
