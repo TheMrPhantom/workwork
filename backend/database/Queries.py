@@ -26,13 +26,13 @@ class Queries:
             standard_sport = Sport(name=self.standardSportName)
             standard_worktime = Settings(key='standardworktime', value='720')
             half_year = Settings(
-                key='half_year', value=datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%S'))
+                key='half_year', value=datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%S.000Z'))
             self.session.add(admin_user)
             self.session.add(standard_sport)
             self.session.add(standard_worktime)
             self.session.add(half_year)
             self.session.commit()
-            fill_test_data = os.environ("insert_dev_data") is not None and os.environ(
+            fill_test_data = os.environ.get("insert_dev_data") is not None and os.environ.get(
                 "insert_dev_data") == "true"
             if fill_test_data:
                 self.__fillTestData()
@@ -643,18 +643,17 @@ class Queries:
         self.session.add(Sport(name="Turnierhunde"))
         self.session.add(Sport(name="Obedience"))
 
-        self.session.add(SportMember(member_id=2, sport_id=1))
+        self.session.add(SportMember(member_id=2, sport_id=3))
         self.session.add(SportMember(member_id=2, sport_id=2))
-        self.session.add(SportMember(member_id=3, sport_id=3))
+        self.session.add(SportMember(member_id=3, sport_id=5))
         self.session.add(SportMember(member_id=4, sport_id=4))
-        self.session.add(SportMember(member_id=5, sport_id=1))
+        self.session.add(SportMember(member_id=5, sport_id=4))
         self.session.add(SportMember(member_id=6, sport_id=2))
-        self.session.add(SportMember(member_id=7, sport_id=3))
+        self.session.add(SportMember(member_id=7, sport_id=5))
         self.session.add(SportMember(member_id=8, sport_id=4))
-        self.session.add(SportMember(member_id=9, sport_id=1))
+        self.session.add(SportMember(member_id=9, sport_id=2))
         self.session.add(SportMember(member_id=10, sport_id=2))
-        self.session.add(SportMember(member_id=3, sport_id=3))
         self.session.add(SportMember(member_id=2, sport_id=4))
-        self.session.add(SportMember(member_id=5, sport_id=1))
+        self.session.add(SportMember(member_id=5, sport_id=3))
 
         self.session.commit()
