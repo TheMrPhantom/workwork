@@ -45,6 +45,7 @@ import "./index.css"
 import EventList from './Components/Events/EventList';
 import CreateEvent from './Components/Events/CreateEvent';
 import DownloadOverview from './Components/Downloads/DownloadOverview';
+import SystemSettings from './Components/SystemSettings/SystemSettings';
 
 const drawerWidth = 210;
 
@@ -72,7 +73,6 @@ export default function ClippedDrawer() {
             setmemberState(memberStateFromLogin.memberstate)
         }
 
-        console.log(memberState)
         if (location.pathname === "/login" || location.pathname === "/") {
             if (memberState > 0 && memberState < 2) {
                 //Member
@@ -194,6 +194,12 @@ export default function ClippedDrawer() {
                             <PetsIcon />
                         </ListItemIcon>
                         <ListItemText primary="Sportarten" />
+                    </ListItem>
+                    <ListItem button key="1" onClick={() => redirect("/system/settings")}>
+                        <ListItemIcon>
+                            <SettingsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="System" />
                     </ListItem>
                 </List>
                 <Divider />
@@ -332,6 +338,7 @@ export default function ClippedDrawer() {
                     <Route exact path="/members" component={Members} />
                     <Route path="/members/edit/:id" component={MemberEdit} />
                 </Switch>
+                <Route path="/system/settings" component={SystemSettings} />
                 <Route path="/settings" component={Settings} />
             </Box>
         </Box>

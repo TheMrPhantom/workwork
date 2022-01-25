@@ -38,7 +38,7 @@ const SharedWorkTimeSetter = () => {
     return (
         <div>
             <TextField
-                variant="standard"
+                variant="outlined"
                 type="number"
                 value={minutes}
                 InputProps={{

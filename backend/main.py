@@ -728,6 +728,30 @@ def getMemberPDF():
     return resp
 
 
+@app.route('/api/settings/halfyear', methods=["GET"])
+@authenticated
+def getHalfYear():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
+
+    timeFormated = datetime.strptime(db.getHalfYear(), "%Y-%m-%dT%H:%M:%S.%fZ")
+    timeFormated.replace(year=datetime.utcnow().year)
+
+    return util.build_response(timeFormated.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
+
+
+@app.route('/api/settings/halfyear', methods=["POST"])
+@authenticated
+def setHalfYear():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
+
+    db.setHalfYear(request.json['newValue'])
+    return util.build_response("OK")
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json

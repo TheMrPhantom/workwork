@@ -27,9 +27,12 @@ class Queries:
                                 mail='admin@localhost', password=hashedPassword, role=1, salt=salt)
             standard_sport = Sport(name=self.standardSportName)
             standard_worktime = Settings(key='standardworktime', value='720')
+            half_year = Settings(
+                key='half_year', value=datetime.strftime(datetime.utcnow(), '%Y-%m-%dT%H:%M:%S'))
             self.session.add(admin_user)
             self.session.add(standard_sport)
             self.session.add(standard_worktime)
+            self.session.add(half_year)
             self.session.commit()
 
     def getCurrentWorkMinutes(self, memberID: int):
@@ -588,6 +591,17 @@ class Queries:
         if isExecutive:
             output += 2**2
         return output
+
+    def getHalfYear(self):
+        return self.session.query(Settings).filter_by(key="half_year").first().value
+
+    def setHalfYear(self, half_year):
+        half_year_db = self.session.query(Settings).filter_by(
+            key="half_year").first()
+        half_year_db.value = half_year
+        half_year_db.last_modified = datetime.utcnow()
+        self.session.commit()
+        return
 
     def __fillTestData(self):
         hashedPassword, salt = TokenManager.hashPassword("unsafe")

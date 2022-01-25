@@ -2,7 +2,7 @@
     "ORGA_NAME": "HSF",
     "COMPACT_SIZE_THRESHOLD": 900,
     "DOMAIN": "http://127.0.0.1:5000/api/",
-    "VERSION": "Alpha",
+    "VERSION": "Beta",
     "MEMBER_LANDINGPAGE": "/overview",
     "TRAINER_LANDINGPAGE": "/events",
     "EXECUTIVE_LANDINGPAGE": "/events"
