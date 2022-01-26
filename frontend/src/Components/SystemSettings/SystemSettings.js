@@ -4,6 +4,7 @@ import "../Common/Common.css"
 import Spacer from '../Common/Spacer';
 import HalfYearSetter from './HalfYearSetter';
 import SharedWorkTimeSetter from './SharedWorkTimeSetter';
+import YearEndButton from './YearEndButton';
 
 const SystemSettings = () => {
 
@@ -19,6 +20,12 @@ const SystemSettings = () => {
             <Typography variant='caption'>Datum zu dem nur noch die Hälfte geleistet werden muss</Typography>
             <Spacer vertical={20} />
             <HalfYearSetter />
+        </Paper>
+        <Paper className='paperContainer'>
+            <Typography variant='h5'>Jahresabschluss</Typography>
+            <Typography variant='caption'>Generiert PDF und löscht alle Arbeitsstunden</Typography>
+            <Spacer vertical={20} />
+            <YearEndButton />
         </Paper>
     </div>;
 };

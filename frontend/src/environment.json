@@ -5,5 +5,6 @@
     "VERSION": "Beta",
     "MEMBER_LANDINGPAGE": "/overview",
     "TRAINER_LANDINGPAGE": "/events",
-    "EXECUTIVE_LANDINGPAGE": "/events"
+    "EXECUTIVE_LANDINGPAGE": "/events",
+    "YEAR_END_CONFIRM_TEXT": "ja-alle-arbeisstunden-löschen"
 }
