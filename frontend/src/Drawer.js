@@ -77,15 +77,15 @@ export default function ClippedDrawer() {
             console.log(1)
             if (memberState > 0 && memberState < 2) {
                 //Member
-                console.log(2)
+                console.log(Config.MEMBER_LANDINGPAGE)
                 redirect(Config.MEMBER_LANDINGPAGE)
             } else if (memberState < 3) {
                 //Trainer
-                console.log(3)
+                console.log(Config.TRAINER_LANDINGPAGE)
                 redirect(Config.TRAINER_LANDINGPAGE)
             } else {
                 //Executive
-                console.log(4)
+                console.log(Config.EXECUTIVE_LANDINGPAGE)
                 redirect(Config.EXECUTIVE_LANDINGPAGE)
             }
         }
