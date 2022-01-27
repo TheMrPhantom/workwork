@@ -72,20 +72,15 @@ export default function ClippedDrawer() {
         } else {
             setmemberState(memberStateFromLogin.memberstate)
         }
-        console.log(location.pathname + "  " + memberStateFromLogin + "  " + memberState)
         if (location.pathname === "/login" || location.pathname === "/") {
-            console.log(1)
             if (memberState > 0 && memberState < 2) {
                 //Member
-                console.log(Config.MEMBER_LANDINGPAGE)
                 redirect(Config.MEMBER_LANDINGPAGE)
             } else if (memberState < 3) {
                 //Trainer
-                console.log(Config.TRAINER_LANDINGPAGE)
                 redirect(Config.TRAINER_LANDINGPAGE)
             } else {
                 //Executive
-                console.log(Config.EXECUTIVE_LANDINGPAGE)
                 redirect(Config.EXECUTIVE_LANDINGPAGE)
             }
         }
