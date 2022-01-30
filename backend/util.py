@@ -23,9 +23,9 @@ def build_response(message: object, code: int = 200, type: str = "application/js
     r = Response(response=json.dumps(message), status=code, mimetype=type)
     if cookieMemberID and cookieToken:
         r.set_cookie("memberID", str(cookieMemberID),
-                     domain=domain, max_age=cookie_expire)
+                     domain=domain, max_age=cookie_expire, samesite='Strict')
         r.set_cookie("token", cookieToken,
-                     domain=domain, max_age=cookie_expire)
+                     domain=domain, max_age=cookie_expire, samesite='Strict')
 
     return r
 
