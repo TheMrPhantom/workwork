@@ -1,4 +1,4 @@
-import { InputAdornment, TextField } from '@mui/material'
+import { TextField } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions'
@@ -38,12 +38,9 @@ const SharedWorkTimeSetter = () => {
     return (
         <div>
             <TextField
-                variant="outlined"
                 type="number"
                 value={minutes}
-                InputProps={{
-                    endAdornment: <InputAdornment position="start">Minuten</InputAdornment>,
-                }}
+                label="Minuten"
                 style={{ width: "200px" }}
                 onChange={(value) => setExtraHours(value.target.value)}
             />

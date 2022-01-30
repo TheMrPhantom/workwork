@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography } from '@material-ui/core';
 import React from 'react';
 import "../Common/Common.css"
 import Spacer from '../Common/Spacer';
