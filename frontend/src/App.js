@@ -1,20 +1,12 @@
-import { MuiThemeProvider, createTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ClippedDrawer from "./Drawer.js"
 import { createContext } from 'react';
-
+import { theme } from "./Components/Common/Common"
 import './index.css';
 import "./Components/Theme.css"
 
 function App() {
-
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: '#bbc34f'
-      }
-    }
-  });
 
   var globalState = {
     userid: -1,
