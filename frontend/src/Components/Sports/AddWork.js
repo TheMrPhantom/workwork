@@ -14,10 +14,12 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { makeStyles } from "@material-ui/core";
 import AskForTrainer from '../Request/AskForTrainer';
+import Config from "../../environment.json";
 
 import "./AddWork.css"
 import "./Request.css"
 import HSFAlert from '../Common/HSFAlert';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const useStyles = makeStyles({
     buttonColor: {
@@ -28,7 +30,7 @@ const useStyles = makeStyles({
 });
 
 const AddWork = ({ memberID, refresh }) => {
-    const [selectorValue, setselectorValue] = useState(null)
+    const [selectorValue, setselectorValue] = useState(-1)
     const [reason, setreason] = useState("")
     const [minutes, setminutes] = useState(0)
     const [sportNames, setsportNames] = useState([])
@@ -45,13 +47,12 @@ const AddWork = ({ memberID, refresh }) => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
     }, [memberID, refresh])
 
-
     const handleAlignment = (event, newAlignment) => {
         setselectorValue(newAlignment);
     };
 
     const addWork = async (trainer) => {
-        if (selectorValue === null) {
+        if (selectorValue === -1 || selectorValue === null) {
             setmessage("Sportart auswählen")
             setopen(true)
             return
@@ -79,7 +80,7 @@ const AddWork = ({ memberID, refresh }) => {
             await doPostRequest("request/create", { "memberID": memberID, "sportID": selectorValue, "description": reason, "minutes": minutes, "trainer": trainer })
             setmessageOpen(true)
         }
-        setselectorValue("")
+        setselectorValue(-1)
         setreason("")
         setminutes(0)
     }
@@ -101,7 +102,7 @@ const AddWork = ({ memberID, refresh }) => {
         }
 
         if (activeStep === 0) {
-            if (selectorValue === null) {
+            if (selectorValue === -1 || selectorValue === null) {
                 setmessage("Sportart auswählen")
                 setopen(true)
                 return
@@ -166,8 +167,8 @@ const AddWork = ({ memberID, refresh }) => {
 
     const classes = useStyles();
 
-    const displayStep = () => {
-        if (activeStep === 0) {
+    const firstStep = () => {
+        if (window.innerWidth > Config.COMPACT_SIZE_THRESHOLD) {
             return (<ToggleButtonGroup
                 value={selectorValue}
                 exclusive
@@ -189,6 +190,38 @@ const AddWork = ({ memberID, refresh }) => {
 
             </ToggleButtonGroup>
             )
+        } else {
+            return <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="sport-input-add-request-label">Sparte</InputLabel>
+                <Select
+                    labelId="sport-input-add-request-label"
+                    id="sport-input-add-request"
+                    value={selectorValue}
+                    onChange={(value) => { setselectorValue(value.target.value) }}
+                    label="Sparte"
+                >
+                    {
+                        sportNames.map((value) => {
+                            return (
+                                <MenuItem key={value.id} value={value.id} aria-label="left aligned" className={classes.buttonColor}>
+                                    {value.name}
+                                </MenuItem>
+                            )
+                        })
+                    }
+                    <MenuItem value={1} aria-label="left aligned" className={classes.buttonColor}>
+                        Andere Sparte
+                    </MenuItem>
+                </Select>
+            </FormControl >
+        }
+    }
+
+
+
+    const displayStep = () => {
+        if (activeStep === 0) {
+            return firstStep()
         } else if (activeStep === 1) {
             return <TextField variant="outlined" className="reasonBoxRequest" label="Begründung" type="input" value={reason} onChange={(value) => setreason(value.target.value)} />
         }
@@ -231,25 +264,26 @@ const AddWork = ({ memberID, refresh }) => {
 
     return sportNames.length > 0 ? (
         <Box sx={{ width: '100%' }}>
-            <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    if (isStepOptional(index)) {
-                        labelProps.optional = (
-                            <Typography variant="caption">Optional</Typography>
+            {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ?
+                <Stepper activeStep={activeStep}>
+                    {steps.map((label, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        if (isStepOptional(index)) {
+                            labelProps.optional = (
+                                <Typography variant="caption">Optional</Typography>
+                            );
+                        }
+                        if (isStepSkipped(index)) {
+                            stepProps.completed = false;
+                        }
+                        return (
+                            <Step key={label} {...stepProps}>
+                                <StepLabel {...labelProps}>{label}</StepLabel>
+                            </Step>
                         );
-                    }
-                    if (isStepSkipped(index)) {
-                        stepProps.completed = false;
-                    }
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
+                    })}
+                </Stepper> : ""}
             <AskForTrainer
                 confirmText="Anfrage Stellen"
                 addFunction={addWork}
