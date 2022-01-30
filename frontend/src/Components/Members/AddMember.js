@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import "./MemberEntry.css"
 import { TextField } from '@material-ui/core';
+import { theme } from "../Common/Common"
 import Spacer from '../Common/Spacer';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 import { Checkbox, Paper, Typography } from '@mui/material';
@@ -154,8 +155,12 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                                 return ""
                             }
                             return (
-                                <Paper key={value.id} className="checkboxPaper">
-                                    <FormControlLabel control={<Checkbox />}
+                                <Paper key={value.id} className="checkboxPaper" style={{ backgroundColor: theme.palette.primary.light }}>
+                                    <FormControlLabel control={<Checkbox sx={{
+                                        '&.Mui-checked': {
+                                            color: theme.palette.primary.contrastText,
+                                        },
+                                    }} />}
                                         label={value.name}
                                         className="checkboxFormControll"
                                         onChange={(checkvalue) => {
@@ -166,6 +171,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                                                 memberOfSport.delete(value.id)
                                             }
                                         }} />
+
                                 </Paper>
                             )
                         })}
