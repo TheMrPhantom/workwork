@@ -582,7 +582,7 @@ class Queries:
             maxWork = self.getNeededWorkMinutes(m[0])
             isTrainer = self.isTrainer(m[0])
             output.append({"id": m[0], "firstname": m[1],
-                           "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": int(m[5]) == 1})
+                           "lastname": m[2], "email": m[3], "currentWork": currentWork, "maxWork": maxWork, "isTrainer": isTrainer, "isExecutive": self.isExecutive(m[0])})
         return output
 
     def getMemberstate(self, member_id):
