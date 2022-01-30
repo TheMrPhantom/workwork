@@ -471,11 +471,12 @@ class Queries:
     def checkMailExists(self, mail):
         return self.session.query(Member).filter_by(mail=mail, is_deleted=False).first() is not None
 
-    def addEvent(self, name, sportID, date):
+    def addEvent(self, name, memberID, sportID, date):
         if(self.getEvent(name) is not None):
             return None
 
-        self.session.add(Event(name=name, sport_id=sportID, date=date))
+        self.session.add(Event(name=name, trainer_id=memberID,
+                               sport_id=sportID, date=date))
         self.session.commit()
 
         return self.getEvent(name)

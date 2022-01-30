@@ -555,7 +555,8 @@ def addEvent():
     date = request.json["date"]
     python_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
     timeslots = request.json["timeslots"]
-    event = db.addEvent(eventName, sportID, python_date)
+    event = db.addEvent(eventName, request.cookies.get(
+        'memberID'), sportID, python_date)
     if event is None:
         return util.build_response("Event already Exists", code=409)
 
