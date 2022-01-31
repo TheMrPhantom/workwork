@@ -743,6 +743,18 @@ def getHalfYear():
     return util.build_response(timeFormated.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
 
 
+@app.route('/api/system/endyear', methods=["POST"])
+@authenticated
+def endYear():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
+
+    db.end_year()
+
+    return util.build_response("OK")
+
+
 @app.route('/api/settings/halfyear', methods=["POST"])
 @authenticated
 def setHalfYear():

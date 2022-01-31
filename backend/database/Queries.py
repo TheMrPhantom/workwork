@@ -3,6 +3,7 @@ import util
 from datetime import datetime
 import os
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import session
 from sqlalchemy.sql import func
 from database.Models import *
 import mail
@@ -12,7 +13,7 @@ class Queries:
     def __init__(self, db):
 
         self.db: SQLAlchemy = db
-        self.session = self.db.session
+        self.session: session.Session = self.db.session
         self.standardSportName = os.environ.get(
             "standard_sport_name") if os.environ.get("standard_sport_name") else "Allgemein"
         self.db.create_all()
@@ -629,6 +630,23 @@ class Queries:
         half_year_db.last_modified = datetime.utcnow()
         self.session.commit()
         return
+
+    def end_year(self):
+        """
+        Deletes all work requests and resets the special worktime of all members who joined later in year to standard (0)
+        """
+
+        worktimes = self.session.query(Worktime).all()
+        for w in worktimes:
+            self.session.delete(w)
+
+        late_members = self.session.query(
+            Member).filter(Member.extra_hours > 0).all()
+
+        for late_member in late_members:
+            late_member.extra_hours = 0
+
+        self.session.commit()
 
     def __fillTestData(self):
         hashedPassword, salt = TokenManager.hashPassword("unsafe")

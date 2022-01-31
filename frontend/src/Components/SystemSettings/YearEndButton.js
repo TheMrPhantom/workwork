@@ -3,19 +3,23 @@ import { Button } from '@material-ui/core'
 import { useState } from 'react';
 import { TextField, Typography } from '@mui/material';
 import Config from "../../environment.json";
+import Spacer from '../Common/Spacer';
+import { doPostRequest } from '../Common/StaticFunctions';
+
 import "./SystemSettings.css"
 import "../Common/Common.css"
-import Spacer from '../Common/Spacer';
+
 const YearEndButton = () => {
 
     const [buttonPressed, setbuttonPressed] = useState(false)
     const [confirmText, setconfirmText] = useState("")
 
 
-    const buttonOnClick = () => {
+    const buttonOnClick = async () => {
         setbuttonPressed(!buttonPressed)
         if (confirmText === Config.YEAR_END_CONFIRM_TEXT.toUpperCase()) {
-            //doPostRequest
+            doPostRequest("system/endyear", {})
+            setconfirmText("")
         }
     }
 
