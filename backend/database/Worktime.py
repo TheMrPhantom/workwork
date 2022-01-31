@@ -13,7 +13,7 @@ class Worktime(db.Model):
         sql.Integer, sql.ForeignKey('sport.id'), nullable=False)
     sport = relationship('database.Sport.Sport', lazy="joined")
     description = sql.Column(sql.Text, nullable=False)
-    time = sql.Column(sql.DateTime, default=datetime.now, nullable=False)
+    date = sql.Column(sql.DateTime, default=datetime.now, nullable=False)
     minutes = sql.Column(sql.Integer, nullable=False)
     pending = sql.Column(sql.Boolean, default=True, nullable=False)
     is_deleted = sql.Column(sql.Boolean, default=False, nullable=False)

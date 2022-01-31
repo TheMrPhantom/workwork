@@ -11,54 +11,57 @@
 
 ## SQL Scheme
 ### member
-* firstname TEXT
-* lastname TEXT
-* mail TEXT
-* password TEXT
-* rolle TEXT
-* deleted INTEGER
-* salt TEXT
-* extraHours INTEGER
+* firstname String
+* lastname String
+* mail String
+* password LargeBinary
+* rolle Integer
+* is_deleted Boolean
+* salt String
+* extraHours Integer
+* last_modified DateTime
 
 ### worktime
-* memberID INTEGER
-* sportID INTEGER
-* description TEXT
-* minutes INTEGER
-* pending INTEGER
-* deleted INTEGER
+* member_id Integer
+* sport_id Integer
+* description Text
+* date DateTime
+* minutes Integer
+* pending Boolean
+* is_deleted Boolean
 
 ### sportMember
-* memberID INTEGER
-* sportID INTEGER
-* isTrainer INTEGER
+* member_id Integer
+* sport_id Integer
+* is_trainer Boolean
 
 ### sport
-* name TEXT
-* extraHours INTEGER
-* deleted INTEGER
+* name String
+* extra_hours Integer
+* is_deleted Boolean
 
 ### Settings
-* key TEXT
-* value TEXT
-* last_modified DATE
+* key String
+* value String
+* last_modified DateTime
 
 ### event
-* name TEXT
-* sportID INTEGER
-* date TEXT
-* deleted INTEGER
+* name String
+* sport_id Integer
+* trainer_id Integer
+* date DateTime
+* is_deleted Boolean
 
 ### timeslot
-* eventID INTEGER
-* name TEXT
-* helper INTEGER
-* start TEXT
-* end TEXT
+* event_id Integer
+* name String
+* helper Integer
+* start DateTime
+* end DateTime
 
 ### eventParticipant
-* memberID INTEGER
-* timeslotID INTEGER
+* member_id Integer
+* timeslot_id Integer
 
 ### Wordlist from 
 https://github.com/davidak/wortliste
