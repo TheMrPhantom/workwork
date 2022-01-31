@@ -22,8 +22,11 @@ sender_email = os.environ.get("server_mail") if os.environ.get(
 # Create a secure SSL context
 context = ssl.create_default_context()
 
+MAIL_SUBJECT_AFTER_EVENT = "Genehmigung Arbeitsstunden von"
+MAIL_TEXT_AFTER_EVENT = "Dein Event ist beendet, bitte schaue dir die Arbeitsstunden-Anfragen folgender Mitglieder an:"
 
-def send(subject, to, text, html, receiver_Name=None):
+
+def send(subject, to, text, html=None, receiver_Name=None):
     print("Start sending Mail to", receiver_Name)
     try:
         server = smtplib.SMTP(smtp_server, port)
@@ -31,14 +34,19 @@ def send(subject, to, text, html, receiver_Name=None):
         server.login(username, password)
 
         part1 = MIMEText(text, "plain")
-        part2 = MIMEText(html, "html")
+
+        if html:
+            part2 = MIMEText(html, "html")
 
         message = MIMEMultipart("alternative")
         message["Subject"] = subject
         message["From"] = f"AMS Hundesportfreunde Degerloch <{sender_email}>"
         message["To"] = f"{receiver_Name} <{to}>" if receiver_Name else to
         message.attach(part1)
-        message.attach(part2)
+
+        if html:
+            message.attach(part2)
+
         server.sendmail(sender_email, to, message.as_string())
 
     except Exception as e:
@@ -54,30 +62,31 @@ def send_async(subject, to, text, html, receiver_Name=None):
     mail_Thread.start()
 
 
-def sendBCC(subject, to, text, receiver_Name):
-    print("Start sending Mail to", receiver_Name)
+# def sendBCC(subject, to, text, receiver_Name):
+#     print("Start sending Mail to", receiver_Name)
 
-    try:
-        server = smtplib.SMTP(smtp_server, port)
-        server.starttls(context=context)
-        server.login(username, password)
+#     try:
+#         server = smtplib.SMTP(smtp_server, port)
+#         server.starttls(context=context)
+#         server.login(username, password)
 
-        part1 = MIMEText(text, "plain")
+#         part1 = MIMEText(text, "plain")
 
-        message = MIMEMultipart("alternative")
-        message["Subject"] = subject
-        message["From"] = f"AMS Hundesportfreunde Degerloch <{sender_email}>"
-        message["To"] = f"{receiver_Name} <{sender_email}>"
-        message.attach(part1)
-        server.sendmail(sender_email, to, message.as_string())
+#         message = MIMEMultipart("alternative")
+#         message["Subject"] = subject
+#         message["From"] = f"AMS Hundesportfreunde Degerloch <{sender_email}>"
+#         message["To"] = f"{receiver_Name} <{sender_email}>"
+#         message.attach(part1)
+#         server.sendmail(sender_email, to, message.as_string())
 
-    except Exception as e:
-        print(e)
-    finally:
-        server.quit()
-    print("Done sending mail")
+#     except Exception as e:
+#         print(e)
+#     finally:
+#         server.quit()
+#     print("Done sending mail")
 
-def sendBCC_async(subject, to, text, receiver_Name):
-    mail_Thread = threading.Thread(target=sendBCC, args=(
-        subject, to, text, receiver_Name,))
-    mail_Thread.start()
+
+# def sendBCC_async(subject, to, text, receiver_Name):
+#     mail_Thread = threading.Thread(target=sendBCC, args=(
+#         subject, to, text, receiver_Name,))
+#     mail_Thread.start()

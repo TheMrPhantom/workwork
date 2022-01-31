@@ -8,6 +8,8 @@ class Event(db.Model):
     name = sql.Column(sql.String(100), nullable=False)
     sport_id = sql.Column(sql.Integer, sql.ForeignKey(
         'sport.id'), nullable=False)
+    sport = relationship(
+        'database.Sport.Sport', lazy="joined")
     trainer_id = sql.Column(sql.Integer, sql.ForeignKey(
         'member.id'), nullable=False)
     creating_trainer = relationship(

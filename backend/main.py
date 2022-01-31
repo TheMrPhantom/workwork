@@ -539,7 +539,8 @@ def sendSportMail(sportID):
     body = request.json['body']
     if subject == "" or body == "":
         return util.build_response("Subject and Body not both set", code=400)
-    mail.sendBCC_async(subject, mails, body, sportName+" Mitglieder")
+    mail.send_async(subject, mails, body,
+                    receiver_Name=sportName+" Mitglieder")
     return util.build_response("OK")
 
 
