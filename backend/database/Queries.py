@@ -442,12 +442,20 @@ class Queries:
             usedPW = TokenManager.getPassword()
 
         hashedPassword, salt = TokenManager.hashPassword(usedPW)
-        self.session.add(Member(firstname=firstname, lastname=lastname,
-                                mail=email, password=hashedPassword, salt=salt))
+        half_year = self.session.query(
+            Settings).filter_by(key="half_year").first().value
+        half_year = datetime.strptime(half_year, "%Y-%m-%dT%H:%M:%S.%fZ")
+        half_year = half_year.replace(year=datetime.utcnow().year)
+        if half_year > datetime.utcnow():
+            self.session.add(Member(firstname=firstname, lastname=lastname,
+                                    mail=email, password=hashedPassword, salt=salt))
+        else:
+            standardworktime = self.session.query(
+                Settings).filter_by(key="standardworktime").first().value
+            self.session.add(Member(firstname=firstname, lastname=lastname,
+                                    mail=email, password=hashedPassword, salt=salt, extra_hours=int(int(standardworktime)/2)))
 
         self.session.commit()
-
-        memberID = -1
 
         if not password:
             return self.session.query(Member).filter_by(mail=email, is_deleted=False).first().id, usedPW
