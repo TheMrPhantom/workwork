@@ -26,7 +26,7 @@ const UpcomingEventsList = ({ events }) => {
                     <th><Typography variant="caption" >Event Name</Typography></th>
                     <th style={{ paddingLeft: "50px" }}><Typography variant="caption" >Event Datum</Typography></th>
                 </tr>
-                {events.map((value) => (<tr>
+                {events.sort((a, b) => new Date(a.date) - new Date(b.date)).map((value) => (<tr>
                     <td>
                         <Typography variant="body1" key={value.eventID}>{value.name}</Typography>
                     </td>
