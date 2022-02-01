@@ -25,3 +25,7 @@
 .warningColor {
     color: var(--errorColor);
 }
+
+.workInProgress {
+    opacity: 0.4;
+}
