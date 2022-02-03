@@ -16,6 +16,15 @@
     gap: 10px;
 }
 
+.flexContainerCenter {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+}
+
 .flexContainerVertical {
     display: flex;
     flex-direction: column;
@@ -28,4 +37,15 @@
 
 .workInProgress {
     opacity: 0.4;
+}
+
+.neutralOutlinedButton {
+    color: black !important;
+    border: 1px solid grey !important;
+}
+
+.errorButton {
+    color: white !important;
+    background-color: var(--errorColor) !important;
+    border: 1px solid var(--errorColor) !important;
 }

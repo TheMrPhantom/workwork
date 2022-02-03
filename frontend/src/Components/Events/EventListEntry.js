@@ -1,5 +1,5 @@
 import { Button, Paper, TextField, Typography } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -10,10 +10,13 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import "./Events.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
+import ConfirmButton from '../Common/ConfirmButton';
 
 const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState, reloadEvents }) => {
 
-    const deleteEvent = async () => {
+    const [openDeleteDialog, setopenDeleteDialog] = useState(false);
+
+    const deleteEvent = async (eventID) => {
         await doPostRequest("event/delete", eventID)
         reloadEvents()
     }
@@ -44,9 +47,10 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
                             </LocalizationProvider>
                         </div>
                     </div>
+                    <ConfirmButton title="Event löschen?" open={openDeleteDialog} setOpen={setopenDeleteDialog} onConfirm={() => deleteEvent(eventID)} />
                     {memberState > 1 ? <Spacer horizontal={20} /> : ""}
                     {memberState > 1 ?
-                        <Button onClick={() => deleteEvent()}>
+                        <Button onClick={() => setopenDeleteDialog(true)}>
                             <IndeterminateCheckBoxIcon className="denyBackground" />
                         </Button> : ""}
 
