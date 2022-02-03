@@ -56,7 +56,7 @@ def send(subject, to, text, html=None, receiver_Name=None):
     print("Done sending mail")
 
 
-def send_async(subject, to, text, html, receiver_Name=None):
+def send_async(subject, to, text, html=None, receiver_Name=None):
     mail_Thread = threading.Thread(target=send, args=(
         subject, to, text, html, receiver_Name,))
     mail_Thread.start()

@@ -545,6 +545,27 @@ def sendSportMail(sportID):
     return util.build_response("OK")
 
 
+@app.route('/api/mail/mailToAll', methods=["POST"])
+@authenticated
+def send_mail_to_all():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    members = db.getMembers()
+
+    mails = []
+    for m in members:
+        mails.append(m[3])
+    subject = request.json['subject']
+    body = request.json['body']
+    if subject == "" or body == "":
+        return util.build_response("Subject and Body not both set", code=400)
+    mail.send_async(subject, mails, body,
+                    receiver_Name="Alle Mitglieder")
+    return util.build_response("OK")
+
+
 @app.route('/api/event/add', methods=["POST"])
 @authenticated
 def addEvent():

@@ -88,8 +88,12 @@ const SendMail = ({ headlineText, confirmText, sportID, successOpen }) => {
             setmessageOpen(true)
             return
         }
-
-        const resp = await doPostRequest("mail/mailToSport/" + sportID, { "subject": subject, "body": body })
+        var resp = null;
+        if (sportID === undefined) {
+            resp = await doPostRequest("mail/mailToAll", { "subject": subject, "body": body })
+        } else {
+            resp = await doPostRequest("mail/mailToSport/" + sportID, { "subject": subject, "body": body })
+        }
         if (resp.code === 200) {
             successOpen(true)
             setstateBody("")

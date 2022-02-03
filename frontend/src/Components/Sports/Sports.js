@@ -46,6 +46,10 @@ const Sports = (props) => {
 
     return (
         <div>
+            {parseInt(props.match.params.id) === 1 ? <div style={{ display: 'flex' }}>
+                <Typography variant="h5">Mail an alle Mitglieder</Typography>
+                <SendMail headlineText="Rundmail Senden" confirmText="Senden" successOpen={setmailsuccessDialog} /></div> : ""}
+            {parseInt(props.match.params.id) === 1 ? <Spacer vertical={30} /> : ""}
             {requests.length > 0 ? <Typography variant="h5">Anfragen</Typography> : ""}
             {requests.length > 0 ? <Spacer vertical={10} /> : ""}
             {requests.map((value) => {
