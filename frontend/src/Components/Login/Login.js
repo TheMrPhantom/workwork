@@ -14,7 +14,7 @@ const Login = ({ redirect }) => {
     const [openSuccess, setopenSuccess] = useState(false)
 
     const login = async () => {
-        const resp = await doPostRequest("login", { username: username, password: password });
+        const resp = await doPostRequest("login", { username: username.toLowerCase(), password: password });
         if (resp.code === 200) {
             if (resp.content === null) {
                 setopen(true)
