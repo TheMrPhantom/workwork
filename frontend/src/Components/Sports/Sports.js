@@ -61,7 +61,7 @@ const Sports = (props) => {
                 <HSFAlert type="success" message="Nachricht erfolgreich gesendet" open={mailsuccessDialog} setOpen={setmailsuccessDialog} />
             </div> : ""}
             <Spacer vertical={10} />
-            {members.map((value) => {
+            {members.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)).map((value) => {
                 return (<Member key={value.id}
                     id={value.id}
                     name={value.firstname + " " + value.lastname}

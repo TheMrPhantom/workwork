@@ -17,8 +17,8 @@ const Members = () => {
     const [refs, setrefs] = useState(new Map())
 
     useEffect(() => {
-        getAndStore("members", setmembers)
-        getAndStore("members", setfilteredMembers)
+        getAndStore("members", (newState) => { setmembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname))) })
+        getAndStore("members", (newState) => { setfilteredMembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname))) })
 
     }, [refresh])
 
