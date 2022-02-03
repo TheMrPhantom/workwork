@@ -7,6 +7,7 @@ import HSFAlert from '../Common/HSFAlert'
 import { FormControl, IconButton, Input, InputAdornment, InputLabel } from '@material-ui/core'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Config from '../../environment.json';
 
 import "./Login.css"
 
@@ -59,6 +60,7 @@ const Login = ({ redirect }) => {
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowPassword}
                                 edge="end"
+                                style={{ color: window.innerWidth < Config.COMPACT_SIZE_THRESHOLD ? 'white' : 'none', background: window.innerWidth < Config.COMPACT_SIZE_THRESHOLD ? 'radial-gradient(grey, transparent)' : 'transparent' }}
                             >
                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                             </IconButton>
