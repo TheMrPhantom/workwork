@@ -61,11 +61,11 @@ class Queries:
         for w in work:
             workDict = work[w]
             if workDict['sportID'] not in sportDict:
-                currentTimePerID['Standard'] = max(
-                    0, currentTimePerID['Standard']-workDict['minutes'])
+                currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                    workDict['minutes']
             elif sportDict[workDict['sportID']] == 0:
-                currentTimePerID['Standard'] = max(
-                    0, currentTimePerID['Standard']-workDict['minutes'])
+                currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                    workDict['minutes']
             else:
                 dif = currentTimePerID[workDict['sportID']]-workDict['minutes']
                 if dif >= 0:
@@ -73,8 +73,8 @@ class Queries:
                                      ] = currentTimePerID[workDict['sportID']]-workDict['minutes']
                 else:
                     currentTimePerID[workDict['sportID']] = 0
-                    currentTimePerID['Standard'] = max(
-                        0, currentTimePerID['Standard']-abs(dif))
+                    currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                        abs(dif)
 
         output = [{'name': 'Standard', 'hours': round(
             (standardWorkTime - currentTimePerID['Standard'])/60, 2)}]
