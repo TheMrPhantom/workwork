@@ -98,7 +98,7 @@ class Queries:
 
         output = []
         for s in sports:
-            output.append({"id": s.id, "name": s.sport.name,
+            output.append({"id": s.sport.id, "name": s.sport.name,
                            "extraHours": s.sport.extra_hours})
         return output
 
