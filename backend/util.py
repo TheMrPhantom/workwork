@@ -39,6 +39,8 @@ def log(prefix, message):
 
 
 def sort_sport(input: list) -> list:
+    if len(input) == 0:
+        return []
     output = [input[0]]
     output.extend(sorted(input[1:], key=lambda x: x['name']))
     return output

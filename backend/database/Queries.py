@@ -509,7 +509,8 @@ class Queries:
         slots = self.session.query(Timeslot).filter_by(event_id=eventID).all()
         for s in slots:
             output.append({"timeslotID": s.id, "eventID": s.event_id,
-                           "name": s.name, "helper": s.helper, "start": s.start.strftime('%H:%M'), "end": s.end.strftime('%H:%M')})
+                           "name": s.name, "helper": s.helper, "start": s.start.strftime('%H:%M'),
+                           "end": s.end.strftime('%H:%M')})
         return output
 
     def addTimeslotParticipant(self, memberID, timeslotID):
@@ -558,11 +559,10 @@ class Queries:
                 timeslotID = timeslot["timeslotID"]
                 participants = self.getTimeslotParticipants(timeslotID)
 
-                start = timeslot["start"]
-                end = timeslot["end"]
+                start = datetime.strptime(timeslot["start"], "%H:%M")
+                end = datetime.strptime(timeslot["end"], "%H:%M")
 
                 minutes = int((end-start).total_seconds()/60)
-
                 for participant in participants:
                     memberID = participant["memberID"]
                     self.createWorkRequest(
@@ -592,9 +592,7 @@ class Queries:
         for e in events:
             event: Event = e
 
-            timeString = event.date[:str(event.date).find("T")]
-            timeString += "T23:59:59"
-            timeFormated = datetime.strptime(timeString, '%Y-%m-%dT%H:%M:%S')
+            timeFormated = event.date.replace(hour=22, minute=59, second=59)
             now = datetime.now()
             if timeFormated < now:
                 output.append(e)
