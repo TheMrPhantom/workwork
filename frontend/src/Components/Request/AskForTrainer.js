@@ -13,6 +13,7 @@ import { getAndStore } from '../Common/StaticFunctions';
 import { Checkbox, Paper, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { theme } from "../Common/Common"
 
 import "../Members/MemberEntry.css";
 
@@ -96,7 +97,11 @@ const AskForTrainer = ({ open, setOpen, addFunction }) => {
                         {trainer.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)).map((value) => {
                             return (
                                 <Paper key={value.id} className="checkboxPaper">
-                                    <FormControlLabel control={<Checkbox />}
+                                    <FormControlLabel control={<Checkbox sx={{
+                                        '&.Mui-checked': {
+                                            color: theme.palette.primary.contrastText,
+                                        },
+                                    }} />}
                                         label={value.firstname}
                                         className="checkboxFormControll"
                                         onChange={(checkvalue) => {
