@@ -4,6 +4,9 @@ import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import AddMember from '../Members/AddMember'
 import HSFAlert from '../Common/HSFAlert'
+import { FormControl, IconButton, Input, InputAdornment, InputLabel } from '@material-ui/core'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import "./Login.css"
 
@@ -12,6 +15,7 @@ const Login = ({ redirect }) => {
     const [password, setpassword] = useState("")
     const [open, setopen] = useState(false)
     const [openSuccess, setopenSuccess] = useState(false)
+    const [showPassword, setshowPassword] = useState(false);
 
     const login = async () => {
         const resp = await doPostRequest("login", { username: username.toLowerCase(), password: password });
@@ -34,6 +38,10 @@ const Login = ({ redirect }) => {
         }
     }
 
+    const handleClickShowPassword = () => {
+        setshowPassword(!showPassword)
+    };
+
     return (
 
         <Paper elevation={2} className="loginBox padding loginPic">
@@ -43,7 +51,22 @@ const Login = ({ redirect }) => {
             <TextField className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
             <form className="loginBox" action="" noValidate autoComplete="off" onSubmit={(event) => { event.preventDefault(); login() }}>
                 <Spacer vertical={20} />
-                <TextField className="reasonBox pw-login" label="Passwort" type="password" onChange={(value) => { setpassword(value.target.value) }} />
+                <FormControl >
+                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                    <Input className="reasonBox pw-login" label="Passwort" type={showPassword ? 'text' : 'password'} onChange={(value) => { setpassword(value.target.value) }} endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                edge="end"
+                            >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                    } />
+                </FormControl>
+
+
             </form>
             <Spacer vertical={20} />
             <div className="verticalFloatLogin mail-login">
