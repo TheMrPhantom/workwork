@@ -158,27 +158,28 @@ def makeExecutive(memberID):
 
 @app.route('/api/sports/names', methods=["GET"])
 def listSports():
-    return util.build_response(db.getSports())
+    return util.build_response(util.sort_sport(db.getSports()))
 
 
 @app.route('/api/sports/names/associated', methods=["GET"])
 @authenticated
 def listSportsOfTrainer():
     sports = db.getSports()
-    output = []
+    sports_relavant = []
     if not db.isExecutive(request.cookies.get('memberID')):
         if db.isTrainer(request.cookies.get('memberID')):
-            output = [sports[0]]
+            sports_relavant = [sports[0]]
         for s in sports:
             if db.isTrainerof(request.cookies.get('memberID'), s["id"]):
-                output.append(s)
+                sports_relavant.append(s)
     else:
-        output = sports
-    return util.build_response(output)
+        sports_relavant = sports
+
+    return util.build_response(util.sort_sport(sports_relavant))
 
 
-@app.route('/api/sports/names/membership/<int:userID>', methods=["GET"])
-@authenticated
+@ app.route('/api/sports/names/membership/<int:userID>', methods=["GET"])
+@ authenticated
 def listSportsOfMember(userID):
     if infosAboutSelfOrTrainer(request, userID):
         return infosAboutSelfOrTrainer(request, userID)
@@ -194,8 +195,8 @@ def listSportsOfMember(userID):
     return util.build_response(output)
 
 
-@app.route('/api/members', methods=["GET"])
-@authenticated
+@ app.route('/api/members', methods=["GET"])
+@ authenticated
 def members():
     check = checkTrainer(request)
     if check is not None:
@@ -205,8 +206,8 @@ def members():
     return util.build_response(db.getMembersList(members))
 
 
-@app.route('/api/members/trainer', methods=["GET"])
-@authenticated
+@ app.route('/api/members/trainer', methods=["GET"])
+@ authenticated
 def trainer():
     members = db.getMembers()
     output = []
@@ -218,8 +219,8 @@ def trainer():
     return util.build_response(output)
 
 
-@app.route('/api/members/trainerOrExecutive', methods=["GET"])
-@authenticated
+@ app.route('/api/members/trainerOrExecutive', methods=["GET"])
+@ authenticated
 def trainerOrExecutive():
     members = db.getMembers()
     output = []
@@ -231,8 +232,8 @@ def trainerOrExecutive():
     return util.build_response(output)
 
 
-@app.route('/api/work/request/<int:sportID>', methods=["GET"])
-@authenticated
+@ app.route('/api/work/request/<int:sportID>', methods=["GET"])
+@ authenticated
 def getRequestsFromSport(sportID):
     req = db.getPendingWorkRequestsBySport(sportID)
     output = []
@@ -242,8 +243,8 @@ def getRequestsFromSport(sportID):
     return util.build_response(output)
 
 
-@app.route('/api/work/request/pendingAmount', methods=["GET"])
-@authenticated
+@ app.route('/api/work/request/pendingAmount', methods=["GET"])
+@ authenticated
 def getPendingRequestAmount():
     output = 0
     sports = db.getSports()
@@ -252,8 +253,8 @@ def getPendingRequestAmount():
     return util.build_response(output)
 
 
-@app.route('/api/sports/<int:sportID>/members', methods=["GET"])
-@authenticated
+@ app.route('/api/sports/<int:sportID>/members', methods=["GET"])
+@ authenticated
 def getSportsMembers(sportID):
     check = checkTrainer(request)
     if check is not None:
@@ -270,15 +271,15 @@ def getSportsMembers(sportID):
     return util.build_response(output)
 
 
-@app.route('/api/memberstate', methods=["GET"])
-@authenticated
+@ app.route('/api/memberstate', methods=["GET"])
+@ authenticated
 def getMemberState():
     memberID = request.cookies.get('memberID')
     return util.build_response(db.getMemberstate(memberID))
 
 
-@app.route('/api/sports/<int:sportID>/delete', methods=["POST"])
-@authenticated
+@ app.route('/api/sports/<int:sportID>/delete', methods=["POST"])
+@ authenticated
 def deleteSport(sportID):
     check = checkExecutive(request)
     if check is not None:
@@ -289,8 +290,8 @@ def deleteSport(sportID):
     return util.build_response("OK")
 
 
-@app.route('/api/sports/<int:sportID>/workhours', methods=["POST"])
-@authenticated
+@ app.route('/api/sports/<int:sportID>/workhours', methods=["POST"])
+@ authenticated
 def changeExtraHours(sportID):
     check = checkExecutive(request)
     if check is not None:
@@ -301,8 +302,8 @@ def changeExtraHours(sportID):
     return util.build_response("OK")
 
 
-@app.route('/api/sports/add', methods=["POST"])
-@authenticated
+@ app.route('/api/sports/add', methods=["POST"])
+@ authenticated
 def addSport():
     check = checkExecutive(request)
     if check is not None:
@@ -314,8 +315,8 @@ def addSport():
     return util.build_response("OK")
 
 
-@app.route('/api/request/create', methods=["POST"])
-@authenticated
+@ app.route('/api/request/create', methods=["POST"])
+@ authenticated
 def addRequest():
     memberID = request.json["memberID"]
     sportID = request.json["sportID"]

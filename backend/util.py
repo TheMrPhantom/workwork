@@ -36,3 +36,9 @@ def log(prefix, message):
         output_string = f"[{time}] {prefix} -> {message}"
         with open("logs/log.txt", 'a+') as f:
             f.write(f"{output_string}\n")
+
+
+def sort_sport(input: list) -> list:
+    output = [input[0]]
+    output.extend(sorted(input[1:], key=lambda x: x['name']))
+    return output
