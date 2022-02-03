@@ -31,6 +31,7 @@ const EventList = () => {
         setreloadEventState(!reloadEventState)
     }
 
+    console.log(sportNames)
     return (
         <div>
             <div className="upcomingEventsHeadline">
@@ -41,16 +42,19 @@ const EventList = () => {
             </div>
             <Spacer vertical={20} />
             <div className="upcomingEventsFlex">
-                {events.map((value) => <EventListEntry
-                    key={value.eventID}
-                    eventID={value.eventID}
-                    name={value.name}
-                    sportName={sportNames.length > value.sportID ? sportNames[value.sportID - 1]["name"] : "Lade ..."}
-                    date={value.date}
-                    timeslots={value.timeslots}
-                    memberState={memberState}
-                    reloadEvents={reloadEvents}
-                />)}
+                {events.map((value) => {
+                    const sport = sportNames.filter((s) => s.id === value.sportID);
+                    return (<EventListEntry
+                        key={value.eventID}
+                        eventID={value.eventID}
+                        name={value.name}
+                        sportName={sportNames.length + 1 > value.sportID ? sport[0].name : "Lade ..."}
+                        date={value.date}
+                        timeslots={value.timeslots}
+                        memberState={memberState}
+                        reloadEvents={reloadEvents}
+                    />)
+                })}
             </div>
 
 
