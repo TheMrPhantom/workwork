@@ -161,7 +161,7 @@ def listSports():
     return util.build_response(db.getSports())
 
 
-@app.route('/api/sports/names/trainerof', methods=["GET"])
+@app.route('/api/sports/names/associated', methods=["GET"])
 @authenticated
 def listSportsOfTrainer():
     sports = db.getSports()

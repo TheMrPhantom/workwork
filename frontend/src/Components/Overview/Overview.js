@@ -98,7 +98,7 @@ const Overview = () => {
 
     useEffect(() => {
         if (memberState === 3) {
-            getAndStore("sports/names/trainerof", settrainerSports)
+            getAndStore("sports/names/associated", settrainerSports)
         }
     }, [memberState])
 

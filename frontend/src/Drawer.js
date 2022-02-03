@@ -66,7 +66,7 @@ export default function ClippedDrawer() {
     }, [history])
 
     const loginLoad = useCallback((memberStateFromLogin = null) => {
-        getAndStore("sports/names/trainerof", setsports)
+        getAndStore("sports/names/associated", setsports)
         if (memberStateFromLogin === null) {
             getAndStore("memberstate", setmemberState)
         } else {
@@ -99,11 +99,11 @@ export default function ClippedDrawer() {
             }
         }
         checkLogin()
-        getAndStore("sports/names/trainerof", setsports)
+        getAndStore("sports/names/associated", setsports)
     }, [loginLoad, redirect])
 
     const toggleRefresh = () => {
-        getAndStore("sports/names/trainerof", setsports)
+        getAndStore("sports/names/associated", setsports)
     }
 
 
