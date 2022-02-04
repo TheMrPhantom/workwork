@@ -39,7 +39,7 @@ class Queries:
                 "insert_dev_data") == "true"
             if fill_test_data:
                 self.__fillTestData(int(os.environ.get("amount_test_accounts")) if os.environ.get(
-                    "amount_test_accounts") is not None else None)
+                    "amount_test_accounts") is not None else 0)
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
