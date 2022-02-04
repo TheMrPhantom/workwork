@@ -4,7 +4,7 @@ import { Button } from '@material-ui/core'
 
 import "./Request.css"
 import { doPostRequest } from '../Common/StaticFunctions'
-import ConfirmButton from '../Common/ConfirmButton'
+import ConfirmDialog from '../Common/ConfirmDialog'
 
 const Request = ({ name, work, amount, id, refresh }) => {
 
@@ -32,8 +32,8 @@ const Request = ({ name, work, amount, id, refresh }) => {
                     <Typography>{amount + " min"}</Typography>
                 </div>
                 <div className="requestButtonFlex">
-                    <ConfirmButton title="Anfrage ablehnen?" open={confirmDeny} setOpen={setconfirmDeny} onConfirm={() => deny()} buttonText="Ablehnen" />
-                    <ConfirmButton title="Anfrage akzeptieren?" open={confirmAccept} setOpen={setconfirmAccept} onConfirm={() => accept()} buttonText="Annehmen" />
+                    <ConfirmDialog title="Anfrage ablehnen?" open={confirmDeny} setOpen={setconfirmDeny} onConfirm={() => deny()} buttonText="Ablehnen" />
+                    <ConfirmDialog title="Anfrage akzeptieren?" open={confirmAccept} setOpen={setconfirmAccept} onConfirm={() => accept()} buttonText="Annehmen" />
                     <Button className="deny border" onClick={() => setconfirmDeny(true)}>Ablehnen</Button>
                     <Button className="accept" onClick={() => setconfirmAccept(true)}>Annehmen</Button>
 

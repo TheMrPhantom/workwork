@@ -10,7 +10,7 @@ import { useHistory } from 'react-router'
 
 import "./MemberEntry.css"
 import EditWorkHourOfUser from './EditWorkHourOfUser'
-import ConfirmButton from '../Common/ConfirmButton'
+import ConfirmDialog from '../Common/ConfirmDialog'
 
 const MemberEdit = (props) => {
     const [participant, setparticipant] = useState([])
@@ -73,7 +73,7 @@ const MemberEdit = (props) => {
             <Spacer vertical={20} />
             <div className="spacedOutFlexMemberEdit">
                 <Button className="deleteMemberButton" onClick={() => setopenConfirm(true)}>Mitglied Löschen</Button>
-                <ConfirmButton title="Mitglied Löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => deleteMember()} />
+                <ConfirmDialog title="Mitglied Löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => deleteMember()} />
                 <Button variant="outlined" onClick={() => makeExecutive()}>{executiveButtonText()}</Button>
             </div>
         </div>

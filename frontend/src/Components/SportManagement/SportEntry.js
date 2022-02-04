@@ -7,7 +7,7 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import "./SportManagement.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import HSFAlert from '../Common/HSFAlert';
-import ConfirmButton from '../Common/ConfirmButton';
+import ConfirmDialog from '../Common/ConfirmDialog';
 
 const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
 
@@ -40,7 +40,7 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
                     <IndeterminateCheckBoxIcon className="denyBackground" />
                 </Button>
             </div>
-            <ConfirmButton title="Sparte löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => clickRemove()} />
+            <ConfirmDialog title="Sparte löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => clickRemove()} />
             <HSFAlert message="Zahl muss größer 0 sein" short="Bitte Feld korrekt ausfüllen" open={open} setOpen={setopen} />
         </Paper>
     )

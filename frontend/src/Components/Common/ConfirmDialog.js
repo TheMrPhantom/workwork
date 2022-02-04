@@ -12,7 +12,7 @@ import { Typography } from '@mui/material';
 
 import './Common.css'
 
-const ConfirmButton = ({ title, open, setOpen, onConfirm, buttonText }) => {
+const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -86,4 +86,4 @@ const ConfirmButton = ({ title, open, setOpen, onConfirm, buttonText }) => {
     );
 };
 
-export default ConfirmButton;
+export default ConfirmDialog;

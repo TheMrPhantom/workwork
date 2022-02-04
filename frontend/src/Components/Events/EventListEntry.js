@@ -8,7 +8,7 @@ import deLocale from 'date-fns/locale/de';
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
-import ConfirmButton from '../Common/ConfirmButton';
+import ConfirmDialog from '../Common/ConfirmDialog';
 
 import "./Events.css"
 import "../Common/Common.css"
@@ -55,7 +55,7 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
                             </LocalizationProvider>
                         </div>
                     </div>
-                    <ConfirmButton title="Event löschen?" open={openDeleteDialog} setOpen={setopenDeleteDialog} onConfirm={() => deleteEvent(eventID)} />
+                    <ConfirmDialog title="Event löschen?" open={openDeleteDialog} setOpen={setopenDeleteDialog} onConfirm={() => deleteEvent(eventID)} />
                     {memberState > 1 ? <Spacer horizontal={20} /> : ""}
                     {memberState > 1 ?
                         <Button onClick={() => setopenDeleteDialog(true)}>
