@@ -54,6 +54,7 @@ export default function ClippedDrawer() {
     const history = useHistory();
     const theme = useTheme();
     const [open, setOpen] = React.useState(window.innerWidth > Config.COMPACT_SIZE_THRESHOLD);
+    const [afterLoginRedirect, setafterLoginRedirect] = useState(null);
     const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
     const location = useLocation()
@@ -73,6 +74,11 @@ export default function ClippedDrawer() {
             setmemberState(memberStateFromLogin.memberstate)
         }
         if (location.pathname === "/login" || location.pathname === "/") {
+            if (afterLoginRedirect !== null) {
+                redirect(afterLoginRedirect)
+                setafterLoginRedirect(null)
+                return
+            }
             if (memberState > 0 && memberState < 2) {
                 //Member
                 redirect(Config.MEMBER_LANDINGPAGE)
@@ -85,10 +91,13 @@ export default function ClippedDrawer() {
             }
         }
 
-    }, [redirect, location.pathname, memberState])
+    }, [redirect, afterLoginRedirect, location.pathname, memberState])
 
     useEffect(() => {
         const checkLogin = async () => {
+            if (location.pathname !== "/login" && location.pathname !== "/") {
+                setafterLoginRedirect(location.pathname)
+            }
             const resp = await doGetRequest("login/check")
             if (resp.code === 200) {
                 loginLoad()
@@ -100,7 +109,7 @@ export default function ClippedDrawer() {
         }
         checkLogin()
         getAndStore("sports/names/associated", setsports)
-    }, [loginLoad, redirect])
+    }, [loginLoad, redirect, location.pathname])
 
     const toggleRefresh = () => {
         getAndStore("sports/names/associated", setsports)
