@@ -12,7 +12,7 @@ import { Typography } from '@mui/material';
 
 import './Common.css'
 
-const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText }) => {
+const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -77,7 +77,7 @@ const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText }) => {
                     <Button className="neutralOutlinedButton" onClick={() => handleClose()}>
                         Abbrechen
                     </Button>
-                    <Button className="errorButton" onClick={onConfirm}>
+                    <Button className={!isPositive ? "errorButton" : "successButton"} onClick={onConfirm}>
                         {buttonText === undefined ? "Ja" : buttonText}
                     </Button>
                 </DialogActions>

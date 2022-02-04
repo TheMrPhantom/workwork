@@ -53,3 +53,9 @@
     background-color: var(--errorColor) !important;
     border: 1px solid var(--errorColor) !important;
 }
+
+.successButton {
+    color: white !important;
+    background-color: var(--successColor) !important;
+    border: 1px solid var(--successColor) !important;
+}

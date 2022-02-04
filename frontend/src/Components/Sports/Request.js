@@ -32,8 +32,19 @@ const Request = ({ name, work, amount, id, refresh }) => {
                     <Typography>{amount + " min"}</Typography>
                 </div>
                 <div className="requestButtonFlex">
-                    <ConfirmDialog title="Anfrage ablehnen?" open={confirmDeny} setOpen={setconfirmDeny} onConfirm={() => deny()} buttonText="Ablehnen" />
-                    <ConfirmDialog title="Anfrage akzeptieren?" open={confirmAccept} setOpen={setconfirmAccept} onConfirm={() => accept()} buttonText="Annehmen" />
+                    <ConfirmDialog
+                        title="Anfrage ablehnen?"
+                        open={confirmDeny}
+                        setOpen={setconfirmDeny}
+                        onConfirm={() => deny()}
+                        buttonText="Ablehnen" />
+                    <ConfirmDialog
+                        title="Anfrage akzeptieren?"
+                        open={confirmAccept}
+                        setOpen={setconfirmAccept}
+                        onConfirm={() => accept()}
+                        buttonText="Annehmen"
+                        isPositive={true} />
                     <Button className="deny border" onClick={() => setconfirmDeny(true)}>Ablehnen</Button>
                     <Button className="accept" onClick={() => setconfirmAccept(true)}>Annehmen</Button>
 
