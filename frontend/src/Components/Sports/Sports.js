@@ -8,6 +8,7 @@ import SendMail from './SendMail'
 
 import "./Sport.css"
 import HSFAlert from '../Common/HSFAlert'
+import Waiting from '../Common/Waiting'
 
 const Sports = (props) => {
     //props.match.params.id -> To get the sports id
@@ -17,10 +18,13 @@ const Sports = (props) => {
     const [sportPos, setsportPos] = useState(250)
     const [refs, setrefs] = useState(new Map())
     const [mailsuccessDialog, setmailsuccessDialog] = useState(false)
+    const [loaded, setloaded] = useState(false);
 
     useEffect(() => {
+        setmembers([])
+        setloaded(false)
         getAndStore("work/request/" + props.match.params.id, setrequests)
-        getAndStore("sports/" + props.match.params.id + "/members", setmembers)
+        getAndStore("sports/" + props.match.params.id + "/members", (members) => { setmembers(members); setloaded(true) })
         setrefresh(false)
     }, [props.match.params.id, refresh])
 
@@ -44,6 +48,25 @@ const Sports = (props) => {
         setrefs(temp)
     }
 
+    const displayMembers = () => {
+
+        if (members.length === 0 && !loaded && parseInt(props.match.params.id) !== 1) {
+            return <Waiting loadingText="Mitglieder werden geladen" />
+        }
+
+        return members.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)).map((value) => {
+            return (<Member key={value.id}
+                id={value.id}
+                name={value.firstname + " " + value.lastname}
+                currentWork={value.currentWork}
+                maxWork={value.maxWork}
+                isTrainer={value.isTrainer || value.isExecutive}
+                refresh={() => { }}
+                setRefs={setRefsCorrect}
+                sportsPosition={sportPos} />)
+        })
+    }
+
     return (
         <div>
             {parseInt(props.match.params.id) === 1 ? <div style={{ display: 'flex' }}>
@@ -65,17 +88,7 @@ const Sports = (props) => {
                 <HSFAlert type="success" message="Nachricht erfolgreich gesendet" open={mailsuccessDialog} setOpen={setmailsuccessDialog} />
             </div> : ""}
             <Spacer vertical={10} />
-            {members.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)).map((value) => {
-                return (<Member key={value.id}
-                    id={value.id}
-                    name={value.firstname + " " + value.lastname}
-                    currentWork={value.currentWork}
-                    maxWork={value.maxWork}
-                    isTrainer={value.isTrainer || value.isExecutive}
-                    refresh={setrefresh}
-                    setRefs={setRefsCorrect}
-                    sportsPosition={sportPos} />)
-            })}
+            {displayMembers()}
         </div>
     )
 }
