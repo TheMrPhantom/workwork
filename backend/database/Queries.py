@@ -7,6 +7,7 @@ from sqlalchemy.orm import session
 from sqlalchemy.sql import func
 from database.Models import *
 import mail
+import mail_templates
 
 
 class Queries:
@@ -572,15 +573,15 @@ class Queries:
                     mail_output.append(
                         f"{member_info['firstname']} {member_info['lastname']} -> {minutes} Minuten {timeslot['name']}")
 
-            mail_text = f"{mail.MAIL_TEXT_AFTER_EVENT}\n"
-            for text in mail_output:
-                mail_text += f"  - {text}\n"
+            trainer_name = casted_event.creating_trainer.firstname
 
-            mail_text += "\n"
-            mail_text += f"Die Anfragen findest du in der Sparte {casted_event.sport.name}"
+            mail_text = mail_templates.event_ended_text(trainer_name,
+                                                        mail_output, casted_event.sport_id, casted_event.sport.name)
+
+            trainer_name += f" {casted_event.creating_trainer.lastname}"
 
             mail.send(f"{mail.MAIL_SUBJECT_AFTER_EVENT} {casted_event.name}",
-                      casted_event.creating_trainer.mail, mail_text, receiver_Name=f"{member_info['firstname']} {member_info['lastname']}")
+                      casted_event.creating_trainer.mail, mail_text, receiver_Name=f"{trainer_name}")
 
         for event in expEvents:
             casted_event: Event = event
