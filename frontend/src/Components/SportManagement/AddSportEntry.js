@@ -31,7 +31,7 @@ const AddSportEntry = ({ refresh }) => {
 
     return (
         <div className="outterAddBoxSport">
-            <div className="innerBoxSport">
+            <div className="innerBoxSportLeft">
                 <TextField label="Name" type="input" value={name} onChange={(value) => setname(value.target.value)} />
                 <Spacer horizontal={30}></Spacer>
                 <TextField label="Extra Arbeitsminuten" type="number" value={extraHours} onChange={(value) => setextraHours(value.target.value)} />

@@ -7,10 +7,12 @@ import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox'
 import "./SportManagement.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import HSFAlert from '../Common/HSFAlert';
+import ConfirmButton from '../Common/ConfirmButton';
 
 const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
 
     const [open, setopen] = useState(false)
+    const [openConfirm, setopenConfirm] = useState(false);
 
     const clickRemove = async () => {
         await doPostRequest("sports/" + sportsID + "/delete")
@@ -28,16 +30,17 @@ const SportEntry = ({ name, extraHours, sportsID, refresh }) => {
 
     return (
         <Paper elevation={2} className="outterBoxSport">
-            <div className="innerBoxSport">
+            <div className="innerBoxSportLeft">
                 <Typography>{name}</Typography>
                 <Spacer horizontal={30}></Spacer>
                 <TextField label="Extra Arbeitsminuten" type="number" defaultValue={extraHours} onChange={(value) => changedTextValue(value.target.value)} />
             </div>
-            <div>
-                <Button onClick={() => clickRemove()}>
+            <div className="innerBoxSportRight">
+                <Button onClick={() => setopenConfirm(true)}>
                     <IndeterminateCheckBoxIcon className="denyBackground" />
                 </Button>
             </div>
+            <ConfirmButton title="Sparte löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => clickRemove()} />
             <HSFAlert message="Zahl muss größer 0 sein" short="Bitte Feld korrekt ausfüllen" open={open} setOpen={setopen} />
         </Paper>
     )

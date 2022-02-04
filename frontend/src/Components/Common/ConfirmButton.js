@@ -12,7 +12,7 @@ import { Typography } from '@mui/material';
 
 import './Common.css'
 
-const ConfirmButton = ({ title, open, setOpen, onConfirm }) => {
+const ConfirmButton = ({ title, open, setOpen, onConfirm, buttonText }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -55,7 +55,9 @@ const ConfirmButton = ({ title, open, setOpen, onConfirm }) => {
     const handleClose = () => {
         setOpen(false);
     };
-
+    if (!open) {
+        return ""
+    }
     return (
         <div>
             <BootstrapDialog
@@ -63,7 +65,7 @@ const ConfirmButton = ({ title, open, setOpen, onConfirm }) => {
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
-                <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} >
+                <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose} style={{ minWidth: '300px' }}>
                     {title}
                 </BootstrapDialogTitle>
 
@@ -76,7 +78,7 @@ const ConfirmButton = ({ title, open, setOpen, onConfirm }) => {
                         Abbrechen
                     </Button>
                     <Button className="errorButton" onClick={onConfirm}>
-                        Ja
+                        {buttonText === undefined ? "Ja" : buttonText}
                     </Button>
                 </DialogActions>
             </BootstrapDialog>

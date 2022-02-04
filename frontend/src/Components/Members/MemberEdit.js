@@ -10,6 +10,7 @@ import { useHistory } from 'react-router'
 
 import "./MemberEntry.css"
 import EditWorkHourOfUser from './EditWorkHourOfUser'
+import ConfirmButton from '../Common/ConfirmButton'
 
 const MemberEdit = (props) => {
     const [participant, setparticipant] = useState([])
@@ -19,6 +20,7 @@ const MemberEdit = (props) => {
     const [isExecutive, setisExecutive] = useState(false)
     const [isTrainer, setisTrainer] = useState(false)
     const history = useHistory();
+    const [openConfirm, setopenConfirm] = useState(false);
 
     useEffect(() => {
         getAndStore("user/" + props.match.params.id + "/participantIn", setparticipant)
@@ -70,7 +72,8 @@ const MemberEdit = (props) => {
             <MemberHistory memberID={props.match.params.id} />
             <Spacer vertical={20} />
             <div className="spacedOutFlexMemberEdit">
-                <Button className="deleteMemberButton" onClick={() => deleteMember()}>Mitglied Löschen</Button>
+                <Button className="deleteMemberButton" onClick={() => setopenConfirm(true)}>Mitglied Löschen</Button>
+                <ConfirmButton title="Mitglied Löschen?" open={openConfirm} setOpen={setopenConfirm} onConfirm={() => deleteMember()} />
                 <Button variant="outlined" onClick={() => makeExecutive()}>{executiveButtonText()}</Button>
             </div>
         </div>
