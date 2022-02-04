@@ -6,8 +6,10 @@ import DatePicker from '@mui/lab/DatePicker';
 import deLocale from 'date-fns/locale/de';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import "./OverviewBox.css"
+import { useHistory } from 'react-router-dom';
 
 const UpcomingEventsList = ({ events }) => {
+    const history = useHistory();
 
     const fullscreenCard = () => {
         if (window.innerWidth > 650) {
@@ -15,6 +17,10 @@ const UpcomingEventsList = ({ events }) => {
         } else {
             return ""
         }
+    }
+
+    const onClickEvent = (id) => {
+        history.push("events/" + id)
     }
 
     return (
@@ -26,7 +32,7 @@ const UpcomingEventsList = ({ events }) => {
                     <th><Typography variant="caption" >Event Name</Typography></th>
                     <th style={{ paddingLeft: "50px" }}><Typography variant="caption" >Event Datum</Typography></th>
                 </tr>
-                {events.sort((a, b) => new Date(a.date) - new Date(b.date)).map((value) => (<tr>
+                {events.sort((a, b) => new Date(a.date) - new Date(b.date)).map((value) => (<tr className='overviewEventEntry' onClick={() => onClickEvent(value.eventID)}>
                     <td>
                         <Typography variant="body1" key={value.eventID}>{value.name}</Typography>
                     </td>

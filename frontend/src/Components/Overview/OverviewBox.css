@@ -1,4 +1,4 @@
-.overviewContainer{
+.overviewContainer {
     width: 40%;
     min-width: 300px;
     background-color: var(--secondaryColor) !important;
@@ -6,30 +6,30 @@
     margin-bottom: 10px;
 }
 
-.overviewEventsContainer{
+.overviewEventsContainer {
     width: 40%;
     min-width: 300px;
     padding: 10px;
     margin-bottom: 10px;
 }
 
-.fullscreenCard{
+.fullscreenCard {
     width: 40%;
     min-width: 600px;
     min-height: 300px;
 }
 
-.flexHorizontalSpaced{
+.flexHorizontalSpaced {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.warningColor{
+.warningColor {
     color: var(--errorColor);
 }
 
-.backgroundCardImage{
+.backgroundCardImage {
     background-image: url(../../Images/loginBackground.webp);
     background-size: cover;
     width: 40%;
@@ -37,6 +37,10 @@
     min-height: 300px;
 }
 
-.imageTextWidth{
+.imageTextWidth {
     max-width: 300px;
+}
+
+.overviewEventEntry:hover {
+    cursor: pointer;
 }

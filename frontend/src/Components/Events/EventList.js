@@ -6,7 +6,7 @@ import EventListEntry from './EventListEntry'
 import { useHistory } from "react-router-dom";
 import "./Events.css"
 
-const EventList = () => {
+const EventList = (props) => {
     const [events, setevents] = useState([])
     const [sportNames, setsportNames] = useState([])
     const [memberState, setmemberState] = useState(0)
@@ -31,7 +31,11 @@ const EventList = () => {
         setreloadEventState(!reloadEventState)
     }
 
-    console.log(sportNames)
+
+    if (props.match.params.id === "") {
+        return ""
+    }
+
     return (
         <div>
             <div className="upcomingEventsHeadline">
@@ -53,6 +57,7 @@ const EventList = () => {
                         timeslots={value.timeslots}
                         memberState={memberState}
                         reloadEvents={reloadEvents}
+                        highlighted={value.eventID === parseInt(props.match.params.id)}
                     />)
                 })}
             </div>

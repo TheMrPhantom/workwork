@@ -6,13 +6,14 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import deLocale from 'date-fns/locale/de';
 import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
-
-import "./Events.css"
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
 import ConfirmButton from '../Common/ConfirmButton';
 
-const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState, reloadEvents }) => {
+import "./Events.css"
+import "../Common/Common.css"
+
+const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState, reloadEvents, highlighted }) => {
 
     const [openDeleteDialog, setopenDeleteDialog] = useState(false);
 
@@ -20,9 +21,17 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
         await doPostRequest("event/delete", eventID)
         reloadEvents()
     }
+    const paperClasses = () => {
+        var output = "upcomingEventsBox "
 
+        if (highlighted) {
+            output += "highlighted "
+        }
+        console.log(output)
+        return output
+    }
     return (<div>
-        <Paper className="upcomingEventsBox">
+        <Paper className={paperClasses()}>
             <div className="eventNameTimeslot">
                 <div className="eventListEntryMainInfoOutter">
                     <div className="eventListEntryMainInfo">

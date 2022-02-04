@@ -326,6 +326,7 @@ export default function ClippedDrawer() {
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
                 <Route exact path="/events" component={EventList} />
+                <Route exact path="/events/:id([0-9]*)" component={EventList} />
                 <Route exact path="/events/create" component={CreateEvent} />
                 <Route path="/request" component={Request} />
                 <Switch>

@@ -35,6 +35,10 @@
     color: var(--errorColor);
 }
 
+.highlighted {
+    background-color: var(--secondaryColor) !important;
+}
+
 .workInProgress {
     opacity: 0.4;
 }
