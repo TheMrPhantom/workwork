@@ -1,8 +1,8 @@
 import { Typography } from '@material-ui/core';
-import { CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer';
 import { getAndStore, getHoursFromMember } from '../Common/StaticFunctions';
+import Waiting from '../Common/Waiting';
 import Member from '../Sports/Member';
 
 const BadMemberOverview = ({ sportID, sportName }) => {
@@ -12,18 +12,22 @@ const BadMemberOverview = ({ sportID, sportName }) => {
     const [refresh, setrefresh] = useState(false)
     const [sportPos, setsportPos] = useState(250)
     const [refs, setrefs] = useState(new Map())
+    const [loaded, setloaded] = useState(false);
 
     useEffect(() => {
-        getAndStore("sports/" + sportID + "/members", setmembers)
+        getAndStore("sports/" + sportID + "/members", (members) => { setmembers(members); setloaded(true) })
     }, [refresh, sportID])
 
     useEffect(() => {
+        if (!loaded) {
+            return
+        }
         setdisplayedMembers(members.filter((value) => {
             const hours = getHoursFromMember(value)
 
             return hours[0] < hours[1]
         }))
-    }, [members])
+    }, [members, loaded])
 
     useEffect(() => {
         var minPos = 0
@@ -48,7 +52,7 @@ const BadMemberOverview = ({ sportID, sportName }) => {
     if (displayedMembers === null && sportID !== 1) {
         return (<div style={{ width: "100%" }}>
             <Typography variant="h6">{sportName}</Typography>
-            <CircularProgress />
+            <Waiting />
             <Spacer vertical={10} />
         </div>)
     } else if (displayedMembers === null) {

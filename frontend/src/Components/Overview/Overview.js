@@ -10,13 +10,13 @@ import BadMemberLineChart from './BadMemberLineChart';
 import Spacer from '../Common/Spacer';
 import UpcomingEventsList from './UpcomingEventsList';
 import Constants from "../../environment.json";
+import Waiting from '../Common/Waiting';
 
 const Overview = () => {
 
     const [memberState, setmemberState] = useState(0)
     const [sports, setsports] = useState([])
     const [members, setmembers] = useState([])
-    const [membercount, setmembercount] = useState(0)
     const [trainercount, settrainercount] = useState(0)
     const [executivecount, setexecutivecount] = useState(0)
     const [notApprovedYet, setnotApprovedYet] = useState(0)
@@ -25,17 +25,21 @@ const Overview = () => {
     const [memberWorkStatus, setmemberWorkStatus] = useState([])
     const [trainerSports, settrainerSports] = useState([])
     const [events, setevents] = useState([])
+    const [memberAmount, setmemberAmount] = useState(0);
+    const [loadedMemberAmount, setloadedMemberAmount] = useState(false);
+    const [loadedMembers, setloadedMembers] = useState(false);
+    const [loadedApprovals, setloadedApprovals] = useState(false);
 
     useEffect(() => {
         getAndStore("memberstate", setmemberState)
         getAndStore("sports/names", setsports)
-        getAndStore("members", setmembers)
-        getAndStore("work/request/pendingAmount", setnotApprovedYet)
+        getAndStore("members", (members) => { setmembers(members); setloadedMembers(true); })
+        getAndStore("members/amount", (amount) => { setmemberAmount(amount); setloadedMemberAmount(true); })
+        getAndStore("work/request/pendingAmount", (approvals) => { setnotApprovedYet(approvals); setloadedApprovals(true); })
         getAndStore("event", setevents)
     }, [])
 
     useEffect(() => {
-        var membercount = 0;
         var trainercount = 0;
         var executivecount = 0;
         var maxWork = 0;
@@ -45,7 +49,6 @@ const Overview = () => {
 
 
         members.forEach(value => {
-            membercount += 1;
             if (value.isTrainer) {
                 trainercount += 1;
             }
@@ -87,7 +90,6 @@ const Overview = () => {
 
         maxWork = maxWork - currentWork;
 
-        setmembercount(membercount)
         settrainercount(trainercount)
         setexecutivecount(executivecount)
         setcurrentWork(currentWork)
@@ -122,25 +124,25 @@ const Overview = () => {
                         <Grid item xs={6} >
                             <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
                                 <Typography variant="h6">Mitglieder</Typography>
-                                <Typography variant="h5">{membercount}</Typography>
+                                {!loadedMemberAmount ? <Waiting /> : <Typography variant="h5">{memberAmount}</Typography>}
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
                             <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
                                 <Typography variant="h6">Trainer</Typography>
-                                <Typography variant="h5">{trainercount}</Typography>
+                                {!loadedMembers ? <Waiting /> : <Typography variant="h5">{trainercount}</Typography>}
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
                             <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
                                 <Typography variant="h6">Vorstände</Typography>
-                                <Typography variant="h5">{executivecount}</Typography>
+                                {!loadedMembers ? <Waiting /> : <Typography variant="h5">{executivecount}</Typography>}
                             </Paper>
                         </Grid>
                         <Grid item xs={6}>
                             <Paper style={{ padding: "10px", width: "100%", height: "100%" }}>
                                 <Typography variant="h6">Noch nicht genehmigt</Typography>
-                                <Typography variant="h5">{notApprovedYet}</Typography>
+                                {!loadedApprovals ? <Waiting /> : <Typography variant="h5">{notApprovedYet}</Typography>}
                             </Paper>
                         </Grid>
                     </Grid>
@@ -152,7 +154,7 @@ const Overview = () => {
             <Spacer vertical={20} />
             {sport.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
         </div>)
-    }, [currentWork, executivecount, maxWork, memberWorkStatus, membercount, notApprovedYet, trainercount, memberState])
+    }, [currentWork, executivecount, maxWork, memberWorkStatus, notApprovedYet, trainercount, memberState, memberAmount, loadedMemberAmount, loadedApprovals, loadedMembers])
 
 
     useEffect(() => {

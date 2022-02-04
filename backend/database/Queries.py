@@ -288,6 +288,9 @@ class Queries:
 
         return output
 
+    def getMemberAmount(self):
+        return len(self.session.query(Member).filter_by(is_deleted=False).all())-1
+
     def getPendingWorkRequestsBySport(self, sportID):
         query = self.session.query(Worktime).filter_by(
             sport_id=sportID, pending=True, is_deleted=False).all()

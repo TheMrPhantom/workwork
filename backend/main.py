@@ -206,6 +206,16 @@ def members():
     return util.build_response(db.getMembersList(members))
 
 
+@ app.route('/api/members/amount', methods=["GET"])
+@ authenticated
+def members_amount():
+    check = checkTrainer(request)
+    if check is not None:
+        return check
+
+    return util.build_response(db.getMemberAmount())
+
+
 @ app.route('/api/members/trainer', methods=["GET"])
 @ authenticated
 def trainer():
