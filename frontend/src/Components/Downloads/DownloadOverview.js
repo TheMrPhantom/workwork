@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { downloadPDF } from '../Common/StaticFunctions'
 import { Button, Typography } from '@material-ui/core'
-import CircularProgress from '@mui/material/CircularProgress';
 
 import Spacer from '../Common/Spacer'
+import Waiting from '../Common/Waiting';
 
 const DownloadOverview = () => {
     const downloading = [{ ...useState(false) }, { ...useState(false) }]
@@ -20,7 +20,7 @@ const DownloadOverview = () => {
     const displayPDFButton = (url, index) => {
         if (downloading[index][0]) {
             return <Button variant="outlined" disabled style={buttonStyle}>
-                <CircularProgress style={{ color: "var(--primaryColor)", width: "30px", height: "30px" }} />
+                <Waiting />
             </Button>
         } else {
             return (<Button variant="outlined" onClick={() => downloadP(url, index)} style={buttonStyle}>
