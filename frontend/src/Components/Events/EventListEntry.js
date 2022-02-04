@@ -27,7 +27,6 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
         if (highlighted) {
             output += "highlighted "
         }
-        console.log(output)
         return output
     }
     return (<div>
