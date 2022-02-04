@@ -41,7 +41,11 @@ def send(subject, to, text, html=None, receiver_Name=None):
         message = MIMEMultipart("alternative")
         message["Subject"] = subject
         message["From"] = f"AMS Hundesportfreunde Degerloch <{sender_email}>"
-        message["To"] = f"{receiver_Name} <{to}>" if receiver_Name else to
+        if isinstance(to, list):
+            message["To"] = f"AMS Hundesportfreunde Degerloch <{sender_email}>"
+        else:
+            message["To"] = f"{receiver_Name} <{to}>" if receiver_Name else to
+
         message.attach(part1)
 
         if html:
