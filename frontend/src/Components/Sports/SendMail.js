@@ -32,7 +32,7 @@ const SendMail = ({ headlineText, confirmText, sportID, successOpen }) => {
         const { children, onClose, ...other } = props;
 
         return (
-            <DialogTitle sx={{ m: 0, p: 2 }} {...other} >
+            <DialogTitle sx={{ m: 0, p: 2 }} {...other} style={{ width: window.innerWidth * 0.8, maxWidth: "500px" }}>
                 {children}
                 {onClose ? (
                     <IconButton
