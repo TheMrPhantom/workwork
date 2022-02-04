@@ -6,6 +6,7 @@ import { getAndStore } from '../Common/StaticFunctions'
 import AddMember from './AddMember'
 import "./MemberEntry.css"
 import HSFAlert from '../Common/HSFAlert'
+import Waiting from '../Common/Waiting'
 
 const Members = () => {
     const [members, setmembers] = useState([])
@@ -15,10 +16,14 @@ const Members = () => {
     const [sportPos, setsportPos] = useState(250)
     const [openSuccess, setopenSuccess] = useState(false)
     const [refs, setrefs] = useState(new Map())
+    const [loaded, setloaded] = useState(false);
 
     useEffect(() => {
-        getAndStore("members", (newState) => { setmembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname))) })
-        getAndStore("members", (newState) => { setfilteredMembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname))) })
+        getAndStore("members", (newState) => {
+            setmembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)));
+            setfilteredMembers(newState.sort((c1, c2) => c1.firstname.localeCompare(c2.firstname)));
+            setloaded(true)
+        })
 
     }, [refresh])
 
@@ -77,6 +82,28 @@ const Members = () => {
         setrefs(temp)
     }
 
+    const displayMembers = () => {
+        if (displayedMembers.length === 0 && !loaded) {
+            return <Waiting loadingText="Mitglieder werden geladen" />
+        }
+
+        return displayedMembers.map((value) => {
+            return (<div key={value.id}>
+                <MemberEntry
+                    name={value.firstname + " " + value.lastname}
+                    sportNames={value.sportNames}
+                    currentWork={value.currentWork}
+                    maxWork={value.maxWork}
+                    hasWorkHours={!(value.isTrainer || value.isExecutive)}
+                    id={value.id}
+                    setRefs={setRefsCorrect}
+                    sportsPosition={sportPos}
+                    refresh={setrefresh} />
+                <Spacer vertical={2} />
+            </div>)
+        })
+    }
+
     return (
         <div>
             <Typography variant="h5">Mitglieder</Typography>
@@ -93,21 +120,7 @@ const Members = () => {
                     time={15000} />
             </div>
             <Spacer vertical={20} />
-            {displayedMembers.map((value) => {
-                return (<div key={value.id}>
-                    <MemberEntry
-                        name={value.firstname + " " + value.lastname}
-                        sportNames={value.sportNames}
-                        currentWork={value.currentWork}
-                        maxWork={value.maxWork}
-                        hasWorkHours={!(value.isTrainer || value.isExecutive)}
-                        id={value.id}
-                        setRefs={setRefsCorrect}
-                        sportsPosition={sportPos}
-                        refresh={setrefresh} />
-                    <Spacer vertical={2} />
-                </div>)
-            })}
+            {displayMembers()}
         </div>
     )
 }
