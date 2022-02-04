@@ -38,7 +38,8 @@ class Queries:
             fill_test_data = os.environ.get("insert_dev_data") is not None and os.environ.get(
                 "insert_dev_data") == "true"
             if fill_test_data:
-                self.__fillTestData()
+                self.__fillTestData(int(os.environ.get("amount_test_accounts")) if os.environ.get(
+                    "amount_test_accounts") is not None else None)
 
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
@@ -647,7 +648,7 @@ class Queries:
 
         self.session.commit()
 
-    def __fillTestData(self):
+    def __fillTestData(self, random_people=0):
         hashedPassword, salt = TokenManager.hashPassword("unsafe")
         self.session.add(Member(firstname="Tom", lastname="Peter",
                                 mail="1", password=hashedPassword, salt=salt))
@@ -669,6 +670,22 @@ class Queries:
                                 mail="9", password=hashedPassword, salt=salt))
         self.session.add(Member(firstname="Eliza", lastname="Frye",
                                 mail="10", password=hashedPassword, salt=salt))
+
+        if random_people > 0:
+            import secrets
+
+            nameList = []
+            with open('words.txt') as reader:
+                nameList = reader.readlines()
+
+            for i in range(random_people):
+                self.session.add(Member(firstname=secrets.choice(nameList), lastname=secrets.choice(nameList),
+                                        mail=str(20+i), password=hashedPassword, salt=salt))
+                self.session.add(SportMember(
+                    member_id=i+5, sport_id=secrets.choice([2, 3, 4, 5])))
+
+                self.session.add(Worktime(member_id=i+5, sport_id=secrets.choice([2, 3, 4, 5]),
+                                          description=f"Arbeisstunde {i+5}", minutes=secrets.choice([30, 60, 120, 180]), pending=False))
 
         hashedPassword, salt = TokenManager.hashPassword("passwort1")
         self.session.add(Member(firstname="Alice", lastname="Wunderland",
