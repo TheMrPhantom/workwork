@@ -5,3 +5,4 @@ config.py
 docker-volume/
 *.pdf
 template*.md
+logs/

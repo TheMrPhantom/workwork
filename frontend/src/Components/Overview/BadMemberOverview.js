@@ -16,7 +16,7 @@ const BadMemberOverview = ({ sportID, sportName }) => {
 
     useEffect(() => {
         getAndStore("sports/" + sportID + "/members", (members) => { setmembers(members); setloaded(true) })
-    }, [refresh, sportID])
+    }, [sportID])
 
     useEffect(() => {
         if (!loaded) {

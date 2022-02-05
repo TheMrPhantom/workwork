@@ -44,6 +44,7 @@ class Queries:
     def getCurrentWorkMinutes(self, memberID: int):
         query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id).filter_by(
             member_id=memberID, pending=False, is_deleted=False).group_by(Worktime.sport_id).all()
+
         work = {}
         for q in query:
             work[q.sport_id] = {'minutes': q.minutes, 'sportID': q.sport_id}
@@ -54,7 +55,6 @@ class Queries:
         standardWorkTime = self.getStandardWorkTime(memberID)
 
         currentTimePerID = {'Standard': standardWorkTime}
-
         for s in sports:
             sportDict[s['id']] = s['extraHours']
             if s['extraHours'] > 0:
@@ -77,7 +77,6 @@ class Queries:
                     currentTimePerID[workDict['sportID']] = 0
                     currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
                         abs(dif)
-
         output = [{'name': 'Standard', 'hours': round(
             (standardWorkTime - currentTimePerID['Standard'])/60, 2)}]
 
@@ -85,8 +84,77 @@ class Queries:
             if s['extraHours'] > 0:
                 output.append({'name': s['name'], 'hours': round(
                     (s['extraHours']-currentTimePerID[s['id']])/60, 2)})
-
         return output
+
+    def getAllCurrentWorkMinutes(self):
+        query = self.session.query(func.sum(Worktime.minutes).label("minutes"), Worktime.sport_id, Worktime.member_id).filter_by(
+            pending=False, is_deleted=False).group_by(Worktime.sport_id, Worktime.member_id).order_by(Worktime.member_id.asc()).all()
+
+        memberIDs = {}
+        last = query[0].member_id
+        index = 0
+        lastindex = 0
+        for entry in query:
+            if last != entry.member_id:
+                memberIDs[last] = query[lastindex:index]
+                last = entry.member_id
+                lastindex = index
+            index += 1
+
+        memberIDs[query[-1].member_id] = query[lastindex:]
+
+        return_value = {}
+        for key, value in memberIDs.items():
+            output = {}
+            memberID = key
+            query = value
+            work = {}
+            for q in query:
+                work[q.sport_id] = {
+                    'minutes': q.minutes, 'sportID': q.sport_id}
+
+            sports = self.getSportsOfMember(memberID)
+            sportDict = {}
+
+            standardWorkTime = self.getStandardWorkTime(memberID)
+
+            currentTimePerID = {'Standard': standardWorkTime}
+
+            for s in sports:
+                sportDict[s['id']] = s['extraHours']
+                if s['extraHours'] > 0:
+                    currentTimePerID[s['id']] = s['extraHours']
+
+            for w in work:
+                workDict = work[w]
+                if workDict['sportID'] not in sportDict:
+                    currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                        workDict['minutes']
+                elif sportDict[workDict['sportID']] == 0:
+                    currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                        workDict['minutes']
+                else:
+                    dif = currentTimePerID[workDict['sportID']
+                                           ]-workDict['minutes']
+                    if dif >= 0:
+                        currentTimePerID[workDict['sportID']
+                                         ] = currentTimePerID[workDict['sportID']]-workDict['minutes']
+                    else:
+                        currentTimePerID[workDict['sportID']] = 0
+                        currentTimePerID['Standard'] = currentTimePerID['Standard'] - \
+                            abs(dif)
+
+            output = [{'name': 'Standard', 'hours': round(
+                (standardWorkTime - currentTimePerID['Standard'])/60, 2)}]
+
+            for s in sports:
+                if s['extraHours'] > 0:
+                    output.append({'name': s['name'], 'hours': round(
+                        (s['extraHours']-currentTimePerID[s['id']])/60, 2)})
+
+            return_value[key] = output
+
+        return return_value
 
     def getExtraHoursOfUser(self, memberID):
         return self.session.query(Member).filter_by(id=memberID).first().extra_hours
@@ -605,8 +673,11 @@ class Queries:
 
     def getMembersList(self, members):
         output = []
+        currentWorkMinutes = self.getAllCurrentWorkMinutes()
+
         for m in members:
-            currentWork = self.getCurrentWorkMinutes(m[0])
+            currentWork = currentWorkMinutes[m[0]] if m[0] in currentWorkMinutes else [
+                {'name': self.standardSportName, 'hours': 0.0}]
             maxWork = self.getNeededWorkMinutes(m[0])
             isTrainer = self.isTrainer(m[0])
             output.append({"id": m[0], "firstname": m[1],
