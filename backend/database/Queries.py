@@ -688,7 +688,7 @@ class Queries:
             self.session.add(Sport(name="Obedience"))
 
             for i in range(random_people):
-                self.session.add(Member(firstname=secrets.choice(nameList), lastname=secrets.choice(nameList),
+                self.session.add(Member(firstname=secrets.choice(nameList).strip(), lastname=secrets.choice(nameList).strip(),
                                         mail=str(20+i), password=hashedPassword, salt=salt))
                 self.session.add(SportMember(
                     member_id=i+5, sport_id=secrets.choice([2, 3, 4, 5])))
