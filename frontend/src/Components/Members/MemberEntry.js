@@ -37,7 +37,7 @@ const MemberEntry = ({ name, currentWork, maxWork, hasWorkHours, id, sportNames,
         <Paper elevation={2} className="outterBoxMember" style={{ position: "relative" }}>
             <div className="innerFlexMember">
                 <Typography variant="h6" ref={ref}>{name}</Typography>
-                {hasWorkHours ? <Spacer horizontal={20} /> : ""}
+
                 <div className={window.innerWidth > 1100 ? "sportAlignDesktop" : ""} style={{ left: sportsPosition }}>
                     {progressEntries.map((value) => <div className="sportProgress">
                         <Typography variant="caption">{value.name}</Typography>
