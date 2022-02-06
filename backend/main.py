@@ -805,7 +805,7 @@ def login():
     rights = db.checkPassword(username, password)
 
     if rights:
-        util.log("Login", f"{rights['rights']} logged in")
+        util.log("Login", f"User with rights:{rights['rights']} logged in")
         token = token_manager.create_token(rights["memberID"])
         return util.build_response({"memberstate": db.getMemberstate(rights["memberID"])}, cookieToken=token, cookieMemberID=rights["memberID"])
     return util.build_response("Unauthorized", code=403)
