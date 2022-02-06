@@ -13,11 +13,13 @@ const Request = ({ name, work, amount, id, refresh }) => {
 
     const accept = () => {
         doPostRequest("request/" + id + "/accept")
+        setconfirmAccept(false)
         refresh(true)
     }
 
     const deny = () => {
         doPostRequest("request/" + id + "/deny")
+        setconfirmDeny(false)
         refresh(true)
     }
 
