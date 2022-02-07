@@ -88,6 +88,23 @@ Link zur Website: {domain}/sport/{sport_id}
     return mail_text
 
 
+def notify_members_text(member):
+    mail_text = f"""Hallo {member['firstname']},
+wir möchten dich auf deine aktuell noch ausstehenden Arbeisstunden aufmerksam machen.
+Bis Jahresende musst du noch folgende Arbeisstunden ableisten: 
+"""
+    cw = member['currentWork']
+    mw = member['maxWork']
+
+    for idx in range(len(cw)):
+        if cw[idx]['hours'] < mw[idx]['hours']:
+            mail_text += f"  -> {round(  mw[idx]['hours']-cw[idx]['hours'],2)} {cw[idx]['name']} Arbeitsstunden\n"
+
+    mail_text += f"\n{constants.MAIL_GREETING}"
+
+    return mail_text
+
+
 def greetings_text():
     return """
 Viele Grüße

@@ -655,6 +655,22 @@ class Queries:
 
         self.session.commit()
 
+    def notify_members_open_workhours(self):
+        members = self.getMembers()
+        extended_members = self.getMembersList(members)
+        for member in extended_members:
+            cw = member['currentWork']
+            mw = member['maxWork']
+            needs_mail = False
+            for idx in range(len(cw)):
+                if cw[idx]['hours'] < mw[idx]['hours']:
+                    needs_mail = True
+
+            if needs_mail:
+                mail_text = mail_templates.notify_members_text(member)
+                mail.send(constants.MAIL_SUBJECT_OPEN_WORKHOURS,
+                          member['email'], mail_text, receiver_Name=f"{member['firstname']} {member['lastname']}")
+
     def __fillTestData(self, random_people=0):
         hashedPassword, salt = TokenManager.hashPassword("unsafe")
         self.session.add(Member(firstname="Tom", lastname="Peter",

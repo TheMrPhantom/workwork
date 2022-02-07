@@ -798,6 +798,18 @@ def setHalfYear():
     return util.build_response("OK")
 
 
+@app.route('/api/settings/notify-members-open-workhours', methods=["POST"])
+@authenticated
+def nofity_members_about_open_workhours():
+    check = checkExecutive(request)
+    if check is not None:
+        return check
+
+    db.notify_members_open_workhours()
+
+    return util.build_response("OK")
+
+
 @app.route('/api/login', methods=["POST"])
 def login():
     post_data = request.json

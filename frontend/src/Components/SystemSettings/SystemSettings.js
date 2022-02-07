@@ -22,7 +22,7 @@ const SystemSettings = () => {
             <Spacer vertical={20} />
             <HalfYearSetter />
         </Paper>
-        <Paper className='paperContainer workInProgress'>
+        <Paper className='paperContainer'>
             <Typography variant='h5'>Mitglieder Benachrichtigen</Typography>
             <Typography variant='caption'>Mitglieder über ihre offenen Arbeitsstunden per Mail informieren</Typography>
             <Spacer vertical={20} />
