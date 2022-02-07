@@ -15,5 +15,8 @@ class TaskScheduler:
             time.sleep(60*5)
             schedule.run_pending()
 
-    def add_Daily_Task(self, task) -> None:
-        schedule.every().day.at("00:01").do(task)
+    def add_Daily_Task(self, task, *args) -> None:
+        if len(args) > 0:
+            schedule.every().day.at("00:01").do(task, args)
+        else:
+            schedule.every().day.at("00:01").do(task)

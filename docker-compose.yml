@@ -24,6 +24,7 @@ services:
       - server_mail=<server_mail>
       - logging=true
       - insert_dev_data=false
+      - orga_name=<orga_name>
     volumes:
       - ./docker-volume:/usr/src/app/database
 

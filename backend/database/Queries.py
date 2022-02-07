@@ -8,6 +8,8 @@ from sqlalchemy.sql import func
 from database.Models import *
 import mail
 import mail_templates
+from typing import List
+import constants
 
 
 class Queries:
@@ -97,6 +99,9 @@ class Queries:
             id=memberID).first().sport
 
         output = []
+        if sports is None:
+            return []
+
         for s in sports:
             output.append({"id": s.sport.id, "name": s.sport.name,
                            "extraHours": s.sport.extra_hours})
@@ -498,7 +503,7 @@ class Queries:
 
         return self.session.query(Event).filter_by(name=name, is_deleted=False).first()
 
-    def getEvents(self):
+    def getEvents(self) -> List[Event]:
 
         return self.session.query(Event).filter_by(is_deleted=False).all()
 
@@ -582,7 +587,7 @@ class Queries:
 
             trainer_name += f" {casted_event.creating_trainer.lastname}"
 
-            mail.send(f"{mail.MAIL_SUBJECT_AFTER_EVENT} {casted_event.name}",
+            mail.send(f"{constants.MAIL_SUBJECT_AFTER_EVENT} {casted_event.name}",
                       casted_event.creating_trainer.mail, mail_text, receiver_Name=f"{trainer_name}")
 
         for event in expEvents:
@@ -673,6 +678,11 @@ class Queries:
         self.session.add(Member(firstname="Eliza", lastname="Frye",
                                 mail="10", password=hashedPassword, salt=salt))
 
+        self.session.add(Sport(name="Agility"))
+        self.session.add(Sport(name="Rettungshunde"))
+        self.session.add(Sport(name="Turnierhunde"))
+        self.session.add(Sport(name="Obedience"))
+
         if random_people > 0:
             import secrets
 
@@ -681,11 +691,6 @@ class Queries:
                 nameList = reader.readlines()
 
             commit_counter = 0
-
-            self.session.add(Sport(name="Agility"))
-            self.session.add(Sport(name="Rettungshunde"))
-            self.session.add(Sport(name="Turnierhunde"))
-            self.session.add(Sport(name="Obedience"))
 
             for i in range(random_people):
                 self.session.add(Member(firstname=secrets.choice(nameList).strip(), lastname=secrets.choice(nameList).strip(),

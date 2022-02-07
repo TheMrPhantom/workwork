@@ -22,6 +22,7 @@ db = Queries.Queries(sql_database)
 
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_Daily_Task(db.createRequestsFromEvents)
+taskScheduler.add_Daily_Task(mail.create_remeber_mails, db)
 taskScheduler.start()
 
 

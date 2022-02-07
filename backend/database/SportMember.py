@@ -12,3 +12,6 @@ class SportMember(db.Model):
         sql.Integer, sql.ForeignKey('sport.id'), nullable=False)
     sport = relationship('database.Sport.Sport', lazy="joined")
     is_trainer = sql.Column(sql.Boolean, default=False, nullable=False)
+
+    def __repr__(self):
+        return f"{self.member_id} {self.member} {self.sport_id} {self.sport}"

@@ -1,8 +1,18 @@
+from datetime import datetime, timedelta
 import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from database.EventParticipant import EventParticipant
+from database.Member import Member
+from database.Timeslot import Timeslot
+from database.Event import Event
+from database.Queries import Queries
 import threading
+from typing import List
+from typing import Dict
+import constants
+
 try:
     import config
 except:
@@ -22,8 +32,57 @@ sender_email = os.environ.get("server_mail") if os.environ.get(
 # Create a secure SSL context
 context = ssl.create_default_context()
 
-MAIL_SUBJECT_AFTER_EVENT = "Genehmigung Arbeitsstunden von"
-MAIL_TEXT_AFTER_EVENT = "Dein Event ist beendet, bitte schaue dir die Arbeitsstunden-Anfragen folgender Mitglieder an:"
+
+def create_remeber_mails(db) -> None:
+    database: Queries
+    if isinstance(db, tuple):
+        database = db[0]
+    else:
+        database = db
+    events: List[Event] = database.getEvents()
+    current_time = datetime.utcnow()
+
+    for event in events:
+
+        participant_dict: Dict[Member, (Member, List[Timeslot])] = {}
+
+        if current_time > event.date.replace(hour=0, minute=0, second=0)-timedelta(days=constants.REMEBER_MAIL_TIME) and not event.members_notified:
+            # Should remind People
+            timeslots: List[Timeslot] = event.timeslots
+
+            for timeslot in timeslots:
+                participants: List[EventParticipant] = timeslot.participants
+
+                for participant in participants:
+                    member: Member = participant.member
+                    if member.id in participant_dict:
+                        participant_dict[member.id][1].append(timeslot)
+                    else:
+                        participant_dict[member.id] = (
+                            member, [timeslot])
+
+        for participant in participant_dict.values():
+            __send_remeber_mail(participant[0], participant[1])
+
+        event.members_notified = True
+
+    database.session.commit()
+
+
+def __send_remeber_mail(member: Member, timeslots: List[Timeslot]) -> None:
+    assert len(timeslots) > 0
+    event: Event = timeslots[0].event
+    mail_text = f"""Hallo {member.firstname},
+du hast dich beim Event {event.name} am {event.date.strftime("%d.%m.%Y")} zum helfen angemeldet. Bitte denke an deine Schichten:
+"""
+
+    for timeslot in timeslots:
+        start_time = f"{timeslot.start.strftime('%H:%M')} Uhr"
+        mail_text += f"  -> {timeslot.name} um {start_time}\n"
+    mail_text += f"\n{constants.MAIL_GREETING}"
+
+    send(constants.MAIL_REMEMBERMAIL_SUBJECT, member.mail, mail_text,
+         receiver_Name=f"{member.firstname} {member.lastname}")
 
 
 def send(subject, to, text, html=None, receiver_Name=None):

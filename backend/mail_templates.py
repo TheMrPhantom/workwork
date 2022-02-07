@@ -1,5 +1,6 @@
 import util
 import mail
+import constants
 
 domain = "http://"+util.domain if "127.0.0.1" in util.domain else "https://"+util.domain
 
@@ -73,7 +74,7 @@ def getWorkHourAddedHTML(trainerName, memberName, requestURL):
 
 def event_ended_text(trainer_name, member_texts, sport_id, sport_name):
     mail_text = f"""Hallo {trainer_name},
-{mail.MAIL_TEXT_AFTER_EVENT}
+{constants.MAIL_TEXT_AFTER_EVENT}
 """
     for text in member_texts:
         mail_text += f"    - {text}\n"

@@ -15,4 +15,6 @@ class Event(db.Model):
     creating_trainer = relationship(
         'database.Member.Member', lazy="joined")
     date = sql.Column(sql.DateTime, nullable=False)
+    members_notified = sql.Column(sql.Boolean, default=False, nullable=False)
+    timeslots = relationship('database.Timeslot.Timeslot', lazy="joined")
     is_deleted = sql.Column(sql.Boolean, default=False, nullable=False)
