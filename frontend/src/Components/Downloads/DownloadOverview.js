@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { downloadPDF } from '../Common/StaticFunctions'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography } from '@mui/material'
 
 import Spacer from '../Common/Spacer'
 import Waiting from '../Common/Waiting';

@@ -1,10 +1,10 @@
-import { Button, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Paper, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import { doPostRequest } from '../Common/StaticFunctions'
 import AddMember from '../Members/AddMember'
 import HSFAlert from '../Common/HSFAlert'
-import { FormControl, IconButton, Input, InputAdornment, InputLabel } from '@material-ui/core'
+import { FormControl, IconButton, Input, InputAdornment, InputLabel } from '@mui/material'
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Config from '../../environment.json';

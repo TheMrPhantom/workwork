@@ -1,22 +1,22 @@
 import * as React from 'react';
 import { useCallback } from 'react'
-import { styled, useTheme } from '@material-ui/core/styles';
-import Box from '@material-ui/core/Box';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import AppBar from '@mui/material/AppBar';
+import CssBaseline from '@mui/material/CssBaseline';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+
+
 import Config from "./environment.json";
 import BuildNumber from "./BuildNumber.json";
-import PetsIcon from '@material-ui/icons/Pets';
-import PersonIcon from '@material-ui/icons/Person';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck';
+import PetsIcon from '@mui/icons-material/Pets';
+import PersonIcon from '@mui/icons-material/Person';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import Overview from './Components/Overview/Overview';
 import Sports from './Components/Sports/Sports';
 import { useLocation } from 'react-router-dom'
@@ -27,9 +27,9 @@ import Members from './Components/Members/Members';
 import SportManagement from './Components/SportManagement/SportManagement';
 import Settings from './Components/Settings/Settings';
 import MemberEdit from './Components/Members/MemberEdit';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Spacer from './Components/Common/Spacer';
 import { doGetRequest, getAndStore } from './Components/Common/StaticFunctions';
 import { useEffect, useState } from 'react'
@@ -47,6 +47,7 @@ import CreateEvent from './Components/Events/CreateEvent';
 import DownloadOverview from './Components/Downloads/DownloadOverview';
 import SystemSettings from './Components/SystemSettings/SystemSettings';
 import Privacy from './Components/Privacy/Privacy';
+import { ListItemIcon, ListItemText } from '@mui/material';
 
 const drawerWidth = 210;
 

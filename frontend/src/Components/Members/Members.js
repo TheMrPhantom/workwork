@@ -1,4 +1,4 @@
-import { TextField, Typography } from '@material-ui/core'
+import { TextField, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import MemberEntry from './MemberEntry'

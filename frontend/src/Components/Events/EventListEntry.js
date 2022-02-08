@@ -1,11 +1,11 @@
-import { Button, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Paper, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import deLocale from 'date-fns/locale/de';
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { doPostRequest } from '../Common/StaticFunctions';
 import TimeSlotEntry from './TimeSlotEntry';
 import ConfirmDialog from '../Common/ConfirmDialog';

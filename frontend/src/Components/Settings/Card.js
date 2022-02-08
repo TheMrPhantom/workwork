@@ -1,4 +1,4 @@
-import { Paper, TextField } from '@material-ui/core'
+import { Paper, TextField } from '@mui/material'
 import Cookies from 'js-cookie'
 import React, { useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'

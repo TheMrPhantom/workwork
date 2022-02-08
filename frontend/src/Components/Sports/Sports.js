@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Request from './Request'
 import Member from './Member'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import Spacer from '../Common/Spacer'
 import { getAndStore } from '../Common/StaticFunctions'
 import SendMail from './SendMail'

@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import "./MemberEntry.css"
-import { Link, TextField } from '@material-ui/core';
+import { Link, TextField } from '@mui/material';
 import { theme } from "../Common/Common"
 import Spacer from '../Common/Spacer';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';

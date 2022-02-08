@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react'
 import { getAndStore, getHoursFromMember } from '../Common/StaticFunctions';
 import OverviewBox from './OverviewBox';

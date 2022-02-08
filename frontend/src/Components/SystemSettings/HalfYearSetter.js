@@ -3,7 +3,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 
 const HalfYearSetter = () => {

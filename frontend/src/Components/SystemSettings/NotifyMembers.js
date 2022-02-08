@@ -1,4 +1,4 @@
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import React, { useState } from 'react';
 import { doPostRequest } from '../Common/StaticFunctions';
 import Waiting from '../Common/Waiting';

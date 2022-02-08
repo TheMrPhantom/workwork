@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React, { useState } from 'react'
 import HSFAlert from '../Common/HSFAlert'
 import { doPostRequest } from '../Common/StaticFunctions'

@@ -1,25 +1,25 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import Spacer from '../Common/Spacer';
-import TextField from '@material-ui/core/TextField';
+import TextField from '@mui/material/TextField';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 
-import Box from '@material-ui/core/Box';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import Typography from '@material-ui/core/Typography';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Typography from '@mui/material/Typography';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/material";
 import AskForTrainer from '../Request/AskForTrainer';
 import Config from "../../environment.json";
 
 import "./AddWork.css"
 import "./Request.css"
 import HSFAlert from '../Common/HSFAlert';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const useStyles = makeStyles({
     buttonColor: {

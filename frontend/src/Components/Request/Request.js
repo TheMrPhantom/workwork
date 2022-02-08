@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import Cookies from 'js-cookie'
 import Spacer from '../Common/Spacer'
 import AddWork from '../Sports/AddWork'
