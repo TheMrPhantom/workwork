@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Button } from '@material-ui/core'
 import Spacer from '../Common/Spacer';
 import TextField from '@material-ui/core/TextField';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Typography from '@mui/material/Typography';
+import Box from '@material-ui/core/Box';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Typography from '@material-ui/core/Typography';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -19,7 +19,7 @@ import Config from "../../environment.json";
 import "./AddWork.css"
 import "./Request.css"
 import HSFAlert from '../Common/HSFAlert';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 
 const useStyles = makeStyles({
     buttonColor: {
@@ -42,6 +42,9 @@ const AddWork = ({ memberID, refresh }) => {
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
     const [messageOpen, setmessageOpen] = useState(false)
+
+    var innerRef = useRef(null)
+    var outterRef = useRef(null)
 
     useEffect(() => {
         getAndStore("sports/names/membership/" + memberID, (sports) => { setsportNames(sports); setcanDisplayWarning(true) })
@@ -168,11 +171,15 @@ const AddWork = ({ memberID, refresh }) => {
     const classes = useStyles();
 
     const firstStep = () => {
-        if (window.innerWidth > Config.COMPACT_SIZE_THRESHOLD) {
+        const refDefined = innerRef.current !== null && outterRef.current !== null;
+        const refTooSmall = refDefined ? (innerRef.current.offsetWidth < outterRef.current.offsetWidth * 0.9) : false;
+
+        if (!refDefined || refTooSmall) {
             return (<ToggleButtonGroup
                 value={selectorValue}
                 exclusive
                 onChange={handleAlignment}
+                ref={innerRef}
                 aria-label="text alignment"
             >
                 {
@@ -198,6 +205,7 @@ const AddWork = ({ memberID, refresh }) => {
                     id="sport-input-add-request"
                     value={selectorValue}
                     onChange={(value) => { setselectorValue(value.target.value) }}
+                    style={{ minWidth: "200px" }}
                     label="Sparte"
                 >
                     {
@@ -263,9 +271,9 @@ const AddWork = ({ memberID, refresh }) => {
     }
 
     return sportNames.length > 0 ? (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%' }} ref={outterRef}>
             {window.innerWidth > Config.COMPACT_SIZE_THRESHOLD ?
-                <Stepper activeStep={activeStep}>
+                <Stepper style={{ backgroundColor: "transparent" }} activeStep={activeStep}>
                     {steps.map((label, index) => {
                         const stepProps = {};
                         const labelProps = {};
@@ -284,6 +292,7 @@ const AddWork = ({ memberID, refresh }) => {
                         );
                     })}
                 </Stepper> : ""}
+
             <AskForTrainer
                 confirmText="Anfrage Stellen"
                 addFunction={addWork}
@@ -303,6 +312,7 @@ const AddWork = ({ memberID, refresh }) => {
             ) : (
                 <React.Fragment>
                     <Typography sx={{ mt: 2, mb: 1 }}>Schritt {activeStep + 1}</Typography>
+                    <Spacer vertical={20} />
                     {displayStep()}
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                         <Button
