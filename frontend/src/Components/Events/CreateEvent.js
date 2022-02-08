@@ -1,17 +1,12 @@
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography, TextField, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
-import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import EventSlotCreation from './EventSlotCreation';
 import deLocale from 'date-fns/locale/de';
 import EventTimeSlot from './EventTimeSlot';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 import { useHistory } from "react-router-dom";
 import HSFAlert from '../Common/HSFAlert'
@@ -71,9 +66,10 @@ const CreateEvent = () => {
             <TextField className="eventsInput" type="text" variant="outlined" label="Event Name" value={eventName} onChange={(value) => seteventName(value.target.value)} error={eventName === ""} />
             <Spacer vertical={20} />
             <FormControl fullWidth>
-                <InputLabel error={selectedSport === ""}>Sparte</InputLabel>
+                <InputLabel variant='outlined' error={selectedSport === ""}>Sparte</InputLabel>
                 <Select
                     className="eventsInput"
+                    variant='outlined'
                     value={selectedSport}
                     label="Sparte"
                     onChange={(value) => setselectedSport(value.target.value)}
@@ -92,7 +88,7 @@ const CreateEvent = () => {
                     onChange={(newValue) => {
                         setdate(newValue);
                     }}
-                    renderInput={(params) => <TextField {...params} className="eventsInput" error={date === null} />}
+                    renderInput={(params) => <TextField variant='outlined'{...params} className="eventsInput" error={date === null} />}
                 />
             </LocalizationProvider>
             <Spacer vertical={20} />

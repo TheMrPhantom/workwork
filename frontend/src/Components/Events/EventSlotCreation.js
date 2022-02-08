@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
+import { Button, TextField, } from '@material-ui/core'
 import Spacer from '../Common/Spacer'
-import TextField from '@mui/material/TextField';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import deLocale from 'date-fns/locale/de';
-import { Button } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import "./Events.css"
 import { secureRandomNumber } from '../Common/StaticFunctions';
@@ -56,7 +55,7 @@ const EventSlotCreation = ({ createNewSlot }) => {
                         onChange={(newValue) => {
                             setstartTime(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} className="eventsInput" error={startTime > endTime || startTime === null} />}
+                        renderInput={(params) => <TextField variant='outlined' {...params} className="eventsInput" error={startTime > endTime || startTime === null} />}
                     />
                 </LocalizationProvider>
                 <Spacer vertical={30} />
@@ -70,7 +69,7 @@ const EventSlotCreation = ({ createNewSlot }) => {
                         onChange={(newValue) => {
                             setendTime(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} className="eventsInput" error={startTime > endTime || endTime === null} />}
+                        renderInput={(params) => <TextField variant='outlined' {...params} className="eventsInput" error={startTime > endTime || endTime === null} />}
                     />
                 </LocalizationProvider>
                 <Spacer vertical={30} />
