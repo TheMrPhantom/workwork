@@ -9,7 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import "./MemberEntry.css"
-import { TextField } from '@material-ui/core';
+import { Link, TextField } from '@material-ui/core';
 import { theme } from "../Common/Common"
 import Spacer from '../Common/Spacer';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
@@ -67,6 +67,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
     const [fName, setfName] = useState("")
     const [lName, setlName] = useState("")
     const [mail, setmail] = useState("")
+    const [confirmedPrivacy, setconfirmedPrivacy] = useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -101,6 +102,15 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
             setmail(email)
 
             seterrorMessge("Bitte mindestens eine Sportart auswählen")
+            setmessageOpen(true)
+            return
+        }
+        if (!confirmedPrivacy) {
+            setfName(firstname)
+            setlName(lastname)
+            setmail(email)
+
+            seterrorMessge("Du hast der Datenschutzerklärung nicht zugestimmt")
             setmessageOpen(true)
             return
         }
@@ -139,44 +149,60 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                     {headlineText}
                 </BootstrapDialogTitle>
                 <DialogContent dividers className="dialogFlex">
-                    <Typography variant="subtitle1"><b>Mitgliedsdaten</b></Typography>
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" defaultValue={fName} label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" defaultValue={lName} label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
-                    <Spacer vertical={10} />
-                    <TextField className="reasonBox" defaultValue={mail} label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
-                    <Spacer vertical={20} />
-                    <Typography variant="subtitle1"><b>Sparten zugehörigkeit</b></Typography>
-                    <Spacer vertical={10} />
-                    <div className="checkboxFlex">
-                        {sportnames.sort((c1, c2) => c1.name.localeCompare(c2.name)).map((value) => {
-                            if (value.id === 1) {
-                                return ""
-                            }
-                            return (
-                                <Paper key={value.id} className="checkboxPaper" style={{ backgroundColor: theme.palette.primary.light }}>
-                                    <FormControlLabel control={<Checkbox sx={{
-                                        '&.Mui-checked': {
-                                            color: theme.palette.primary.contrastText,
-                                        },
-                                    }} />}
-                                        label={value.name}
-                                        className="checkboxFormControll"
-                                        onChange={(checkvalue) => {
-                                            const ischecked = checkvalue.target.value
-                                            if (ischecked) {
-                                                memberOfSport.add(value.id)
-                                            } else {
-                                                memberOfSport.delete(value.id)
-                                            }
-                                        }} />
+                    <div >
+                        <Typography variant="subtitle1"><b>Mitgliedsdaten</b></Typography>
+                        <Spacer vertical={10} />
+                        <TextField className="reasonBox" defaultValue={fName} label="Vorname" type="input" onChange={(value) => firstname = value.target.value} />
+                        <Spacer vertical={10} />
+                        <TextField className="reasonBox" defaultValue={lName} label="Nachname" type="input" onChange={(value) => lastname = value.target.value} />
+                        <Spacer vertical={10} />
+                        <TextField className="reasonBox" defaultValue={mail} label="Email-Adresse" type="input" onChange={(value) => email = value.target.value} />
+                        <Spacer vertical={20} />
+                        <Typography variant="subtitle1"><b>Sparten zugehörigkeit</b></Typography>
+                        <Spacer vertical={10} />
+                        <div className="checkboxFlex">
+                            {sportnames.sort((c1, c2) => c1.name.localeCompare(c2.name)).map((value) => {
+                                if (value.id === 1) {
+                                    return ""
+                                }
+                                return (
+                                    <Paper key={value.id} className="checkboxPaper" style={{ backgroundColor: theme.palette.primary.light }}>
+                                        <FormControlLabel control={<Checkbox sx={{
+                                            '&.Mui-checked': {
+                                                color: theme.palette.primary.contrastText,
+                                            },
+                                        }} />}
+                                            label={value.name}
+                                            className="checkboxFormControll"
+                                            onChange={(checkvalue) => {
+                                                const ischecked = checkvalue.target.value
+                                                if (ischecked) {
+                                                    memberOfSport.add(value.id)
+                                                } else {
+                                                    memberOfSport.delete(value.id)
+                                                }
+                                            }} />
 
-                                </Paper>
-                            )
-                        })}
+                                    </Paper>
+                                )
+                            })}
+                        </div>
+                        <Spacer vertical={20} />
+                        <Typography variant="subtitle1"><b>Datenschutzerklärung</b></Typography>
+                        <Typography>Um dieses Tool nutzen zu können, musst du der Datenschutzerklärung zustimmen. Diese findest du hier: <Link target="_blank" href="privacy">Link</Link></Typography>
+
+                        <FormControlLabel control={<Checkbox sx={{
+                            '&.Mui-checked': {
+                                color: theme.palette.primary.contrastText,
+                            },
+                        }} />}
+                            label="Ich stimme der Datenschutzerklärung zu"
+                            className="checkboxFormControll"
+                            onChange={(checkvalue) => {
+                                setconfirmedPrivacy(checkvalue.target.value)
+                            }}
+                        />
                     </div>
-
                 </DialogContent>
                 <DialogActions>
                     <Button className="outlinedAddButton" onClick={() => addMember()}>

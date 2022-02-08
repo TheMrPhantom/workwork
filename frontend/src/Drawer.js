@@ -46,6 +46,7 @@ import EventList from './Components/Events/EventList';
 import CreateEvent from './Components/Events/CreateEvent';
 import DownloadOverview from './Components/Downloads/DownloadOverview';
 import SystemSettings from './Components/SystemSettings/SystemSettings';
+import Privacy from './Components/Privacy/Privacy';
 
 const drawerWidth = 210;
 
@@ -102,9 +103,11 @@ export default function ClippedDrawer() {
             if (resp.code === 200) {
                 loginLoad()
             } else if (resp.code === 403) {
-                redirect("/login")
-                setsports([])
-                setmemberState(0)
+                if (location.pathname !== "/privacy") {
+                    redirect("/login")
+                    setsports([])
+                    setmemberState(0)
+                }
             }
         }
         checkLogin()
@@ -349,6 +352,7 @@ export default function ClippedDrawer() {
                 </Switch>
                 <Route path="/system/settings" component={SystemSettings} />
                 <Route path="/settings" component={Settings} />
+                <Route exact path="/privacy" component={Privacy} />
             </Box>
         </Box>
     );

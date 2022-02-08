@@ -643,17 +643,42 @@ class Queries:
         Deletes all work requests and resets the special worktime of all members who joined later in year to standard (0)
         """
 
-        worktimes = self.session.query(Worktime).all()
-        for w in worktimes:
-            self.session.delete(w)
+        with self.session.no_autoflush:
 
-        late_members = self.session.query(
-            Member).filter(Member.extra_hours > 0).all()
+            worktimes = self.session.query(Worktime).all()
+            for w in worktimes:
+                self.session.delete(w)
 
-        for late_member in late_members:
-            late_member.extra_hours = 0
+            sport_members = self.session.query(SportMember).filter(
+                SportMember.member.has(is_deleted=True)).all()
+            for sm in sport_members:
+                self.session.delete(sm)
 
-        self.session.commit()
+            members = self.session.query(
+                Member).filter_by(is_deleted=True).all()
+            for m in members:
+                self.session.delete(m)
+                print("deleting")
+
+            events = self.session.query(Event).all()
+            for e in events:
+                self.session.delete(e)
+
+            event_participant = self.session.query(EventParticipant).all()
+            for ep in event_participant:
+                self.session.delete(ep)
+
+            timeslots = self.session.query(Timeslot).all()
+            for t in timeslots:
+                self.session.delete(t)
+
+            late_members = self.session.query(
+                Member).filter(Member.extra_hours > 0).all()
+
+            for late_member in late_members:
+                late_member.extra_hours = 0
+
+            self.session.commit()
 
     def notify_members_open_workhours(self):
         members = self.getMembers()
