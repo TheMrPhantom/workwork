@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Paper, Typography } from '@material-ui/core'
-import { Button } from '@material-ui/core'
+import { Paper, Typography } from '@mui/material'
+import { Button } from '@mui/material'
 
 import "./Request.css"
 import { doPostRequest } from '../Common/StaticFunctions'

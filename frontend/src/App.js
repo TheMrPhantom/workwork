@@ -1,4 +1,4 @@
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ClippedDrawer from "./Drawer.js"
 import { createContext } from 'react';
@@ -19,9 +19,9 @@ function App() {
     <div className="App">
       <globalStateContext.Provider value={globalState}>
         <Router>
-          <MuiThemeProvider theme={theme}>
+          <ThemeProvider theme={theme}>
             <ClippedDrawer />
-          </MuiThemeProvider>
+          </ThemeProvider >
         </Router>
       </globalStateContext.Provider>
     </div>

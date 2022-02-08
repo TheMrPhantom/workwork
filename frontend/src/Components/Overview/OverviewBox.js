@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Paper } from '@material-ui/core'
-import { Typography } from '@material-ui/core'
-import WarningIcon from '@material-ui/icons/Warning';
+import { Paper } from '@mui/material'
+import { Typography } from '@mui/material'
+import WarningIcon from '@mui/icons-material/Warning';
 import Cookies from 'js-cookie';
 import { getAndStore } from "../Common/StaticFunctions"
 

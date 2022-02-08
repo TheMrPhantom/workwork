@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { useState } from 'react';
 import { TextField, Typography } from '@mui/material';
 import Config from "../../environment.json";

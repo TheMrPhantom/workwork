@@ -1,7 +1,7 @@
-import { Button, LinearProgress, Paper, Typography } from '@material-ui/core'
+import { Button, LinearProgress, Paper, Typography } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import Spacer from '../Common/Spacer'
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 import { useHistory } from "react-router-dom";
 import "./MemberEntry.css"
 

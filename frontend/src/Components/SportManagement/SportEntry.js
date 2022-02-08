@@ -1,7 +1,7 @@
-import { Button, Paper, TextField, Typography } from '@material-ui/core'
+import { Button, Paper, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import Spacer from '../Common/Spacer'
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 
 
 import "./SportManagement.css"

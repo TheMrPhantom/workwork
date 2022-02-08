@@ -1,6 +1,6 @@
-import { Button, TableCell, TableRow } from '@material-ui/core'
+import { Button, TableCell, TableRow } from '@mui/material'
 import React, { useState } from 'react'
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import { doPostRequest } from '../Common/StaticFunctions';
 
 const MemberHistoryEntry = ({ sport, activity, duration, id, refresh }) => {

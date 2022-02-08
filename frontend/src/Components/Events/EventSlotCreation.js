@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Button, TextField, } from '@material-ui/core'
+import { Button, TextField, } from '@mui/material'
 import Spacer from '../Common/Spacer'
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
 import deLocale from 'date-fns/locale/de';
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import "./Events.css"
 import { secureRandomNumber } from '../Common/StaticFunctions';
 

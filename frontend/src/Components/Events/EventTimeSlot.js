@@ -1,7 +1,7 @@
-import { Button, Paper, Typography } from '@material-ui/core'
+import { Button, Paper, Typography } from '@mui/material'
 import React from 'react'
 import Spacer from '../Common/Spacer'
-import IndeterminateCheckBoxIcon from '@material-ui/icons/IndeterminateCheckBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import "./Events.css"
 
 const EventTimeSlot = ({ slotName, start, end, currentHelper, maxHelper, onDelete }) => {
