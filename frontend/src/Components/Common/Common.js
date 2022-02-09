@@ -1,15 +1,16 @@
 import { createTheme } from '@mui/material/styles';
 
-const darkPrimary = "#064663"
-const darkPrimaryLight = "#0b87c1"
-const darkBackground = "#041C32"
+const darkPrimary = "#03293a"
+const darkPrimaryLighter = "#054461"
+const darkPrimaryLight = "#086691"
+const darkBackground = "#02101c"
 const darkFont = "#ECB365"
 const darkButtonFont = "#fafafa"
 const darkButtonFontDark = "#0f0f0f"
 const darkButtonFontDisabled = "#c0c0c0"
 const darkButtonBorder = "#c8c8c8"
 const darkButtonBorderHover = "#989898"
-const darkPaperBackground = "#05223d"
+const darkPaperBackground = "#041d34"
 const darkNotActive = "#989898"
 
 export const theme = createTheme({
@@ -142,6 +143,14 @@ export const theme = createTheme({
                 switchBase: {
                     "&.Mui-checked": {
                         color: darkPrimaryLight
+                    },
+                    "&.Mui-checked+.MuiSwitch-track": {
+                        backgroundColor: darkPrimaryLighter
+                    }
+                },
+                track: {
+                    "&.Mui-checked": {
+                        color: "red"
                     }
                 }
             }
