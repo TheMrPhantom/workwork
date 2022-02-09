@@ -12,7 +12,7 @@ const darkButtonBorderHover = "#989898"
 const darkPaperBackground = "#05223d"
 const darkNotActive = "#989898"
 
-export const theme = createTheme({
+export const themez = createTheme({
     palette: {
         primary: {
             main: darkPrimary
@@ -151,11 +151,17 @@ export const theme = createTheme({
                     color: darkFont + "!important"
                 }
             }
+        }, MuiSelect: {
+            styleOverrides: {
+                icon: {
+                    color: darkButtonFont
+                }
+            }
         }
     },
 });
 
-export const theme4 = createTheme({
+export const theme = createTheme({
     palette: {
         primary: {
             main: '#bbc34f'
