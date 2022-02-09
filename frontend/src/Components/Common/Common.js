@@ -1,48 +1,68 @@
 import { createTheme } from '@mui/material/styles';
 
+const darkPrimary = "#064663"
+const darkBackground = "#041C32"
+const darkFont = "#ECB365"
+const darkButtonFont = "#fafafa"
+const darkButtonFontDisabled = "#c0c0c0"
+const darkButtonBorder = "#c8c8c8"
+const darkButtonBorderHover = "#989898"
+const darkPaperBackground = "#05223d"
+const notActive = "#989898"
+
 export const theme = createTheme({
     palette: {
         primary: {
-            main: '#064663'
+            main: darkPrimary
         },
         background: {
-            default: "#041C32"
+            default: darkBackground
         },
         text: {
-            primary: '#ECB365'
+            primary: darkFont
         },
     },
     components: {
         MuiButton: {
             styleOverrides: {
                 root: {
-                    color: '#ffffff',
+                    color: darkButtonFont,
+                    ":disabled": {
+                        color: darkButtonFontDisabled
+                    }
                 },
                 outlined: {
-                    borderColor: "#c8c8c8",
+                    borderColor: darkButtonBorder,
                     '&:hover': {
-                        borderColor: '#989898'
+                        borderColor: darkButtonBorderHover
                     }
                 }
             },
         },
+        MuiOutlinedInput: {
+            styleOverrides: {
+                notchedOutline: {
+                    borderColor: darkButtonBorder
+                }
+            }
+        },
         MuiDrawer: {
             styleOverrides: {
                 paper: {
-                    backgroundColor: "#05223d"
+                    backgroundColor: darkPaperBackground
                 }
             }
         }, MuiListItemIcon: {
             styleOverrides: {
                 root: {
-                    color: "#ECB365"
+                    color: darkFont
                 }
             }
         },
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "#05223d"
+                    backgroundColor: darkPaperBackground
                 }
             }
         },
@@ -50,34 +70,45 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     ":disabled": {
-                        color: "#ECB365",
+                        color: darkFont,
                     },
-
-                    color: "red",
-                    '&:focus': {
-                        backgroundColor: '#989898'
-                    }
-
                 },
-                '&:focus': {
-                    backgroundColor: '#989898'
-                }
             }
         },
         MuiInput: {
             styleOverrides: {
                 root: {
                     ":before": {
-                        borderBottom: "1px solid #ECB365",
-
+                        borderBottom: "1px solid " + darkFont,
                     },
+                }
+            }
+        },
+        MuiStepIcon: {
+            styleOverrides: {
+                root: {
+                    color: notActive,
+                }
+            }
+        },
+        MuiStepLabel: {
+            styleOverrides: {
+                label: {
+                    color: notActive
+                }
+            }
+        }, MuiToggleButton: {
+            styleOverrides: {
+                root: {
+                    color: notActive,
+                    border: "1px solid " + notActive
                 }
             }
         }
     },
 });
 
-export const theme6 = createTheme({
+export const themez = createTheme({
     palette: {
         primary: {
             main: '#bbc34f'
