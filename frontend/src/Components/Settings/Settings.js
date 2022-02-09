@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import ActivateSports from './ActivateSports'
@@ -11,6 +11,7 @@ const Settings = () => {
     const [member, setmember] = useState(null)
     const [sports, setsports] = useState([])
     const [refresh, setrefresh] = useState(false)
+    const [theme, settheme] = useState(0)
 
     useEffect(() => {
         const memberID = Cookies.get("memberID")
@@ -23,8 +24,18 @@ const Settings = () => {
         doPostRequest("user/" + memberID + "/changeParticipation", sports)
     }, [sports])
 
+    useEffect(() => {
+        settheme(Cookies.get("theme") !== undefined ? Cookies.get("theme") : 0)
+    }, [])
+
     const toggleRefresh = (value) => {
         setrefresh(!refresh)
+    }
+
+    const changeTheme = (value) => {
+        Cookies.set("theme", value, { expires: 365 * 10, sameSite: "Strict" })
+        settheme(value)
+        window.location.reload()
     }
 
     return (
@@ -39,6 +50,23 @@ const Settings = () => {
             <Spacer vertical={20} />
             <Typography variant="h5">Sparten</Typography>
             <ActivateSports memberID={Cookies.get("memberID")} sportListMember={sports} setsports={setsports} refresh={toggleRefresh} />
+            <Spacer vertical={20} />
+            <Typography variant="h5">Farbschema</Typography>
+            <Spacer vertical={20} />
+            <FormControl fullWidth>
+                <InputLabel variant='outlined'>Theme</InputLabel>
+                <Select
+                    className="eventsInput"
+                    variant='outlined'
+                    label="Theme"
+                    value={theme}
+                    onChange={(value) => changeTheme(value.target.value)}
+                >
+                    <MenuItem value={0}>Normal</MenuItem>
+                    <MenuItem value={1}>Darkmode 1</MenuItem>
+                    <MenuItem value={2}>Darkmode 2</MenuItem>
+                </Select>
+            </FormControl>
         </div>
     )
 }

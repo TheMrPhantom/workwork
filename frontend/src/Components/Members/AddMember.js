@@ -1,7 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,7 +9,6 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import "./MemberEntry.css"
 import { Link, TextField } from '@mui/material';
-import { theme } from "../Common/Common"
 import Spacer from '../Common/Spacer';
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
 import { Checkbox, Paper, Typography } from '@mui/material';
@@ -19,15 +17,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import HSFAlert from '../Common/HSFAlert';
 
 const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistrationOpen, blackButton }) => {
-
-    const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-        '& .MuiDialogContent-root': {
-            padding: theme.spacing(2),
-        },
-        '& .MuiDialogActions-root': {
-            padding: theme.spacing(1),
-        },
-    }));
 
     const BootstrapDialogTitle = (props) => {
         const { children, onClose, ...other } = props;
@@ -140,7 +129,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
             <Button variant="outlined" onClick={handleClickOpen} style={{ color: blackButton ? "black" : "" }}>
                 {buttonText}
             </Button>
-            <BootstrapDialog
+            <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
@@ -166,12 +155,8 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                                     return ""
                                 }
                                 return (
-                                    <Paper key={value.id} className="checkboxPaper" style={{ backgroundColor: theme.palette.primary.light }}>
-                                        <FormControlLabel control={<Checkbox sx={{
-                                            '&.Mui-checked': {
-                                                color: theme.palette.primary.contrastText,
-                                            },
-                                        }} />}
+                                    <Paper key={value.id} className="checkboxPaper">
+                                        <FormControlLabel control={<Checkbox />}
                                             label={value.name}
                                             className="checkboxFormControll"
                                             onChange={(checkvalue) => {
@@ -191,11 +176,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                         <Typography variant="subtitle1"><b>Datenschutzerklärung</b></Typography>
                         <Typography>Um dieses Tool nutzen zu können, musst du der Datenschutzerklärung zustimmen. Diese findest du hier: <Link target="_blank" href="privacy">Link</Link></Typography>
 
-                        <FormControlLabel control={<Checkbox sx={{
-                            '&.Mui-checked': {
-                                color: theme.palette.primary.contrastText,
-                            },
-                        }} />}
+                        <FormControlLabel control={<Checkbox />}
                             label="Ich stimme der Datenschutzerklärung zu"
                             className="checkboxFormControll"
                             onChange={(checkvalue) => {
@@ -209,7 +190,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                         {confirmText}
                     </Button>
                 </DialogActions>
-            </BootstrapDialog>
+            </Dialog>
             <HSFAlert message={errorMessge} short={"Bitte Felder korrekt ausfüllen"} open={messageOpen} setOpen={setmessageOpen} />
         </div>
     );

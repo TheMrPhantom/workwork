@@ -1,8 +1,9 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ClippedDrawer from "./Drawer.js"
-import { createContext } from 'react';
-import { theme } from "./Components/Common/Common"
+import { createContext, useEffect, useState } from 'react';
+import Cookies from 'js-cookie'
+import { themes } from "./Components/Common/Common"
 import './index.css';
 import "./Components/Theme.css"
 
@@ -12,11 +13,17 @@ function App() {
     userid: -1,
     token: ""
   };
+  const [themeCookie, setthemeCookie] = useState(0)
+
+  useEffect(() => {
+    setthemeCookie(Cookies.get("theme") !== undefined ? Cookies.get("theme") : 0)
+  }, [])
+
 
   const globalStateContext = createContext(globalState)
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themes[themeCookie]}>
       <div className="App">
         <globalStateContext.Provider value={globalState}>
           <Router>

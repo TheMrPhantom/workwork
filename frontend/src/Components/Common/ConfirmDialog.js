@@ -1,7 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -13,15 +12,6 @@ import { Typography } from '@mui/material';
 import './Common.css'
 
 const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive }) => {
-
-    const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-        '& .MuiDialogContent-root': {
-            padding: theme.spacing(2),
-        },
-        '& .MuiDialogActions-root': {
-            padding: theme.spacing(1),
-        },
-    }));
 
     const BootstrapDialogTitle = (props) => {
         const { children, onClose, ...other } = props;
@@ -60,7 +50,7 @@ const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive
     }
     return (
         <div>
-            <BootstrapDialog
+            <Dialog
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
@@ -81,7 +71,7 @@ const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive
                         {buttonText === undefined ? "Ja" : buttonText}
                     </Button>
                 </DialogActions>
-            </BootstrapDialog>
+            </Dialog>
         </div>
     );
 };
