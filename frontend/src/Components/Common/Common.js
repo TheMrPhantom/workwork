@@ -86,6 +86,7 @@ export const theme = createTheme({
         MuiIconButton: {
             styleOverrides: {
                 root: {
+                    color: darkButtonFont,
                     ":disabled": {
                         color: darkFont,
                     },
@@ -144,11 +145,17 @@ export const theme = createTheme({
                     }
                 }
             }
+        }, MuiTypography: {
+            styleOverrides: {
+                root: {
+                    color: darkFont + "!important"
+                }
+            }
         }
     },
 });
 
-export const themez = createTheme({
+export const theme4 = createTheme({
     palette: {
         primary: {
             main: '#bbc34f'
