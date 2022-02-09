@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { makeStyles } from "@mui/material";
 import AskForTrainer from '../Request/AskForTrainer';
 import Config from "../../environment.json";
 
@@ -20,7 +19,7 @@ import "./AddWork.css"
 import "./Request.css"
 import HSFAlert from '../Common/HSFAlert';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-
+/*
 const useStyles = makeStyles({
     buttonColor: {
         "&.Mui-selected": {
@@ -28,7 +27,7 @@ const useStyles = makeStyles({
         }
     }
 });
-
+*/
 const AddWork = ({ memberID, refresh }) => {
     const [selectorValue, setselectorValue] = useState(-1)
     const [reason, setreason] = useState("")
@@ -168,7 +167,6 @@ const AddWork = ({ memberID, refresh }) => {
         }
     }
 
-    const classes = useStyles();
 
     const firstStep = () => {
         const refDefined = innerRef.current !== null && outterRef.current !== null;
@@ -185,13 +183,13 @@ const AddWork = ({ memberID, refresh }) => {
                 {
                     sportNames.map((value) => {
                         return (
-                            <ToggleButton key={value.id} value={value.id} aria-label="left aligned" className={classes.buttonColor}>
+                            <ToggleButton key={value.id} value={value.id} aria-label="left aligned" >
                                 {value.name}
                             </ToggleButton>
                         )
                     })
                 }
-                <ToggleButton value={1} aria-label="left aligned" className={classes.buttonColor}>
+                <ToggleButton value={1} aria-label="left aligned" >
                     Andere Sparte
                 </ToggleButton>
 
@@ -211,13 +209,13 @@ const AddWork = ({ memberID, refresh }) => {
                     {
                         sportNames.map((value) => {
                             return (
-                                <MenuItem key={value.id} value={value.id} aria-label="left aligned" className={classes.buttonColor}>
+                                <MenuItem key={value.id} value={value.id} aria-label="left aligned" >
                                     {value.name}
                                 </MenuItem>
                             )
                         })
                     }
-                    <MenuItem value={1} aria-label="left aligned" className={classes.buttonColor}>
+                    <MenuItem value={1} aria-label="left aligned" >
                         Andere Sparte
                     </MenuItem>
                 </Select>

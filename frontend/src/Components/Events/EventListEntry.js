@@ -50,7 +50,7 @@ const EventListEntry = ({ eventID, name, sportName, date, timeslots, memberState
                                 <DatePicker
                                     readOnly
                                     value={date}
-                                    renderInput={(params) => <TextField {...params} />}
+                                    renderInput={(params) => <TextField variant='standard' {...params} />}
                                 />
                             </LocalizationProvider>
                         </div>

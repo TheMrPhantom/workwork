@@ -49,11 +49,11 @@ const Login = ({ redirect }) => {
 
             <Typography variant="h5">Login</Typography>
             <Spacer vertical={10} />
-            <TextField className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
+            <TextField variant='standard' className="reasonBox mail-login" label="E-Mail Adresse" type="input" onChange={(value) => { setusername(value.target.value) }} />
             <form className="loginBox" action="" noValidate autoComplete="off" onSubmit={(event) => { event.preventDefault(); login() }}>
                 <Spacer vertical={20} />
                 <FormControl >
-                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                    <InputLabel variant='standard' htmlFor="standard-adornment-password">Password</InputLabel>
                     <Input className="reasonBox pw-login" label="Passwort" type={showPassword ? 'text' : 'password'} onChange={(value) => { setpassword(value.target.value) }} endAdornment={
                         <InputAdornment position="end">
                             <IconButton

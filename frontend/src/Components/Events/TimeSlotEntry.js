@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material'
+import { Switch, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Spacer from '../Common/Spacer'
 import { doPostRequest, getAndStore } from '../Common/StaticFunctions';
@@ -9,7 +9,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import "./Events.css"
 import HSFAlert from '../Common/HSFAlert';
-import GreenSwitch from '../Common/GreenSwitch';
 
 const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
     const [isParticipant, setisParticipant] = useState(false)
@@ -67,7 +66,7 @@ const TimeSlotEntry = ({ name, helper, start, end, id, memberState }) => {
 
                 <div className="eventCenter">
                     <Typography variant="subtitle2">Teilnehmen</Typography>
-                    <GreenSwitch disabled={participantAmount >= helper && !isParticipant} checked={isParticipant} onClick={(value) => changeParticipation(value.target.checked)} />
+                    <Switch disabled={participantAmount >= helper && !isParticipant} checked={isParticipant} onClick={(value) => changeParticipation(value.target.checked)} />
                 </div>
             </div>
             <HSFAlert message="Schicht inzwischen voll" short="Bitte andere Schicht auswählen " open={messageOpen} setOpen={setmessageOpen} />

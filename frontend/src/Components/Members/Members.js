@@ -109,7 +109,7 @@ const Members = () => {
             <Typography variant="h5">Mitglieder</Typography>
             <Spacer vertical={10} />
             <div className="horizontalMemberFloat">
-                <TextField className="reasonBox" label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
+                <TextField className="reasonBox" variant='standard' label="Suche" type="input" onChange={(value) => filterMembers(value.target.value)} />
                 <AddMember buttonText="Hinzufügen" headlineText="Mitglied hinzufügen" confirmText="Hinzufügen" refresh={refreshComponent} setRegistrationOpen={setopenSuccess} />
                 <HSFAlert
                     type="success"

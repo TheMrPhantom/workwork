@@ -299,14 +299,6 @@ export default function ClippedDrawer() {
             </AppBar>
 
             <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
-                        width: drawerWidth,
-                        boxSizing: 'border-box',
-                    },
-                }}
                 variant="persistent"
                 anchor="left"
                 open={open}
@@ -334,7 +326,7 @@ export default function ClippedDrawer() {
             </Drawer>
             {open ? <Spacer horizontal={drawerWidth} /> : ""}
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }} className={mainCSSClass()}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, paddingLeft: open ? "40px" : "" }} className={mainCSSClass()}>
                 <Toolbar />
                 <Route path="/login" component={() => <Login redirect={loginLoad} />} />
                 <Route path="/overview" component={Overview} />
