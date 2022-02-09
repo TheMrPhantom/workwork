@@ -21,7 +21,7 @@ const Header = ({ logoutRoutine }) => {
             <Switch>
                 <Route exact path="/login"></Route>
                 <Route path="/">
-                    <Button style={{ borderColor: '#595959' }} onClick={() => logout()} variant="outlined">
+                    <Button onClick={() => logout()} variant="outlined">
                         <LogoutIcon /> <Spacer horizontal={10} /> <Typography> Logout</Typography>
                     </Button>
                 </Route>
