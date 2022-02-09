@@ -45,11 +45,39 @@ export const theme = createTheme({
                     backgroundColor: "#05223d"
                 }
             }
+        },
+        MuiIconButton: {
+            styleOverrides: {
+                root: {
+                    ":disabled": {
+                        color: "#ECB365",
+                    },
+
+                    color: "red",
+                    '&:focus': {
+                        backgroundColor: '#989898'
+                    }
+
+                },
+                '&:focus': {
+                    backgroundColor: '#989898'
+                }
+            }
+        },
+        MuiInput: {
+            styleOverrides: {
+                root: {
+                    ":before": {
+                        borderBottom: "1px solid #ECB365",
+
+                    },
+                }
+            }
         }
     },
 });
 
-export const themeLight = createTheme({
+export const theme6 = createTheme({
     palette: {
         primary: {
             main: '#bbc34f'

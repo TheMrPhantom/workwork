@@ -107,7 +107,7 @@ const SendMail = ({ headlineText, confirmText, sportID, successOpen }) => {
 
     return (
         <div>
-            <Button onClick={handleClickOpen} style={{ color: "black" }}>
+            <Button onClick={handleClickOpen}>
                 <MailOutlineIcon />
             </Button>
             <BootstrapDialog
