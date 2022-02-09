@@ -115,7 +115,7 @@ const CreateEvent = () => {
 
             <Spacer vertical={20} />
 
-            <Button color="buttons" variant="contained" className="accept" onClick={() => addEvent()}>
+            <Button variant="contained" className="accept" onClick={() => addEvent()}>
                 Event erstellen
             </Button>
             <HSFAlert message="Event existiert bereits" short="Bitte mit anderem Namen erneut versuchen" open={messageOpen} setOpen={setmessageOpen} />

@@ -19,15 +19,7 @@ import "./AddWork.css"
 import "./Request.css"
 import HSFAlert from '../Common/HSFAlert';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-/*
-const useStyles = makeStyles({
-    buttonColor: {
-        "&.Mui-selected": {
-            backgroundColor: "var(--primaryColor) !important"
-        }
-    }
-});
-*/
+
 const AddWork = ({ memberID, refresh }) => {
     const [selectorValue, setselectorValue] = useState(-1)
     const [reason, setreason] = useState("")

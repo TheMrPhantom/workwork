@@ -76,7 +76,8 @@ const Login = ({ redirect }) => {
                     buttonText="Registrieren"
                     headlineText="Registrieren"
                     confirmText="Registrieren"
-                    setRegistrationOpen={setopenSuccess} />
+                    setRegistrationOpen={setopenSuccess}
+                    blackButton={true} />
                 <Button variant={boderType()} className="loginButton" onClick={() => login()}>Login</Button>
             </div>
             <HSFAlert message="Benutzername oder Passwort falsch" short="Bitte erneut versuchen" open={open} setOpen={setopen} />

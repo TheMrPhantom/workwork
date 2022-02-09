@@ -18,7 +18,7 @@ import { useState, useEffect } from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import HSFAlert from '../Common/HSFAlert';
 
-const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistrationOpen }) => {
+const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistrationOpen, blackButton }) => {
 
     const BootstrapDialog = styled(Dialog)(({ theme }) => ({
         '& .MuiDialogContent-root': {
@@ -137,7 +137,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
 
     return (
         <div>
-            <Button className="outlinedAddButton" variant="outlined" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpen} style={{ color: blackButton ? "black" : "" }}>
                 {buttonText}
             </Button>
             <BootstrapDialog
@@ -205,7 +205,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button className="outlinedAddButton" onClick={() => addMember()}>
+                    <Button onClick={() => addMember()}>
                         {confirmText}
                     </Button>
                 </DialogActions>

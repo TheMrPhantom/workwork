@@ -107,7 +107,7 @@ const SendMail = ({ headlineText, confirmText, sportID, successOpen }) => {
 
     return (
         <div>
-            <Button onClick={handleClickOpen} style={{ color: "black" }}>
+            <Button onClick={handleClickOpen}>
                 <MailOutlineIcon />
             </Button>
             <BootstrapDialog
@@ -124,7 +124,7 @@ const SendMail = ({ headlineText, confirmText, sportID, successOpen }) => {
                     <TextField multiline defaultValue={stateBody} className="mailBox" label="Inhalt" onChange={(value) => body = value.target.value} minRows={8} variant="outlined" />
                 </DialogContent>
                 <DialogActions>
-                    <Button className="outlinedAddButton" onClick={() => send()}>
+                    <Button onClick={() => send()}>
                         {confirmText}
                     </Button>
                 </DialogActions>

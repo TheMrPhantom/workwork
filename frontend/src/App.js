@@ -16,15 +16,15 @@ function App() {
   const globalStateContext = createContext(globalState)
 
   return (
-    <div className="App">
-      <globalStateContext.Provider value={globalState}>
-        <Router>
-          <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <globalStateContext.Provider value={globalState}>
+          <Router>
             <ClippedDrawer />
-          </ThemeProvider >
-        </Router>
-      </globalStateContext.Provider>
-    </div>
+          </Router>
+        </globalStateContext.Provider>
+      </div>
+    </ThemeProvider >
   );
 }
 
