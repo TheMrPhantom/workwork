@@ -137,7 +137,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
 
     return (
         <div>
-            <Button className="outlinedAddButton" variant="outlined" onClick={handleClickOpen}>
+            <Button variant="outlined" onClick={handleClickOpen}>
                 {buttonText}
             </Button>
             <BootstrapDialog
@@ -205,7 +205,7 @@ const AddMember = ({ buttonText, headlineText, confirmText, refresh, setRegistra
                     </div>
                 </DialogContent>
                 <DialogActions>
-                    <Button className="outlinedAddButton" onClick={() => addMember()}>
+                    <Button onClick={() => addMember()}>
                         {confirmText}
                     </Button>
                 </DialogActions>
