@@ -2,7 +2,6 @@ import { Paper, Typography } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react'
 import { getAndStore, getHoursFromMember } from '../Common/StaticFunctions';
 import OverviewBox from './OverviewBox';
-import PeopleWorkProgressChart from './PeopleWorkProgressChart';
 import Request from './Request';
 import Grid from '@mui/material/Grid';
 import BadMemberOverview from './BadMemberOverview';
@@ -20,8 +19,6 @@ const Overview = () => {
     const [trainercount, settrainercount] = useState(0)
     const [executivecount, setexecutivecount] = useState(0)
     const [notApprovedYet, setnotApprovedYet] = useState(0)
-    const [maxWork, setmaxWork] = useState(0)
-    const [currentWork, setcurrentWork] = useState(0)
     const [memberWorkStatus, setmemberWorkStatus] = useState([])
     const [trainerSports, settrainerSports] = useState([])
     const [events, setevents] = useState([])
@@ -42,8 +39,6 @@ const Overview = () => {
     useEffect(() => {
         var trainercount = 0;
         var executivecount = 0;
-        var maxWork = 0;
-        var currentWork = 0;
 
         const hourCategories = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
@@ -61,8 +56,6 @@ const Overview = () => {
             }
 
             var hours = getHoursFromMember(value)
-            currentWork += hours[0]
-            maxWork += hours[1]
 
             var remainingHours = hours[1] - hours[0]
             var category = Math.min(Math.ceil((remainingHours) / 2), hourCategories.length - 1)
@@ -88,12 +81,8 @@ const Overview = () => {
         })
 
 
-        maxWork = maxWork - currentWork;
-
         settrainercount(trainercount)
         setexecutivecount(executivecount)
-        setcurrentWork(currentWork)
-        setmaxWork(maxWork)
         setmemberWorkStatus(memberWorkStatus)
 
     }, [members])
@@ -108,10 +97,6 @@ const Overview = () => {
         return (<div>
             {memberState !== 3 ?
                 <div style={{ display: 'flex', flexDirection: "row", flexWrap: "wrap" }}>
-                    <Paper style={{ height: "280px", minWidth: "320px", maxWidth: "500px", width: "40%", padding: "10px", margin: "5px" }}>
-                        <Typography variant="h6">Arbeitsstunden Übersicht</Typography>
-                        <PeopleWorkProgressChart done={currentWork} needed={maxWork} />
-                    </Paper>
                     <Paper style={{ height: "280px", minWidth: "320px", maxWidth: "500px", width: "40%", padding: "10px", margin: "5px" }}>
                         <Typography variant="h6">Offene Arbeitsstunden</Typography>
                         <BadMemberLineChart memberData={memberWorkStatus} />
@@ -154,7 +139,7 @@ const Overview = () => {
             <Spacer vertical={20} />
             {sport.map((value) => <BadMemberOverview key={value.id} sportID={value.id} sportName={value.name} />)}
         </div>)
-    }, [currentWork, executivecount, maxWork, memberWorkStatus, notApprovedYet, trainercount, memberState, memberAmount, loadedMemberAmount, loadedApprovals, loadedMembers])
+    }, [executivecount, memberWorkStatus, notApprovedYet, trainercount, memberState, memberAmount, loadedMemberAmount, loadedApprovals, loadedMembers])
 
 
     useEffect(() => {
