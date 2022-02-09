@@ -27,7 +27,6 @@ const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive
                             position: 'absolute',
                             right: 8,
                             top: 8,
-                            color: (theme) => theme.palette.grey[500],
                         }}
                     >
                         <CloseIcon />
@@ -64,7 +63,7 @@ const ConfirmDialog = ({ title, open, setOpen, onConfirm, buttonText, isPositive
 
                 </DialogContent>
                 <DialogActions style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Button className="neutralOutlinedButton" onClick={() => handleClose()}>
+                    <Button variant='outlined' onClick={() => handleClose()}>
                         Abbrechen
                     </Button>
                     <Button className={!isPositive ? "errorButton" : "successButton"} onClick={onConfirm}>
