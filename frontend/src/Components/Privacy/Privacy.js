@@ -89,8 +89,9 @@ const Privacy = () => {
         <h3>Speicherdauer und eingesetzte Cookies:</h3>
         <p>Soweit Sie uns durch Ihre Browsereinstellungen oder Zustimmung die Verwendung von Cookies erlauben, können folgende
             Cookies auf unseren Webseiten zum Einsatz kommen:</p>
-        <p>NutzerID - 5 Tage
-            <br />Login Token - 5 Tage
+        <p>NutzerID (memberID) - 5 Tage
+            <br />Login Token (token) - 5 Tage
+            <br />Verwendetes Farbschema (theme) - 10 Jahre
         </p>
         <h2>Technisch notwendige Cookies </h2>
         <h3>Art und Zweck der Verarbeitung: </h3>
