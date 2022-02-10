@@ -164,11 +164,11 @@ const AddWork = ({ memberID, refresh }) => {
     const firstStep = () => {
         const refDefined = innerRef.current !== null && outterRef.current !== null;
         const canDisplayButtons = refDefined ? (innerRef.current.offsetWidth < outterRef.current.offsetWidth * 0.9) : true;
-        console.log(refDefined)
+
         if (refDefined && !canDisplayButtons && !useSelect) {
             setuseSelect(true)
         }
-        console.log("")
+
         if (!useSelect && (!refDefined || canDisplayButtons)) {
             return (<ToggleButtonGroup
                 value={selectorValue}
