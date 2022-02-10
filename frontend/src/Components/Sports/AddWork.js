@@ -33,6 +33,7 @@ const AddWork = ({ memberID, refresh }) => {
     const [open, setopen] = useState(false)
     const [message, setmessage] = useState("")
     const [messageOpen, setmessageOpen] = useState(false)
+    const [useSelect, setuseSelect] = useState(false)
 
     var innerRef = useRef(null)
     var outterRef = useRef(null)
@@ -162,9 +163,13 @@ const AddWork = ({ memberID, refresh }) => {
 
     const firstStep = () => {
         const refDefined = innerRef.current !== null && outterRef.current !== null;
-        const refTooSmall = refDefined ? (innerRef.current.offsetWidth < outterRef.current.offsetWidth * 0.9) : false;
-
-        if (!refDefined || refTooSmall) {
+        const canDisplayButtons = refDefined ? (innerRef.current.offsetWidth < outterRef.current.offsetWidth * 0.9) : true;
+        console.log(refDefined)
+        if (refDefined && !canDisplayButtons && !useSelect) {
+            setuseSelect(true)
+        }
+        console.log("")
+        if (!useSelect && (!refDefined || canDisplayButtons)) {
             return (<ToggleButtonGroup
                 value={selectorValue}
                 exclusive
