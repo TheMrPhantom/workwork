@@ -1,9 +1,9 @@
 import { Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
-import Spacer from '../Common/Spacer'
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { doPostRequest } from '../Common/StaticFunctions';
 import HSFAlert from '../Common/HSFAlert';
+import "./SportManagement.css"
 
 const AddSportEntry = ({ refresh }) => {
 
@@ -33,7 +33,6 @@ const AddSportEntry = ({ refresh }) => {
         <div className="outterAddBoxSport">
             <div className="innerBoxSportLeft">
                 <TextField label="Name" type="input" value={name} onChange={(value) => setname(value.target.value)} />
-                <Spacer horizontal={30}></Spacer>
                 <TextField label="Extra Arbeitsminuten" type="number" value={extraHours} onChange={(value) => setextraHours(value.target.value)} />
             </div>
             <div>
